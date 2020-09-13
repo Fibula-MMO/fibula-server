@@ -15,7 +15,6 @@ namespace Fibula.Protocol.V772.PacketWriters
     using Fibula.Communications;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Packets.Outgoing;
-    using Fibula.Mechanics.Conditions;
     using Fibula.Mechanics.Contracts.Extensions;
     using Fibula.Protocol.V772.Extensions;
     using Serilog;

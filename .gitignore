@@ -4,6 +4,7 @@
 bin/
 obj/
 map/
+docs/
 originalMap/
 packages/
 TestResults/

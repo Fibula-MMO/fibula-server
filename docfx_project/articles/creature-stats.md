@@ -1,6 +1,8 @@
 # Creature stats
 
-All creatures have stats, some exposed and some hidden, which quantify the abilities or 
+## Work in progress.
+
+All creatures have stats, some exposed and some hidden...
 
 Creatures in the game have the following basic stats available:
 

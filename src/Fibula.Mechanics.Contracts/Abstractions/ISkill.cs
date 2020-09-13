@@ -47,7 +47,7 @@ namespace Fibula.Mechanics.Contracts.Abstractions
         /// <summary>
         /// Gets the count at which the current level starts.
         /// </summary>
-        double StartingCountAtLevel { get; }
+        double StartingCount { get; }
 
         /// <summary>
         /// Gets this skill's current count.

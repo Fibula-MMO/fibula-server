@@ -1,7 +1,6 @@
 # Service configuration:
 
-Currently, the configuration files are:
-`appsettings.json` and `logsettings.json`
+Currently, the configuration files are `appsettings.json` and `logsettings.json`
 
 ## Application Settings file: `appsettings.json`
 

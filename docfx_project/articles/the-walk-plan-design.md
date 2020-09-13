@@ -1,4 +1,4 @@
-# The Creature's walk plan design:
+# The Creature's walk plan implementation design:
 
 Every creature is initialized with a single `WalkPlan` instance and maintains this reference throughout it's existence. This `WalkPlan` is the class that encapsulates the walking plan that a `Creature` has, and it comes into play when an `AutoWalkOrchestrationOperation` is executed with the creature as the requestor.
 

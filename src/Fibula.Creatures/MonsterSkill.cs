@@ -107,7 +107,7 @@ namespace Fibula.Creatures
         /// <summary>
         /// Gets the count at which the current level starts.
         /// </summary>
-        public double StartingCountAtLevel { get; private set; }
+        public double StartingCount { get; private set; }
 
         /// <summary>
         /// Gets this skill's target base increase level over level.
@@ -143,7 +143,7 @@ namespace Fibula.Creatures
             {
                 this.Level += this.PerLevelIncrease;
 
-                this.StartingCountAtLevel = this.TargetCount;
+                this.StartingCount = this.TargetCount;
                 this.TargetCount = Math.Floor(this.TargetCount * this.Rate);
             }
 

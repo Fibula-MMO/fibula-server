@@ -17,7 +17,6 @@ namespace Fibula.Mechanics.Operations
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Map.Contracts.Abstractions;
     using Fibula.Map.Contracts.Extensions;
-    using Fibula.Mechanics.Conditions;
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Extensions;
     using Fibula.Mechanics.Notifications;

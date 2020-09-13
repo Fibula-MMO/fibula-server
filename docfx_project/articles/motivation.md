@@ -25,7 +25,7 @@ I remember when SimOne released their first map editor and tools, and how it all
 
 Back then and there, I decided I was pursuing a career in computer science and tech. As is usual, some years after graduating I was absorbed into the workforce and forgot all about OpenTibia and how much I enjoyed this. 
 
-A few years later, in 2016, I was fortunate enough to land a job at Microsoft. I’ve been here for almost 4 years now. 
+A few years later, in 2016, I was fortunate enough to land a job at Microsoft. I’ve been here for more than 4 years now. 
 
 ## Motivation
 Reflecting on my past, everything about me having anything to do with programming started off because of OpenTibia. 

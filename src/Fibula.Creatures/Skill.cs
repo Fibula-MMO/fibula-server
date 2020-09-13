@@ -71,12 +71,9 @@ namespace Fibula.Creatures
             this.Rate = rate;
             this.BaseTargetIncrease = baseIncrease;
 
-            var (startLevelCount, targetCount) = this.CalculateNextTarget();
-
-            this.StartingCountAtLevel = startLevelCount;
-            this.TargetCount = targetCount;
-
-            this.Count = Math.Min(count, this.TargetCount);
+            // Add the current count to the skill.
+            // This will make sure we land on the right count boundaries.
+            this.IncreaseCounter(count);
 
             this.SendOnCounterChange = notifyOnEveryCounterChange;
         }
@@ -124,7 +121,7 @@ namespace Fibula.Creatures
         /// <summary>
         /// Gets the count at which the current level starts.
         /// </summary>
-        public double StartingCountAtLevel { get; private set; }
+        public double StartingCount { get; private set; }
 
         /// <summary>
         /// Gets this skill's target count.
@@ -143,8 +140,8 @@ namespace Fibula.Creatures
         {
             get
             {
-                var fromCount = Math.Max(0, this.Count - this.StartingCountAtLevel);
-                var toCount = Math.Max(1, this.TargetCount - this.StartingCountAtLevel);
+                var fromCount = Math.Max(0, this.Count - this.StartingCount);
+                var toCount = Math.Max(1, this.TargetCount - this.StartingCount);
 
                 var unadjustedPercent = Math.Max(0, Math.Min(fromCount / toCount, 100)) * 100;
 
@@ -166,6 +163,18 @@ namespace Fibula.Creatures
             var lastLevel = this.Level;
             var lastPercentVal = this.Percent;
 
+            if (this.TargetCount == 0)
+            {
+                // If the target count is zero, it may not be initialized.
+                this.ResetCountBoundaries();
+
+                // It may also be actually zero, so we'll just exit, because we don't want infinite level advances.
+                if (this.TargetCount == 0)
+                {
+                    return;
+                }
+            }
+
             this.Count = Math.Min(this.TargetCount, this.Count + value);
 
             // Skill level advance
@@ -173,10 +182,7 @@ namespace Fibula.Creatures
             {
                 this.Level++;
 
-                var (startLevelCount, targetCount) = this.CalculateNextTarget();
-
-                this.StartingCountAtLevel = startLevelCount;
-                this.TargetCount = targetCount;
+                this.ResetCountBoundaries();
             }
 
             // Invoke any subscribers to the change event.
@@ -187,25 +193,17 @@ namespace Fibula.Creatures
         }
 
         /// <summary>
-        /// Calculates the next target count.
+        /// Calculates and re-sets the starting and next target count boundaries.
         /// </summary>
-        /// <returns>A tuple cointaining the current level's starting count, and the next target count.</returns>
-        private (double currentLevelStartCount, double targetCountForNextLevel) CalculateNextTarget()
+        private void ResetCountBoundaries()
         {
-            var currentLevelStartCount = this.TargetCount;
-            var nextTarget = (this.TargetCount * this.Rate) + this.BaseTargetIncrease;
+            this.TargetCount = (this.TargetCount * this.Rate) + this.BaseTargetIncrease;
 
-            // need to recalculate everything.
-            if (Math.Abs(this.TargetCount) < 0.001)
+            for (int i = 0; i < Math.Max(0, this.Level - this.DefaultLevel); i++)
             {
-                for (int i = 0; i < this.Level - this.DefaultLevel; i++)
-                {
-                    currentLevelStartCount = nextTarget;
-                    nextTarget = (nextTarget * this.Rate) + this.BaseTargetIncrease;
-                }
+                this.StartingCount = this.TargetCount;
+                this.TargetCount = (this.TargetCount * this.Rate) + this.BaseTargetIncrease;
             }
-
-            return (currentLevelStartCount, nextTarget);
         }
     }
 }

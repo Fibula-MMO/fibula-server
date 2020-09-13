@@ -1,6 +1,6 @@
 # Some Frequently Asked Questions
 
-## Why C#/NetCore?
+## Why C#/NetCore? 
 Because it is **awesome**. It is fast, simple and way more maintainable than C++. 
 It's easier for newbies to pick up and learn, as it is often taught in schools and bootcamps.
 
@@ -17,4 +17,4 @@ On a more personal note, I hate aimbots (and hotkeys) since they ruin the game. 
 
 I'm not however, opposed to develop any other versions of the game later on, but I'm super fond of 7.x versions as these were the ones in which I actually played the real game.
 
-###### MOAR to come (sure)...
+###### MOAR to come (for sure)...

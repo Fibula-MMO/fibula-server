@@ -58,7 +58,9 @@ namespace Fibula.Mechanics.Conditions
                 return false;
             }
 
-            return false;
+            // Nothing to aggregate between these conditions, but we return true because we want to evaluate
+            // if the current condition's end should be delayed.
+            return true;
         }
 
         /// <summary>

@@ -193,12 +193,12 @@ namespace Fibula.Creatures
         {
             var expLevel = this.Skills.TryGetValue(SkillType.Experience, out ISkill expSkill) ? expSkill.Level : 0;
 
-            return (ushort)(this.Stats[CreatureStat.BaseSpeed].Current + (2 * (expLevel - 1)));
+            return (ushort)(this.Stats[CreatureStat.BaseSpeed].Current + expLevel - 1);
         }
 
         private void InitializeSkills()
         {
-            this.Skills[SkillType.Experience] = new Skill(SkillType.Experience, 1, rate: 1.1, 100, 20, 150, notifyOnEveryCounterChange: true);
+            this.Skills[SkillType.Experience] = new Skill(SkillType.Experience, 1, rate: 1.1, 100, 1, 150, notifyOnEveryCounterChange: true);
             this.Skills[SkillType.Experience].Changed += this.RaiseSkillChange;
 
             this.Skills[SkillType.Magic] = new Skill(SkillType.Magic, 0, rate: 1.1, 10, 0, 150);

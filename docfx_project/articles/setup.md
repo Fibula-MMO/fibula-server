@@ -4,9 +4,9 @@
 
 1) Open your command prompt window with **Git** support installed.
 
-1) Use **Git** to clone this repo:
+1) Use **Git** to clone the server repo:
     
-    `git clone https://github.com/jlnunez89/fibula-mmo.git`
+    `git clone https://github.com/Fibula-MMO/fibula-server.git`
 
 1) The resulting folder will contain this structure (or similar):
 

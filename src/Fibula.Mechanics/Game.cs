@@ -14,13 +14,10 @@ namespace Fibula.Mechanics
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
-    using System.IO;
     using System.Linq;
-    using System.Reflection;
     using System.Threading;
     using System.Threading.Tasks;
     using Fibula.Client.Contracts.Abstractions;
-    using Fibula.Common;
     using Fibula.Common.Contracts.Abstractions;
     using Fibula.Common.Contracts.Constants;
     using Fibula.Common.Contracts.Enumerations;
