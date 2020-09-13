@@ -3,7 +3,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/fibula-mmo/fibula-server?label=stargazers&logoColor=yellow&style=social)](https://github.com/fibula-mmo/fibula-server/stargazers)
 
 ![.NET Core](https://github.com/fibula-mmo/fibula-server/workflows/.NET%20Core/badge.svg)
-![Build Status](https://dev.azure.com/fibula-mmo/FibulaMMO/_apis/build/status/fibula-server?branchName=master&jobName=Build&configuration=Build%20Release)
+[![Build Status](https://dev.azure.com/fibula-mmo/FibulaMMO/_apis/build/status/fibula-server?branchName=master)](https://dev.azure.com/fibula-mmo/FibulaMMO/_build/latest?definitionId=2&branchName=master)
 [![codecov](https://codecov.io/gh/fibula-mmo/fibula-server/branch/master/graph/badge.svg)](https://codecov.io/gh/fibula-mmo/fibula-server)
 
 # Fibula MMO - Game Server
