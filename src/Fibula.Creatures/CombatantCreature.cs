@@ -18,6 +18,7 @@ namespace Fibula.Creatures
     using Fibula.Common.Contracts.Enumerations;
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Creatures.Contracts.Enumerations;
+    using Fibula.Data.Entities.Contracts.Abstractions;
     using Fibula.Data.Entities.Contracts.Enumerations;
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Constants;
@@ -62,11 +63,7 @@ namespace Fibula.Creatures
         /// <summary>
         /// Initializes a new instance of the <see cref="CombatantCreature"/> class.
         /// </summary>
-        /// <param name="name">The name of this creature.</param>
-        /// <param name="article">An article for the name of this creature.</param>
-        /// <param name="maxHitpoints">The maximum hitpoints of the creature.</param>
-        /// <param name="corpse">The corpse of the creature.</param>
-        /// <param name="hitpoints">The current hitpoints of the creature.</param>
+        /// <param name="creationMetadata">The metadata for this player.</param>
         /// <param name="baseAttackSpeed">
         /// Optional. The base attack speed for this creature.
         /// Bounded between [<see cref="CombatConstants.MinimumCombatSpeed"/>, <see cref="CombatConstants.MaximumCombatSpeed"/>] inclusive.
@@ -78,14 +75,10 @@ namespace Fibula.Creatures
         /// Defaults to <see cref="CombatConstants.DefaultDefenseSpeed"/>.
         /// </param>
         protected CombatantCreature(
-            string name,
-            string article,
-            ushort maxHitpoints,
-            ushort corpse,
-            ushort hitpoints = 0,
+            ICreatureCreationMetadata creationMetadata,
             decimal baseAttackSpeed = CombatConstants.DefaultAttackSpeed,
             decimal baseDefenseSpeed = CombatConstants.DefaultDefenseSpeed)
-            : base(name, article, maxHitpoints, corpse, hitpoints)
+            : base(creationMetadata)
         {
             // Normalize combat speeds.
             this.baseAttackSpeed = Math.Min(CombatConstants.MaximumCombatSpeed, Math.Max(CombatConstants.MinimumCombatSpeed, baseAttackSpeed));
@@ -268,7 +261,7 @@ namespace Fibula.Creatures
                 return LowerBound;
             }
 
-            var unadjustedPercent = Math.Max(LowerBound, Math.Min(this.Skills[skillType].Count / this.Skills[skillType].TargetCount, UpperBound));
+            var unadjustedPercent = Math.Max(LowerBound, Math.Min(this.Skills[skillType].CurrentCount / this.Skills[skillType].CountForNextLevel, UpperBound));
 
             return (byte)Math.Floor(unadjustedPercent);
         }

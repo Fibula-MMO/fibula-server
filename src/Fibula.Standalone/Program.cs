@@ -44,6 +44,8 @@ namespace Fibula.Standalone
     using Fibula.Protocol.V772.Extensions;
     using Fibula.Scheduling;
     using Fibula.Scheduling.Contracts.Abstractions;
+    using Fibula.Scripting;
+    using Fibula.Scripting.Contracts.Abstractions;
     using Fibula.Security;
     using Microsoft.ApplicationInsights.Extensibility;
     using Microsoft.Extensions.Configuration;
@@ -197,6 +199,7 @@ namespace Fibula.Standalone
             services.AddSingleton(hostingContext.Configuration);
             services.AddSingleton(Log.Logger);
 
+            services.AddSingleton<IScriptLoader, CachingScriptLoader>();
             services.AddSingleton<IApplicationContext, ApplicationContext>();
             services.AddSingleton<IScheduler, Scheduler>();
 

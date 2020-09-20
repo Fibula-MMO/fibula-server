@@ -93,6 +93,7 @@ namespace Fibula.Protocol.V772.Extensions
                 { OutgoingPacketType.CreatureHealth, typeof(CreatureHealthPacketWriter) },
                 { OutgoingPacketType.CreatureLight, typeof(CreatureLightPacketWriter) },
                 { OutgoingPacketType.CreatureMoved, typeof(CreatureMovedPacketWriter) },
+                { OutgoingPacketType.CreatureSpeedChange, typeof(CreatureSpeedChangePacketWriter) },
                 { OutgoingPacketType.UpdateThing, typeof(CreatureTurnedPacketWriter) },
                 { OutgoingPacketType.CreatureSpeech, typeof(CreatureSpeechPacketWriter) },
                 { OutgoingPacketType.GameDisconnect, typeof(GameServerDisconnectPacketWriter) },

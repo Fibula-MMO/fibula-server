@@ -23,6 +23,7 @@ namespace Fibula.Creatures
     using Fibula.Creatures.Contracts.Constants;
     using Fibula.Creatures.Contracts.Enumerations;
     using Fibula.Creatures.Contracts.Structs;
+    using Fibula.Data.Entities.Contracts.Abstractions;
     using Fibula.Data.Entities.Contracts.Enumerations;
     using Fibula.Data.Entities.Contracts.Structs;
     using Fibula.Items.Contracts.Abstractions;
@@ -57,23 +58,15 @@ namespace Fibula.Creatures
         /// <summary>
         /// Initializes a new instance of the <see cref="Creature"/> class.
         /// </summary>
-        /// <param name="name">The name of this creature.</param>
-        /// <param name="article">An article for the name of this creature.</param>
-        /// <param name="maxHitpoints">The maximum hitpoints of the creature.</param>
-        /// <param name="corpseTypeId">The corpse of the creature.</param>
-        /// <param name="hitpoints">The current hitpoints of the creature.</param>
-        protected Creature(
-            string name,
-            string article,
-            ushort maxHitpoints,
-            ushort corpseTypeId = default,
-            ushort hitpoints = default)
+        /// <param name="creationMetadata">The metadata for this player.</param>
+        protected Creature(ICreatureCreationMetadata creationMetadata)
         {
-            name.ThrowIfNullOrWhiteSpace(nameof(name));
+            creationMetadata.ThrowIfNull(nameof(creationMetadata));
+            creationMetadata.Name.ThrowIfNullOrWhiteSpace(nameof(creationMetadata.Name));
 
-            if (maxHitpoints == 0)
+            if (creationMetadata.MaxHitpoints == 0)
             {
-                throw new ArgumentException($"{nameof(maxHitpoints)} must be positive.", nameof(maxHitpoints));
+                throw new ArgumentException($"{nameof(creationMetadata.MaxHitpoints)} must be positive.", nameof(creationMetadata.MaxHitpoints));
             }
 
             lock (Creature.IdLock)
@@ -81,9 +74,9 @@ namespace Fibula.Creatures
                 this.Id = idCounter++;
             }
 
-            this.Name = name;
-            this.Article = article;
-            this.CorpseTypeId = corpseTypeId;
+            this.Name = creationMetadata.Name;
+            this.Article = creationMetadata.Article;
+            this.CorpseTypeId = creationMetadata.Corpse;
 
             this.LastMovementCostModifier = 1;
 
@@ -97,7 +90,7 @@ namespace Fibula.Creatures
 
             this.creatureAwarenessMap = new Dictionary<ICreature, AwarenessLevel>();
 
-            this.Stats.Add(CreatureStat.HitPoints, new Stat(CreatureStat.HitPoints, hitpoints == default ? maxHitpoints : hitpoints, maxHitpoints));
+            this.Stats.Add(CreatureStat.HitPoints, new Stat(CreatureStat.HitPoints, creationMetadata.CurrentHitpoints == default ? creationMetadata.MaxHitpoints : creationMetadata.CurrentHitpoints, creationMetadata.MaxHitpoints));
             this.Stats[CreatureStat.HitPoints].Changed += this.RaiseStatChange;
 
             this.Stats.Add(CreatureStat.CarryStrength, new Stat(CreatureStat.CarryStrength, 150, CreatureConstants.MaxCreatureCarryStrength));
@@ -175,9 +168,9 @@ namespace Fibula.Creatures
         public byte EmittedLightColor { get; protected set; }
 
         /// <summary>
-        /// Gets or sets this creature's speed.
+        /// Gets this creature's speed.
         /// </summary>
-        public abstract ushort Speed { get; protected set; }
+        public abstract ushort Speed { get; }
 
         /// <summary>
         /// Gets or sets this creature's variable speed.
@@ -419,15 +412,6 @@ namespace Fibula.Creatures
         public bool Equals([AllowNull] ICreature other)
         {
             return this.Id == other?.Id;
-        }
-
-        /// <summary>
-        /// Calculates the movement speed of the creature.
-        /// </summary>
-        /// <returns>The movement speed of the creature.</returns>
-        protected virtual ushort CalculateMovementSpeed()
-        {
-            return (ushort)((2 * (this.VariableSpeed + this.Stats[CreatureStat.BaseSpeed].Current)) + 80);
         }
 
         /// <summary>

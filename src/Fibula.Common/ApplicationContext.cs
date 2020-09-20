@@ -19,6 +19,7 @@ namespace Fibula.Common
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Data.Contracts.Abstractions;
     using Fibula.Items.Contracts.Abstractions;
+    using Fibula.Scripting.Contracts.Abstractions;
     using Fibula.Security.Contracts;
     using Microsoft.ApplicationInsights;
     using Microsoft.Extensions.Options;
@@ -54,6 +55,7 @@ namespace Fibula.Common
         /// </summary>
         /// <param name="options">A reference to the application configuration.</param>
         /// <param name="rsaDecryptor">A reference to the RSA decryptor in use.</param>
+        /// <param name="scriptsLoader">A reference to the scripts loader in use.</param>
         /// <param name="itemTypeLoader">A reference to the item type loader in use.</param>
         /// <param name="monsterTypeLoader">A reference to the monster type loader in use.</param>
         /// <param name="telemetryClient">A reference to the telemetry client.</param>
@@ -62,6 +64,7 @@ namespace Fibula.Common
         public ApplicationContext(
             IOptions<ApplicationContextOptions> options,
             IRsaDecryptor rsaDecryptor,
+            IScriptLoader scriptsLoader,
             IItemTypeLoader itemTypeLoader,
             IMonsterTypeLoader monsterTypeLoader,
             TelemetryClient telemetryClient,
@@ -70,6 +73,7 @@ namespace Fibula.Common
         {
             options.ThrowIfNull(nameof(options));
             rsaDecryptor.ThrowIfNull(nameof(rsaDecryptor));
+            scriptsLoader.ThrowIfNull(nameof(scriptsLoader));
             itemTypeLoader.ThrowIfNull(nameof(itemTypeLoader));
             monsterTypeLoader.ThrowIfNull(nameof(monsterTypeLoader));
             cancellationTokenSource.ThrowIfNull(nameof(cancellationTokenSource));
@@ -79,6 +83,7 @@ namespace Fibula.Common
 
             this.Options = options.Value;
             this.RsaDecryptor = rsaDecryptor;
+            this.ScriptLoader = scriptsLoader;
             this.CancellationTokenSource = cancellationTokenSource;
 
             this.TelemetryClient = telemetryClient;
@@ -97,6 +102,11 @@ namespace Fibula.Common
         /// Gets the RSA decryptor to use.
         /// </summary>
         public IRsaDecryptor RsaDecryptor { get; }
+
+        /// <summary>
+        /// Gets the script loader in use.
+        /// </summary>
+        public IScriptLoader ScriptLoader { get; }
 
         /// <summary>
         /// Gets the master cancellation token source.

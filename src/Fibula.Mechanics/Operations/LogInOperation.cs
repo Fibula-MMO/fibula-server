@@ -19,6 +19,7 @@ namespace Fibula.Mechanics.Operations
     using Fibula.Creatures;
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Creatures.Contracts.Enumerations;
+    using Fibula.Data.Entities.Contracts.Abstractions;
     using Fibula.Map.Contracts.Abstractions;
     using Fibula.Map.Contracts.Constants;
     using Fibula.Mechanics.Contracts.Abstractions;

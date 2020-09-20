@@ -12,6 +12,8 @@
 namespace Fibula.Creatures
 {
     using System;
+    using Fibula.Common.Utilities;
+    using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Data.Entities.Contracts.Enumerations;
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Delegates;
@@ -22,41 +24,41 @@ namespace Fibula.Creatures
     public class Skill : ISkill
     {
         /// <summary>
+        /// The value to use as the minimum percentual.
+        /// Used to determine the <see cref="Percent"/> value.
+        /// </summary>
+        private const int MinPercentValue = 0;
+
+        /// <summary>
+        /// The value to use as the maximum percentual.
+        /// Used to determine the <see cref="Percent"/> value.
+        /// </summary>
+        private const int MaxPercentValue = 100;
+
+        /// <summary>
+        /// The formula for this skill's progression.
+        /// </summary>
+        private readonly Func<ICreatureWithSkills, ISkill, (double LowerCountBoundary, double UpperCountBoundary)> boundariesFormula;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Skill"/> class.
         /// </summary>
+        /// <param name="ownerCreature">The creature that owns this skill.</param>
         /// <param name="type">This skill's type.</param>
+        /// <param name="boundariesFormula">The formula used to determine the lower and upper boundaries for this skill.</param>
         /// <param name="defaultLevel">This skill's default level.</param>
-        /// <param name="rate">This skill's rate of target count increase.</param>
-        /// <param name="baseIncrease">This skill's target base increase level over level.</param>
         /// <param name="level">This skill's current level.</param>
         /// <param name="maxLevel">This skill's maximum level.</param>
-        /// <param name="count">This skill's current count.</param>
+        /// <param name="currentCount">This skill's current count.</param>
         /// <param name="notifyOnEveryCounterChange">Optional. A value indicating whether the skill shoudl raise changed events on every counter change.</param>
-        public Skill(SkillType type, uint defaultLevel, double rate, double baseIncrease, uint level = 0, uint maxLevel = 1, double count = 0, bool notifyOnEveryCounterChange = false)
+        public Skill(ICreatureWithSkills ownerCreature, SkillType type, Func<ICreatureWithSkills, ISkill, (double LowerCountBoundary, double UpperCountBoundary)> boundariesFormula, uint defaultLevel, uint level = 0, uint maxLevel = 1, double currentCount = 0, bool notifyOnEveryCounterChange = false)
         {
-            if (defaultLevel < 0)
-            {
-                throw new ArgumentException($"{nameof(defaultLevel)} must not be negative.", nameof(defaultLevel));
-            }
+            ownerCreature.ThrowIfNull(nameof(ownerCreature));
+            boundariesFormula.ThrowIfNull(nameof(boundariesFormula));
 
-            if (maxLevel < 1)
+            if (maxLevel == 0)
             {
                 throw new ArgumentException($"{nameof(maxLevel)} must be positive.", nameof(maxLevel));
-            }
-
-            if (rate < 1)
-            {
-                throw new ArgumentException($"{nameof(rate)} must be positive.", nameof(rate));
-            }
-
-            if (baseIncrease < 1)
-            {
-                throw new ArgumentException($"{nameof(baseIncrease)} must be positive.", nameof(baseIncrease));
-            }
-
-            if (count < 0)
-            {
-                throw new ArgumentException($"{nameof(count)} cannot be negative.", nameof(count));
             }
 
             if (maxLevel < defaultLevel)
@@ -64,16 +66,22 @@ namespace Fibula.Creatures
                 throw new ArgumentException($"{nameof(maxLevel)} must be at least the same value as {nameof(defaultLevel)}.", nameof(maxLevel));
             }
 
+            if (currentCount < 0)
+            {
+                throw new ArgumentException($"{nameof(currentCount)} cannot be negative.", nameof(currentCount));
+            }
+
+            this.OwnerCreature = ownerCreature;
             this.Type = type;
             this.DefaultLevel = defaultLevel;
-            this.MaxLevel = maxLevel;
-            this.Level = Math.Min(this.MaxLevel, level == 0 ? defaultLevel : level);
-            this.Rate = rate;
-            this.BaseTargetIncrease = baseIncrease;
+            this.MaximumLevel = maxLevel;
+            this.CurrentLevel = Math.Min(this.MaximumLevel, level == 0 ? defaultLevel : level);
+
+            this.boundariesFormula = boundariesFormula;
 
             // Add the current count to the skill.
             // This will make sure we land on the right count boundaries.
-            this.IncreaseCounter(count);
+            this.IncreaseCounter(currentCount);
 
             this.SendOnCounterChange = notifyOnEveryCounterChange;
         }
@@ -84,6 +92,11 @@ namespace Fibula.Creatures
         public event OnSkillChanged Changed;
 
         /// <summary>
+        /// Gets the creature that owns this skill.
+        /// </summary>
+        public ICreatureWithSkills OwnerCreature { get; }
+
+        /// <summary>
         /// Gets this skill's type.
         /// </summary>
         public SkillType Type { get; }
@@ -91,12 +104,12 @@ namespace Fibula.Creatures
         /// <summary>
         /// Gets this skill's level.
         /// </summary>
-        public uint Level { get; private set; }
+        public uint CurrentLevel { get; private set; }
 
         /// <summary>
         /// Gets this skill's maximum level.
         /// </summary>
-        public uint MaxLevel { get; }
+        public uint MaximumLevel { get; }
 
         /// <summary>
         /// Gets this skill's default level.
@@ -104,34 +117,24 @@ namespace Fibula.Creatures
         public uint DefaultLevel { get; }
 
         /// <summary>
-        /// Gets this skill's current count.
-        /// </summary>
-        public double Count { get; private set; }
-
-        /// <summary>
         /// Gets a value indicating whether this skill will raise <see cref="Changed"/> events every time the counter changes.
         /// </summary>
         public bool SendOnCounterChange { get; }
 
         /// <summary>
-        /// Gets this skill's rate of target count increase.
-        /// </summary>
-        public double Rate { get; }
-
-        /// <summary>
         /// Gets the count at which the current level starts.
         /// </summary>
-        public double StartingCount { get; private set; }
+        public double CountAtStartOfLevel { get; private set; }
 
         /// <summary>
         /// Gets this skill's target count.
         /// </summary>
-        public double TargetCount { get; private set; }
+        public double CountForNextLevel { get; private set; }
 
         /// <summary>
-        /// Gets this skill's target base increase level over level.
+        /// Gets this skill's current count.
         /// </summary>
-        public double BaseTargetIncrease { get; }
+        public double CurrentCount { get; private set; }
 
         /// <summary>
         /// Gets the current percentual value between current and target counts this skill.
@@ -140,10 +143,10 @@ namespace Fibula.Creatures
         {
             get
             {
-                var fromCount = Math.Max(0, this.Count - this.StartingCount);
-                var toCount = Math.Max(1, this.TargetCount - this.StartingCount);
+                var fromCount = Math.Max(MinPercentValue, this.CurrentCount - this.CountAtStartOfLevel);
+                var toCount = Math.Max(1, this.CountForNextLevel - this.CountAtStartOfLevel);
 
-                var unadjustedPercent = Math.Max(0, Math.Min(fromCount / toCount, 100)) * 100;
+                var unadjustedPercent = Math.Max(MinPercentValue, Math.Min(fromCount / toCount, MaxPercentValue)) * MaxPercentValue;
 
                 return (byte)Math.Floor(unadjustedPercent);
             }
@@ -155,54 +158,53 @@ namespace Fibula.Creatures
         /// <param name="value">The amount by which to increase this skills counter.</param>
         public void IncreaseCounter(double value)
         {
-            if (value == 0)
+            if (value <= 0)
             {
                 return;
             }
 
-            var lastLevel = this.Level;
+            var lastCount = this.CurrentCount;
+            var lastLevel = this.CurrentLevel;
             var lastPercentVal = this.Percent;
 
-            if (this.TargetCount == 0)
+            if (this.CountForNextLevel == 0)
             {
                 // If the target count is zero, it may not be initialized.
-                this.ResetCountBoundaries();
+                var (lowerBoundary, higherBoundary) = this.boundariesFormula(this.OwnerCreature, this);
 
                 // It may also be actually zero, so we'll just exit, because we don't want infinite level advances.
-                if (this.TargetCount == 0)
+                if (higherBoundary == 0)
                 {
                     return;
                 }
+
+                this.CountAtStartOfLevel = lowerBoundary;
+                this.CountForNextLevel = higherBoundary;
             }
 
-            this.Count = Math.Min(this.TargetCount, this.Count + value);
+            this.CurrentCount = Math.Min(double.MaxValue, this.CurrentCount + value);
 
             // Skill level advance
-            if (Math.Abs(this.Count - this.TargetCount) < 0.001)
+            while (this.CurrentCount >= this.CountForNextLevel)
             {
-                this.Level++;
+                this.CurrentLevel++;
 
-                this.ResetCountBoundaries();
+                var (lowerBoundary, higherBoundary) = this.boundariesFormula(this.OwnerCreature, this);
+
+                if (this.CountForNextLevel == higherBoundary)
+                {
+                    // Prevent infinite level advances.
+                    break;
+                }
+
+                this.CountAtStartOfLevel = lowerBoundary;
+                this.CountForNextLevel = higherBoundary;
             }
 
             // Invoke any subscribers to the change event.
-            if (this.SendOnCounterChange || this.Level != lastLevel || this.Percent != lastPercentVal)
+            if (lastCount != this.CurrentCount && (this.SendOnCounterChange || this.CurrentLevel != lastLevel || this.Percent != lastPercentVal))
             {
                 this.Changed?.Invoke(this.Type, lastLevel, lastPercentVal, (long)value);
-            }
-        }
-
-        /// <summary>
-        /// Calculates and re-sets the starting and next target count boundaries.
-        /// </summary>
-        private void ResetCountBoundaries()
-        {
-            this.TargetCount = (this.TargetCount * this.Rate) + this.BaseTargetIncrease;
-
-            for (int i = 0; i < Math.Max(0, this.Level - this.DefaultLevel); i++)
-            {
-                this.StartingCount = this.TargetCount;
-                this.TargetCount = (this.TargetCount * this.Rate) + this.BaseTargetIncrease;
             }
         }
     }

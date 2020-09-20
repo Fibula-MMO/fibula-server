@@ -61,7 +61,7 @@ namespace Fibula.Creatures
         /// <summary>
         /// Gets this stat's maximum value.
         /// </summary>
-        public uint Maximum { get; }
+        public uint Maximum { get; private set; }
 
         /// <summary>
         /// Gets the current percentual value between current and maximum values.
@@ -75,7 +75,28 @@ namespace Fibula.Creatures
         /// <returns>True if the value was actually increased, false otherwise.</returns>
         public bool Increase(int value)
         {
+            // Set handles the maximum limit.
             return this.Set((uint)Math.Max(0, this.current + value));
+        }
+
+        /// <summary>
+        /// Increases this stats's maximum value.
+        /// </summary>
+        /// <param name="value">The amount by which to increase this stat's maximum value.</param>
+        /// <returns>True if the value was actually increased, false otherwise.</returns>
+        public bool IncreaseMaximum(int value)
+        {
+            var lastMaximumVal = this.Maximum;
+
+            this.Maximum = Math.Min(uint.MaxValue, (uint)Math.Max(0, this.Maximum + value));
+
+            if (this.Maximum != lastMaximumVal)
+            {
+                // We'll need to increase the normal value too.
+                return this.Increase(value);
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -85,7 +106,28 @@ namespace Fibula.Creatures
         /// <returns>True if the value was actually decreased, false otherwise.</returns>
         public bool Decrease(int value)
         {
+            // Set handles the maximum limit.
             return this.Set((uint)Math.Max(0, this.current - value));
+        }
+
+        /// <summary>
+        /// Decreases this stats's maximum value.
+        /// </summary>
+        /// <param name="value">The amount by which to decrease this stat's maximum value.</param>
+        /// <returns>True if the value was actually decreased, false otherwise.</returns>
+        public bool DecreaseMaximum(int value)
+        {
+            var lastMaximumVal = this.Maximum;
+
+            this.Maximum = Math.Min(uint.MaxValue, (uint)Math.Max(0, this.Maximum - value));
+
+            if (this.Maximum != lastMaximumVal)
+            {
+                // Cap the current to maximum if lower.
+                return this.Set(Math.Min(this.Current, this.Maximum));
+            }
+
+            return false;
         }
 
         /// <summary>

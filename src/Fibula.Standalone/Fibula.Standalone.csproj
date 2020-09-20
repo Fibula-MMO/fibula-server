@@ -76,6 +76,7 @@
     <ProjectReference Include="..\Fibula.Mechanics\Fibula.Mechanics.csproj" />
     <ProjectReference Include="..\Fibula.Protocol.V772\Fibula.Protocol.V772.csproj" />
     <ProjectReference Include="..\Fibula.Scheduling\Fibula.Scheduling.csproj" />
+    <ProjectReference Include="..\Fibula.Scripting\Fibula.Scripting.csproj" />
     <ProjectReference Include="..\Fibula.Security\Fibula.Security.csproj" />
     <ProjectReference Include="..\Fibula.Communications\Fibula.Communications.csproj" />
   </ItemGroup>

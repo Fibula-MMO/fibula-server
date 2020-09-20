@@ -18,22 +18,12 @@ namespace Fibula.Data.Entities.Contracts.Abstractions
     /// <summary>
     /// Interface for 'types of monster' entities.
     /// </summary>
-    public interface IMonsterTypeEntity : IIdentifiableEntity
+    public interface IMonsterTypeEntity : IIdentifiableEntity, ICreatureCreationMetadata
     {
         /// <summary>
         /// Gets the id of the monster race.
         /// </summary>
         ushort RaceId { get; }
-
-        /// <summary>
-        /// Gets the name of the monster type.
-        /// </summary>
-        string Name { get; }
-
-        /// <summary>
-        /// Gets the article to use with the name.
-        /// </summary>
-        string Article { get; }
 
         /// <summary>
         /// Gets the amount of experience that this type of monster deals.
@@ -85,16 +75,6 @@ namespace Fibula.Data.Entities.Contracts.Abstractions
         /// Gets this type of monster outfit.
         /// </summary>
         Outfit Outfit { get; }
-
-        /// <summary>
-        /// Gets this type of monster's corpse item type id.
-        /// </summary>
-        ushort Corpse { get; }
-
-        /// <summary>
-        /// Gets the maximum hitpoints that this monster type starts with.
-        /// </summary>
-        ushort MaxHitpoints { get; }
 
         /// <summary>
         /// Gets the type of blood of this monster type.

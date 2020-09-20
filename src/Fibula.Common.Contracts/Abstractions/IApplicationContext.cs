@@ -14,6 +14,7 @@ namespace Fibula.Common.Contracts.Abstractions
     using System.Threading;
     using Fibula.Common.Contracts.Models;
     using Fibula.Data.Contracts.Abstractions;
+    using Fibula.Scripting.Contracts.Abstractions;
     using Fibula.Security.Contracts;
     using Microsoft.ApplicationInsights;
 
@@ -52,6 +53,11 @@ namespace Fibula.Common.Contracts.Abstractions
         /// Gets the RSA decryptor to use.
         /// </summary>
         IRsaDecryptor RsaDecryptor { get; }
+
+        /// <summary>
+        /// Gets the script loader in use.
+        /// </summary>
+        IScriptLoader ScriptLoader { get; }
 
         /// <summary>
         /// Creates a new <see cref="IUnitOfWork"/> for data access.

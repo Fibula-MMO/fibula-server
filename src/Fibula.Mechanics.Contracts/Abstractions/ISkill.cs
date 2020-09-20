@@ -25,19 +25,14 @@ namespace Fibula.Mechanics.Contracts.Abstractions
         event OnSkillChanged Changed;
 
         /// <summary>
+        /// Gets the creature that has this skill.
+        /// </summary>
+        ICreatureWithSkills OwnerCreature { get; }
+
+        /// <summary>
         /// Gets this skill's type.
         /// </summary>
         SkillType Type { get; }
-
-        /// <summary>
-        /// Gets this skill's level.
-        /// </summary>
-        uint Level { get; }
-
-        /// <summary>
-        /// Gets this skill's maximum level.
-        /// </summary>
-        uint MaxLevel { get; }
 
         /// <summary>
         /// Gets this skill's default level.
@@ -45,29 +40,35 @@ namespace Fibula.Mechanics.Contracts.Abstractions
         uint DefaultLevel { get; }
 
         /// <summary>
-        /// Gets the count at which the current level starts.
+        /// Gets this skill's current level.
         /// </summary>
-        double StartingCount { get; }
+        uint CurrentLevel { get; }
+
+        /// <summary>
+        /// Gets this skill's maximum level.
+        /// </summary>
+        uint MaximumLevel { get; }
+
+        /// <summary>
+        /// Gets the count at which the current level started.
+        /// </summary>
+        /// <remarks>
+        /// Must be greater than <see cref="CountForNextLevel"/>.
+        /// </remarks>
+        double CountAtStartOfLevel { get; }
+
+        /// <summary>
+        /// Gets the count at which the current level will advance.
+        /// </summary>
+        /// <remarks>
+        /// Must be greater than <see cref="CountAtStartOfLevel"/> to actually advance.
+        /// </remarks>
+        double CountForNextLevel { get; }
 
         /// <summary>
         /// Gets this skill's current count.
         /// </summary>
-        double Count { get; }
-
-        /// <summary>
-        /// Gets this skill's target count.
-        /// </summary>
-        double TargetCount { get; }
-
-        /// <summary>
-        /// Gets this skill's target base increase level over level.
-        /// </summary>
-        double BaseTargetIncrease { get; }
-
-        /// <summary>
-        /// Gets this skill's rate of target count increase.
-        /// </summary>
-        double Rate { get; }
+        double CurrentCount { get; }
 
         /// <summary>
         /// Gets the current percentual value between current and target counts this skill.

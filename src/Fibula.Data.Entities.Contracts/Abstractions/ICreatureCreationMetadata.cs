@@ -9,10 +9,10 @@
 // </copyright>
 // -----------------------------------------------------------------
 
-namespace Fibula.Creatures.Contracts.Abstractions
+namespace Fibula.Data.Entities.Contracts.Abstractions
 {
     /// <summary>
-    /// Interface for creature creation metadata information.
+    /// Interface for creature creation metadata.
     /// </summary>
     public interface ICreatureCreationMetadata
     {
@@ -22,14 +22,29 @@ namespace Fibula.Creatures.Contracts.Abstractions
         string Id { get; }
 
         /// <summary>
+        /// Gets the article to prefix the creature name's with.
+        /// </summary>
+        string Article { get; }
+
+        /// <summary>
         /// Gets the name to use for the creature.
         /// </summary>
         string Name { get; }
 
         /// <summary>
+        /// Gets the current hitpoints to create the creature with.
+        /// </summary>
+        ushort CurrentHitpoints { get; }
+
+        /// <summary>
         /// Gets the max hitpoints to create the creature with.
         /// </summary>
         ushort MaxHitpoints { get; }
+
+        /// <summary>
+        /// Gets the current manapoints to create the creature with.
+        /// </summary>
+        ushort CurrentManapoints { get; }
 
         /// <summary>
         /// Gets the max manapoints to create the creature with.

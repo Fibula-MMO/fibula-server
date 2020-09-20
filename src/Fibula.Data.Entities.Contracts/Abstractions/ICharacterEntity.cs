@@ -16,13 +16,8 @@ namespace Fibula.Data.Entities.Contracts.Abstractions
     /// <summary>
     /// Interface for character entities.
     /// </summary>
-    public interface ICharacterEntity : IIdentifiableEntity
+    public interface ICharacterEntity : IIdentifiableEntity, ICreatureCreationMetadata
     {
-        /// <summary>
-        /// Gets the name of the character.
-        /// </summary>
-        string Name { get; }
-
         /// <summary>
         /// Gets the id of the account to which this character belongs to.
         /// </summary>

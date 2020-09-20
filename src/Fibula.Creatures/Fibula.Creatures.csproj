@@ -33,6 +33,8 @@
     <ProjectReference Include="..\Fibula.Creatures.Contracts\Fibula.Creatures.Contracts.csproj" />
     <ProjectReference Include="..\Fibula.Items\Fibula.Items.csproj" />
     <ProjectReference Include="..\Fibula.Mechanics.Contracts\Fibula.Mechanics.Contracts.csproj" />
+    <ProjectReference Include="..\Fibula.Scripting.Contracts\Fibula.Scripting.Contracts.csproj" />
+    <ProjectReference Include="..\Fibula.Scripting.Formulae\Fibula.Scripting.Formulae.csproj" />
   </ItemGroup>
 
 </Project>

@@ -12,18 +12,22 @@
 namespace Fibula.Data.Entities
 {
     using System;
-    using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Data.Entities.Contracts.Abstractions;
 
     /// <summary>
     /// Class that represents a character entity.
     /// </summary>
-    public class CharacterEntity : BaseEntity, ICharacterEntity, ICreatureCreationMetadata
+    public class CharacterEntity : BaseEntity, ICharacterEntity
     {
         /// <summary>
         /// Gets or sets the character's name.
         /// </summary>
         public string Name { get; set; }
+
+        /// <summary>
+        /// Gets the article to use with the character's name.
+        /// </summary>
+        public string Article => string.Empty;
 
         /// <summary>
         /// Gets or sets the id of the account which this character belongs to.
@@ -61,9 +65,19 @@ namespace Fibula.Data.Entities
         public bool IsOnline { get; set; }
 
         /// <summary>
-        /// Gets the max hitpoints to create the creature with.
+        /// Gets the current hitpoints of the character.
+        /// </summary>
+        public ushort CurrentHitpoints => this.MaxHitpoints;
+
+        /// <summary>
+        /// Gets the max hitpoints of the character.
         /// </summary>
         public ushort MaxHitpoints => 500;
+
+        /// <summary>
+        /// Gets the current manapoints of the character.
+        /// </summary>
+        public ushort CurrentManapoints => this.MaxManapoints;
 
         /// <summary>
         /// Gets the max manapoints to create the creature with.

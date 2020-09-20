@@ -60,11 +60,11 @@ namespace Fibula.Protocol.V772.PacketWriters
 
             // Fail off by sending dummy data if the player for some reason is not a combatant.
             // Experience: 7.7x Client debugs after 0x7FFFFFFF (2,147,483,647) exp
-            uint experience = combatantPlayer != null ? Math.Min(0x7FFFFFFF, Convert.ToUInt32(combatantPlayer.Skills[SkillType.Experience].Count)) : 0;
-            ushort expLevel = (ushort)(combatantPlayer != null ? Math.Max(1, Math.Min(ushort.MaxValue, combatantPlayer.Skills[SkillType.Experience].Level)) : 1);
+            uint experience = combatantPlayer != null ? (uint)Math.Min(0x7FFFFFFF, Convert.ToUInt64(combatantPlayer.Skills[SkillType.Experience].CurrentCount)) : 0;
+            ushort expLevel = (ushort)(combatantPlayer != null ? Math.Max(1, Math.Min(ushort.MaxValue, combatantPlayer.Skills[SkillType.Experience].CurrentLevel)) : 1);
             byte expPercentage = (byte)(combatantPlayer != null ? combatantPlayer.Skills[SkillType.Experience].Percent : 0);
 
-            byte magicLevel = (byte)(combatantPlayer != null ? Math.Min(byte.MaxValue, combatantPlayer.Skills[SkillType.Magic].Level) : 0);
+            byte magicLevel = (byte)(combatantPlayer != null ? Math.Min(byte.MaxValue, combatantPlayer.Skills[SkillType.Magic].CurrentLevel) : 0);
             byte magicLevelPercentage = (byte)(combatantPlayer != null ? combatantPlayer.Skills[SkillType.Magic].Percent : 0);
 
             message.AddByte(playerStatsPacket.PacketType.ToByte());

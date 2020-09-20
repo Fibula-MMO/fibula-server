@@ -16,7 +16,6 @@ namespace Fibula.Data.Entities
     using System.Linq;
     using Fibula.Common.Contracts.Enumerations;
     using Fibula.Common.Utilities;
-    using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Creatures.Contracts.Enumerations;
     using Fibula.Data.Entities.Contracts.Abstractions;
     using Fibula.Data.Entities.Contracts.Enumerations;
@@ -25,7 +24,7 @@ namespace Fibula.Data.Entities
     /// <summary>
     /// Class that represents a monster type entity.
     /// </summary>
-    public class MonsterTypeEntity : BaseEntity, IMonsterTypeEntity, ICreatureCreationMetadata
+    public class MonsterTypeEntity : BaseEntity, IMonsterTypeEntity
     {
         private ushort raceId;
         private string name;
@@ -37,7 +36,7 @@ namespace Fibula.Data.Entities
         private Outfit outfit;
         private ushort corpse;
         private BloodType bloodType;
-        private (byte switchToFirst, byte switchToLowestHp, byte switchToHigestDmgDealt, byte switchToClosest) strategy;
+        private (byte closest, byte weakest, byte mostDamage, byte random) strategy;
         private ushort baseAttack;
         private ushort baseDefense;
         private ushort baseArmorRating;
@@ -273,6 +272,11 @@ namespace Fibula.Data.Entities
         }
 
         /// <summary>
+        /// Gets the current hitpoints of the monster type.
+        /// </summary>
+        public ushort CurrentHitpoints => this.MaxHitpoints;
+
+        /// <summary>
         /// Gets or sets the maximum hitpoints that this monster type starts with.
         /// </summary>
         public ushort MaxHitpoints
@@ -289,6 +293,11 @@ namespace Fibula.Data.Entities
                 this.maxHitPoints = value;
             }
         }
+
+        /// <summary>
+        /// Gets the current manapoints of the monster type.
+        /// </summary>
+        public ushort CurrentManapoints => this.MaxManapoints;
 
         /// <summary>
         /// Gets the maximum manapoints that this monster type starts with.

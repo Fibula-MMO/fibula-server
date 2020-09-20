@@ -103,12 +103,9 @@ namespace Fibula.Creatures
                     }
 
                     return new Player(
+                        this.ApplicationContext.ScriptLoader,
                         playerCreationArguments.Client,
-                        playerCreationArguments.Metadata.Id,
-                        playerCreationArguments.Metadata.Name,
-                        playerCreationArguments.Metadata.MaxHitpoints,
-                        playerCreationArguments.Metadata.MaxManapoints,
-                        playerCreationArguments.Metadata.Corpse);
+                        playerCreationArguments.Metadata);
             }
 
             throw new NotSupportedException($"{nameof(CreatureFactory)} does not support creation of creatures with type {creatureCreationArguments.Type}.");

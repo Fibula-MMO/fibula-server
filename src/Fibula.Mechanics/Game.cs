@@ -295,12 +295,17 @@ namespace Fibula.Mechanics
             {
                 // This updates the health as seen by others.
                 this.scheduler.ScheduleEvent(new GenericNotification(() => this.map.PlayersThatCanSee(creature.Location), new CreatureHealthPacket(creature)));
+            }
 
-                if (creature is IPlayer playerCombatant)
+            if (creature is IPlayer player)
+            {
+                if (statThatChanged.Type == CreatureStat.BaseSpeed)
                 {
-                    // And this updates the health of the player.
-                    this.scheduler.ScheduleEvent(new GenericNotification(() => playerCombatant.YieldSingleItem(), new PlayerStatsPacket(playerCombatant)));
+                    this.scheduler.ScheduleEvent(new GenericNotification(() => player.YieldSingleItem(), new CreatureSpeedChangePacket(player)));
                 }
+
+                // And this updates the health of the player.
+                this.scheduler.ScheduleEvent(new GenericNotification(() => player.YieldSingleItem(), new PlayerStatsPacket(player)));
             }
         }
 
@@ -664,29 +669,57 @@ namespace Fibula.Mechanics
                 return;
             }
 
-            if (skillThatChanged.Level != previousLevel)
+            // Send the advancement or regression text.
+            if (skillThatChanged.CurrentLevel != previousLevel)
             {
-                bool isAdvance = skillThatChanged.Level > previousLevel;
+                bool isAdvance = skillThatChanged.CurrentLevel > previousLevel;
 
-                var nameToLog = string.IsNullOrWhiteSpace(skilledCreature.Article) ? skilledCreature.Name : $"{skilledCreature.Article} {skilledCreature.Name}";
+                var nameToLog = string.IsNullOrWhiteSpace(player.Article) ? player.Name : $"{player.Article} {player.Name}";
 
-                this.logger.Debug($"{nameToLog} {(isAdvance ? "advanced" : "regressed")} in skill {skillThatChanged.Type}. {previousLevel} => {skillThatChanged.Level}");
+                this.logger.Debug($"{nameToLog} {(isAdvance ? "advanced" : "regressed")} from {previousLevel} to {skillThatChanged.CurrentLevel} in skill {skillThatChanged.Type}.");
 
-                var changeType = isAdvance ? "advanced" : "regressed";
                 var skillChangeNotificationMessage = skillThatChanged.Type switch
                 {
-                    SkillType.Experience => $"You {changeType} from level {previousLevel} to level {skillThatChanged.Level}.",
-                    SkillType.Magic => $"You {changeType} to magic level {skillThatChanged.Level}.",
-                    _ => $"You {changeType} in {skillThatChanged.Type.ToFriendlySkillName()}.",
+                    SkillType.Experience => $"You {(isAdvance ? "advanced" : "were downgraded")} from level {previousLevel} to level {skillThatChanged.CurrentLevel}.",
+                    SkillType.Magic => $"You advanced to magic level {skillThatChanged.CurrentLevel}.",
+                    _ => isAdvance ? $"You advanced in {skillThatChanged.Type.ToFriendlySkillName()}." : string.Empty,
                 };
 
-                this.scheduler.ScheduleEvent(new TextMessageNotification(() => player.YieldSingleItem(), MessageType.EventAdvance, skillChangeNotificationMessage));
+                // Send the message only if we actually have text to send.
+                if (!string.IsNullOrWhiteSpace(skillChangeNotificationMessage))
+                {
+                    this.scheduler.ScheduleEvent(new TextMessageNotification(() => player.YieldSingleItem(), MessageType.EventAdvance, skillChangeNotificationMessage));
+                }
+
+                // Increase the creature's stats.
+                if (skillThatChanged.Type == SkillType.Experience)
+                {
+                    var changeFactor = (int)((long)skillThatChanged.CurrentLevel - previousLevel);
+
+                    if (changeFactor > 0)
+                    {
+                        player.Stats[CreatureStat.HitPoints].IncreaseMaximum(15 * changeFactor);
+                        player.Stats[CreatureStat.ManaPoints].IncreaseMaximum(15 * changeFactor);
+                        player.Stats[CreatureStat.CarryStrength].IncreaseMaximum(30 * changeFactor);
+                    }
+                    else
+                    {
+                        player.Stats[CreatureStat.HitPoints].DecreaseMaximum(15 * changeFactor);
+                        player.Stats[CreatureStat.ManaPoints].DecreaseMaximum(15 * changeFactor);
+                        player.Stats[CreatureStat.CarryStrength].DecreaseMaximum(30 * changeFactor);
+                    }
+
+                    // And send the updated speed.
+                    player.Stats[CreatureStat.BaseSpeed].Set(220 + (2 * (skillThatChanged.CurrentLevel - 1)));
+                }
             }
 
-            if (skillThatChanged.Type == SkillType.Experience || skillThatChanged.Percent != previousPercent)
+            if (skillThatChanged.Percent != previousPercent || skillThatChanged.Type == SkillType.Experience)
             {
+                // Send the new percentual value to the player.
                 this.scheduler.ScheduleEvent(new GenericNotification(() => player.YieldSingleItem(), new PlayerStatsPacket(player), new PlayerSkillsPacket(player)));
 
+                // Add the animated text for experience.
                 if (skillThatChanged.Type == SkillType.Experience && countDelta.HasValue && countDelta.Value > 0)
                 {
                     this.scheduler.ScheduleEvent(new AnimatedTextNotification(() => this.map.PlayersThatCanSee(player.Location), player.Location, TextColor.White, countDelta.Value.ToString()));

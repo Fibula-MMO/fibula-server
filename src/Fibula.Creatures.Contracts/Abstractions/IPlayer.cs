@@ -12,6 +12,7 @@
 namespace Fibula.Creatures.Contracts.Abstractions
 {
     using Fibula.Client.Contracts.Abstractions;
+    using Fibula.Data.Entities.Contracts.Enumerations;
 
     /// <summary>
     /// Interface for character players in the game.
@@ -38,5 +39,10 @@ namespace Fibula.Creatures.Contracts.Abstractions
         /// </summary>
         // TODO: nobody likes soulpoints... figure out what to do with them.
         byte SoulPoints { get; }
+
+        /// <summary>
+        /// Gets the player's profession.
+        /// </summary>
+        ProfessionType Profession { get; }
     }
 }

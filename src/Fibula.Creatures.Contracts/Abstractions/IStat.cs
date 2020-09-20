@@ -52,11 +52,25 @@ namespace Fibula.Creatures.Contracts.Abstractions
         bool Increase(int value);
 
         /// <summary>
+        /// Increases this stats's maximum value.
+        /// </summary>
+        /// <param name="value">The amount by which to increase this stat's maximum value.</param>
+        /// <returns>True if the value was actually increased, false otherwise.</returns>
+        bool IncreaseMaximum(int value);
+
+        /// <summary>
         /// Decreases this stats's value.
         /// </summary>
         /// <param name="value">The amount by which to decrease this stat's value.</param>
         /// <returns>True if the value was actually decreased, false otherwise.</returns>
         bool Decrease(int value);
+
+        /// <summary>
+        /// Decreases this stats's maximum value.
+        /// </summary>
+        /// <param name="value">The amount by which to decrease this stat's maximum value.</param>
+        /// <returns>True if the value was actually decreased, false otherwise.</returns>
+        bool DecreaseMaximum(int value);
 
         /// <summary>
         /// Sets this stats's value.

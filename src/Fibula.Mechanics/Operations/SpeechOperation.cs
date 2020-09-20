@@ -97,6 +97,18 @@ namespace Fibula.Mechanics.Operations
                             context.Logger.Debug($"Combatant {combatant.Name}'s defense speed is now {combatant.DefenseSpeed}.");
                             return;
                     }
+
+                    if (this.Content.StartsWith("!exp"))
+                    {
+                        var expStr = this.Content.Replace("!exp", string.Empty);
+
+                        if (int.TryParse(expStr, out int expToGive))
+                        {
+                            combatant.AddExperience(expToGive);
+                        }
+
+                        return;
+                    }
                 }
 
                 if (this.Content.StartsWith("!mon"))

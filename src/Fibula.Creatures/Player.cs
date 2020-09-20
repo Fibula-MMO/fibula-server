@@ -18,10 +18,13 @@ namespace Fibula.Creatures
     using Fibula.Common.Utilities;
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Creatures.Contracts.Enumerations;
+    using Fibula.Data.Entities.Contracts.Abstractions;
     using Fibula.Data.Entities.Contracts.Enumerations;
     using Fibula.Data.Entities.Contracts.Structs;
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Structs;
+    using Fibula.Scripting.Contracts.Abstractions;
+    using Fibula.Scripting.Formulae;
 
     /// <summary>
     /// Class that represents all players in the game.
@@ -31,32 +34,27 @@ namespace Fibula.Creatures
         /// <summary>
         /// Initializes a new instance of the <see cref="Player"/> class.
         /// </summary>
+        /// <param name="scriptsLoader">A reference to the scripts loader in use.</param>
         /// <param name="client">The client to associate this player to.</param>
-        /// <param name="characterId">The id of the character that this player represents.</param>
-        /// <param name="name">The name of the player.</param>
-        /// <param name="maxHitpoints">The maximum number of hitpoints that the player starts with.</param>
-        /// <param name="maxManapoints">The maximum number of manapoints that the player starts with.</param>
-        /// <param name="corpse">The id of the corpse for the player.</param>
-        /// <param name="hitpoints">Optional. The number of hitpoints that the player starts with. Defaults to <paramref name="maxHitpoints"/>.</param>
-        /// <param name="manapoints">Optional. The number of manapoints that the player starts with. Defaults to <paramref name="maxManapoints"/>.</param>
+        /// <param name="creationMetadata">The metadata for this player.</param>
+        /// <param name="hitpoints">Optional. The number of hitpoints that the player starts with. Defaults to <see cref="ICreatureCreationMetadata.MaxHitpoints"/>.</param>
+        /// <param name="manapoints">Optional. The number of manapoints that the player starts with. Defaults to <see cref="ICreatureCreationMetadata.MaxManapoints"/>.</param>
         public Player(
+            IScriptLoader scriptsLoader,
             IClient client,
-            string characterId,
-            string name,
-            ushort maxHitpoints,
-            ushort maxManapoints,
-            ushort corpse,
+            ICreatureCreationMetadata creationMetadata,
             ushort hitpoints = 0,
             ushort manapoints = 0)
-            : base(name, string.Empty, maxHitpoints, corpse, hitpoints)
+            : base(creationMetadata)
         {
+            scriptsLoader.ThrowIfNull(nameof(scriptsLoader));
             client.ThrowIfNull(nameof(client));
-            characterId.ThrowIfNullOrWhiteSpace(nameof(characterId));
+            creationMetadata.ThrowIfNull(nameof(creationMetadata));
 
             this.Client = client;
             this.Client.PlayerId = this.Id;
 
-            this.CharacterId = characterId;
+            this.CharacterId = creationMetadata.Id;
 
             this.Outfit = new Outfit
             {
@@ -70,18 +68,18 @@ namespace Fibula.Creatures
             this.EmittedLightLevel = (byte)LightLevels.Torch;
             this.EmittedLightColor = (byte)LightColors.Orange;
 
-            this.InitializeSkills();
+            this.InitializeSkills(scriptsLoader);
 
+            var expLevel = this.Skills.TryGetValue(SkillType.Experience, out ISkill expSkill) ? expSkill.CurrentLevel : 1;
+
+            this.Stats[CreatureStat.BaseSpeed].Set(220 + (2 * (expLevel - 1)));
             this.Stats[CreatureStat.CarryStrength].Set(150);
-            this.Stats[CreatureStat.BaseSpeed].Set(220);
 
-            this.Stats.Add(CreatureStat.ManaPoints, new Stat(CreatureStat.ManaPoints, manapoints == default ? maxManapoints : manapoints, maxManapoints));
+            this.Stats.Add(CreatureStat.ManaPoints, new Stat(CreatureStat.ManaPoints, manapoints == default ? creationMetadata.MaxHitpoints : manapoints, creationMetadata.MaxManapoints));
             this.Stats[CreatureStat.ManaPoints].Changed += this.RaiseStatChange;
 
             this.Stats.Add(CreatureStat.SoulPoints, new Stat(CreatureStat.SoulPoints, 0, 0));
             this.Stats[CreatureStat.SoulPoints].Changed += this.RaiseStatChange;
-
-            this.Speed = this.CalculateMovementSpeed();
 
             this.Inventory = new PlayerInventory(this);
         }
@@ -108,6 +106,11 @@ namespace Fibula.Creatures
         public byte SoulPoints { get; }
 
         /// <summary>
+        /// Gets the player's profession.
+        /// </summary>
+        public ProfessionType Profession { get; }
+
+        /// <summary>
         /// Gets or sets the inventory for the player.
         /// </summary>
         public sealed override IInventory Inventory { get; protected set; }
@@ -123,9 +126,12 @@ namespace Fibula.Creatures
         public IClient Client { get; }
 
         /// <summary>
-        /// Gets or sets this player's speed.
+        /// Gets this player's speed.
         /// </summary>
-        public override ushort Speed { get; protected set; }
+        public override ushort Speed
+        {
+            get => (ushort)(this.Stats[CreatureStat.BaseSpeed].Current + (2 * this.VariableSpeed));
+        }
 
         /// <summary>
         /// Starts tracking another <see cref="ICombatant"/>.
@@ -185,44 +191,49 @@ namespace Fibula.Creatures
             }
         }
 
-        /// <summary>
-        /// Calculates the base movement speed of the player.
-        /// </summary>
-        /// <returns>The base movement speed of the player.</returns>
-        protected override ushort CalculateMovementSpeed()
+        private void InitializeSkills(IScriptLoader scriptsLoader)
         {
-            var expLevel = this.Skills.TryGetValue(SkillType.Experience, out ISkill expSkill) ? expSkill.Level : 0;
+            (double LowerCountBoundary, double UpperCountBoundary) BoundariesFunc(ICreatureWithSkills creature, ISkill skill, string formula)
+            {
+                var input = new SkillProgressionFormulaInput(skill.Type, skill.CurrentLevel, this.Profession);
+                var script = scriptsLoader.LoadScriptInline(formula, typeof(ISkillProgressionFormulaInput));
 
-            return (ushort)(this.Stats[CreatureStat.BaseSpeed].Current + expLevel - 1);
-        }
+                if (script != null)
+                {
+                    var nextTargetCount = Convert.ToDouble(script.RunAsync(input).Result.ReturnValue);
 
-        private void InitializeSkills()
-        {
-            this.Skills[SkillType.Experience] = new Skill(SkillType.Experience, 1, rate: 1.1, 100, 1, 150, notifyOnEveryCounterChange: true);
+                    // The old count for next level is the new low boundary.
+                    return (skill.CountForNextLevel, nextTargetCount);
+                }
+
+                return (0.00, 0.00);
+            }
+
+            this.Skills[SkillType.Experience] = new Skill(this, SkillType.Experience, (c, s) => BoundariesFunc(c, s, ConstantFormulae.ExperienceNextTargetCountFormula), 1, maxLevel: 150, notifyOnEveryCounterChange: true);
             this.Skills[SkillType.Experience].Changed += this.RaiseSkillChange;
 
-            this.Skills[SkillType.Magic] = new Skill(SkillType.Magic, 0, rate: 1.1, 10, 0, 150);
+            this.Skills[SkillType.Magic] = new Skill(this, SkillType.Magic, (c, s) => BoundariesFunc(c, s, ConstantFormulae.DefaultSkillNextTargetCountFormula), 0, maxLevel: 150);
             this.Skills[SkillType.Magic].Changed += this.RaiseSkillChange;
 
-            this.Skills[SkillType.NoWeapon] = new Skill(SkillType.NoWeapon, 10, rate: 1.1, 10, 10, 150);
+            this.Skills[SkillType.NoWeapon] = new Skill(this, SkillType.NoWeapon, (c, s) => BoundariesFunc(c, s, ConstantFormulae.DefaultSkillNextTargetCountFormula), 10, maxLevel: 150);
             this.Skills[SkillType.NoWeapon].Changed += this.RaiseSkillChange;
 
-            this.Skills[SkillType.Axe] = new Skill(SkillType.Axe, 10, rate: 1.1, 10, 10, 150);
+            this.Skills[SkillType.Axe] = new Skill(this, SkillType.Axe, (c, s) => BoundariesFunc(c, s, ConstantFormulae.DefaultSkillNextTargetCountFormula), 10, maxLevel: 150);
             this.Skills[SkillType.Axe].Changed += this.RaiseSkillChange;
 
-            this.Skills[SkillType.Club] = new Skill(SkillType.Club, 10, rate: 1.1, 10, 10, 150);
+            this.Skills[SkillType.Club] = new Skill(this, SkillType.Club, (c, s) => BoundariesFunc(c, s, ConstantFormulae.DefaultSkillNextTargetCountFormula), 10, maxLevel: 150);
             this.Skills[SkillType.Club].Changed += this.RaiseSkillChange;
 
-            this.Skills[SkillType.Sword] = new Skill(SkillType.Sword, 10, rate: 1.1, 10, 10, 150);
+            this.Skills[SkillType.Sword] = new Skill(this, SkillType.Sword, (c, s) => BoundariesFunc(c, s, ConstantFormulae.DefaultSkillNextTargetCountFormula), 10, maxLevel: 150);
             this.Skills[SkillType.Sword].Changed += this.RaiseSkillChange;
 
-            this.Skills[SkillType.Shield] = new Skill(SkillType.Shield, 10, rate: 1.1, 10, 10, 150);
+            this.Skills[SkillType.Shield] = new Skill(this, SkillType.Shield, (c, s) => BoundariesFunc(c, s, ConstantFormulae.DefaultSkillNextTargetCountFormula), 10, maxLevel: 150);
             this.Skills[SkillType.Shield].Changed += this.RaiseSkillChange;
 
-            this.Skills[SkillType.Ranged] = new Skill(SkillType.Ranged, 10, rate: 1.1, 10, 10, 150);
+            this.Skills[SkillType.Ranged] = new Skill(this, SkillType.Ranged, (c, s) => BoundariesFunc(c, s, ConstantFormulae.DefaultSkillNextTargetCountFormula), 10, maxLevel: 150);
             this.Skills[SkillType.Ranged].Changed += this.RaiseSkillChange;
 
-            this.Skills[SkillType.Fishing] = new Skill(SkillType.Fishing, 10, rate: 1.1, 10, 10, 150);
+            this.Skills[SkillType.Fishing] = new Skill(this, SkillType.Fishing, (c, s) => BoundariesFunc(c, s, ConstantFormulae.DefaultSkillNextTargetCountFormula), 10, maxLevel: 150);
             this.Skills[SkillType.Fishing].Changed += this.RaiseSkillChange;
         }
     }

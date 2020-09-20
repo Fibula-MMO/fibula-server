@@ -157,7 +157,7 @@ namespace Fibula.Mechanics.Operations
 
             // Calculate the damage to inflict without any protections and reductions,
             // i.e. the amount of damage that the attacker can generate as it is.
-            var attackPower = 1 + rng.Next(this.Attacker == null ? 10 : (int)this.Attacker.Skills[SkillType.NoWeapon].Level);
+            var attackPower = 1 + rng.Next(this.Attacker == null ? 10 : (int)this.Attacker.Skills[SkillType.NoWeapon].CurrentLevel);
 
             var damageToApplyInfo = new DamageInfo(attackPower, this.Attacker);
             var damageDoneInfo = this.Target.ApplyDamage(damageToApplyInfo, this.Attacker?.Id ?? 0);
