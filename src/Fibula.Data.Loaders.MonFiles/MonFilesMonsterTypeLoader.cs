@@ -90,9 +90,9 @@ namespace Fibula.Data.Loaders.MonFiles
         /// Attempts to load the monster catalog.
         /// </summary>
         /// <returns>The catalog, containing a mapping of loaded id to the monster types.</returns>
-        public IDictionary<ushort, IMonsterTypeEntity> LoadTypes()
+        public IDictionary<string, IMonsterTypeEntity> LoadTypes()
         {
-            var monsterTypesDictionary = new Dictionary<ushort, IMonsterTypeEntity>();
+            var monsterTypesDictionary = new Dictionary<string, IMonsterTypeEntity>();
 
             if (!this.monsterFilesDirInfo.Exists)
             {
@@ -105,7 +105,7 @@ namespace Fibula.Data.Loaders.MonFiles
 
                 if (monsterType != null)
                 {
-                    monsterTypesDictionary.Add(monsterType.RaceId, monsterType);
+                    monsterTypesDictionary.Add(monsterType.Id, monsterType);
                 }
             }
 
@@ -133,7 +133,7 @@ namespace Fibula.Data.Loaders.MonFiles
                 switch (name)
                 {
                     case "racenumber":
-                        monsterType.RaceId = Convert.ToUInt16(value);
+                        monsterType.RaceId = value;
                         break;
                     case "name":
                         monsterType.Name = value;
@@ -213,9 +213,9 @@ namespace Fibula.Data.Loaders.MonFiles
                     case "skills":
                         var skillParsed = CipFileParser.ParseMonsterSkills(value);
 
-                        foreach (var skill in skillParsed)
+                        foreach (var (skillType, defaultLevel, currentLevel, maximumLevel, targetCount, countIncreaseFactor, increaserPerLevel) in skillParsed)
                         {
-                            if (!Enum.TryParse(skill.Name, ignoreCase: true, out CipMonsterSkillType mSkill))
+                            if (!Enum.TryParse(skillType, ignoreCase: true, out CipMonsterSkillType mSkill))
                             {
                                 continue;
                             }
@@ -223,18 +223,18 @@ namespace Fibula.Data.Loaders.MonFiles
                             switch (mSkill)
                             {
                                 case CipMonsterSkillType.Hitpoints:
-                                    monsterType.MaxHitpoints = skill.CurrentLevel < 0 ? ushort.MaxValue : (ushort)skill.DefaultLevel;
+                                    monsterType.MaxHitpoints = currentLevel < 0 ? ushort.MaxValue : (ushort)defaultLevel;
                                     break;
                                 case CipMonsterSkillType.GoStrength:
-                                    monsterType.BaseSpeed = skill.CurrentLevel < 0 ? ushort.MinValue : (ushort)skill.DefaultLevel;
+                                    monsterType.BaseSpeed = currentLevel < 0 ? ushort.MinValue : (ushort)defaultLevel;
                                     break;
                                 case CipMonsterSkillType.CarryStrength:
-                                    monsterType.Capacity = skill.CurrentLevel < 0 ? ushort.MinValue : (ushort)skill.DefaultLevel;
+                                    monsterType.Capacity = currentLevel < 0 ? ushort.MinValue : (ushort)defaultLevel;
                                     break;
                                 case CipMonsterSkillType.FistFighting:
-                                    if (skill.CurrentLevel > 0)
+                                    if (currentLevel > 0)
                                     {
-                                        monsterType.SetSkill(SkillType.NoWeapon, skill.CurrentLevel, skill.DefaultLevel, skill.MaximumLevel, skill.TargetCount, skill.CountIncreaseFactor, skill.IncreaserPerLevel);
+                                        monsterType.SetSkill(SkillType.NoWeapon, currentLevel, defaultLevel, maximumLevel, targetCount, countIncreaseFactor, increaserPerLevel);
                                     }
 
                                     break;

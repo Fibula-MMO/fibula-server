@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------
-// <copyright file="ICreatureCreationMetadata.cs" company="2Dudes">
+// <copyright file="ICreatureEntity.cs" company="2Dudes">
 // Copyright (c) | Jose L. Nunez de Caceres et al.
 // https://linkedin.com/in/nunezdecaceres
 //
@@ -11,16 +11,13 @@
 
 namespace Fibula.Data.Entities.Contracts.Abstractions
 {
+    using Fibula.Data.Entities.Contracts.Structs;
+
     /// <summary>
     /// Interface for creature creation metadata.
     /// </summary>
-    public interface ICreatureCreationMetadata
+    public interface ICreatureEntity : IIdentifiableEntity
     {
-        /// <summary>
-        /// Gets the identifier to use when creating the creature.
-        /// </summary>
-        string Id { get; }
-
         /// <summary>
         /// Gets the article to prefix the creature name's with.
         /// </summary>
@@ -55,5 +52,10 @@ namespace Fibula.Data.Entities.Contracts.Abstractions
         /// Gets the corpse id to give to the creature.
         /// </summary>
         ushort Corpse { get; }
+
+        /// <summary>
+        /// Gets the outfit look for the creature.
+        /// </summary>
+        Outfit Outfit { get; }
     }
 }

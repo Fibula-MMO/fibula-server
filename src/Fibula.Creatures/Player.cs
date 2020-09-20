@@ -20,7 +20,6 @@ namespace Fibula.Creatures
     using Fibula.Creatures.Contracts.Enumerations;
     using Fibula.Data.Entities.Contracts.Abstractions;
     using Fibula.Data.Entities.Contracts.Enumerations;
-    using Fibula.Data.Entities.Contracts.Structs;
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Structs;
     using Fibula.Scripting.Contracts.Abstractions;
@@ -34,39 +33,25 @@ namespace Fibula.Creatures
         /// <summary>
         /// Initializes a new instance of the <see cref="Player"/> class.
         /// </summary>
-        /// <param name="scriptsLoader">A reference to the scripts loader in use.</param>
         /// <param name="client">The client to associate this player to.</param>
-        /// <param name="creationMetadata">The metadata for this player.</param>
-        /// <param name="hitpoints">Optional. The number of hitpoints that the player starts with. Defaults to <see cref="ICreatureCreationMetadata.MaxHitpoints"/>.</param>
-        /// <param name="manapoints">Optional. The number of manapoints that the player starts with. Defaults to <see cref="ICreatureCreationMetadata.MaxManapoints"/>.</param>
+        /// <param name="characterEntity">The player's corresponding character entity lodaded from storage.</param>
+        /// <param name="scriptsLoader">A reference to the scripts loader in use.</param>
         public Player(
-            IScriptLoader scriptsLoader,
             IClient client,
-            ICreatureCreationMetadata creationMetadata,
-            ushort hitpoints = 0,
-            ushort manapoints = 0)
-            : base(creationMetadata)
+            ICharacterEntity characterEntity,
+            IScriptLoader scriptsLoader)
+            : base(characterEntity)
         {
             scriptsLoader.ThrowIfNull(nameof(scriptsLoader));
             client.ThrowIfNull(nameof(client));
-            creationMetadata.ThrowIfNull(nameof(creationMetadata));
+            characterEntity.ThrowIfNull(nameof(characterEntity));
 
             this.Client = client;
             this.Client.PlayerId = this.Id;
 
-            this.CharacterId = creationMetadata.Id;
+            this.CharacterId = characterEntity.Id;
 
-            this.Outfit = new Outfit
-            {
-                Id = 128,
-                Head = 114,
-                Body = 114,
-                Legs = 114,
-                Feet = 114,
-            };
-
-            this.EmittedLightLevel = (byte)LightLevels.Torch;
-            this.EmittedLightColor = (byte)LightColors.Orange;
+            this.Outfit = characterEntity.Outfit;
 
             this.InitializeSkills(scriptsLoader);
 
@@ -75,13 +60,17 @@ namespace Fibula.Creatures
             this.Stats[CreatureStat.BaseSpeed].Set(220 + (2 * (expLevel - 1)));
             this.Stats[CreatureStat.CarryStrength].Set(150);
 
-            this.Stats.Add(CreatureStat.ManaPoints, new Stat(CreatureStat.ManaPoints, manapoints == default ? creationMetadata.MaxHitpoints : manapoints, creationMetadata.MaxManapoints));
+            this.Stats.Add(CreatureStat.ManaPoints, new Stat(CreatureStat.ManaPoints, characterEntity.CurrentManapoints == default ? characterEntity.MaxHitpoints : characterEntity.CurrentManapoints, characterEntity.MaxManapoints));
             this.Stats[CreatureStat.ManaPoints].Changed += this.RaiseStatChange;
 
             this.Stats.Add(CreatureStat.SoulPoints, new Stat(CreatureStat.SoulPoints, 0, 0));
             this.Stats[CreatureStat.SoulPoints].Changed += this.RaiseStatChange;
 
             this.Inventory = new PlayerInventory(this);
+
+            // Hard-coded stuff.
+            this.EmittedLightLevel = (byte)LightLevels.Torch;
+            this.EmittedLightColor = (byte)LightColors.Orange;
         }
 
         /// <summary>

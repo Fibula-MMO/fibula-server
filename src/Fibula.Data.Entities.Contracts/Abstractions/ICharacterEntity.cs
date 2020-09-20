@@ -12,21 +12,17 @@
 namespace Fibula.Data.Entities.Contracts.Abstractions
 {
     using System;
+    using Fibula.Data.Entities.Contracts.Enumerations;
 
     /// <summary>
     /// Interface for character entities.
     /// </summary>
-    public interface ICharacterEntity : IIdentifiableEntity, ICreatureCreationMetadata
+    public interface ICharacterEntity : ICreatureEntity
     {
         /// <summary>
         /// Gets the id of the account to which this character belongs to.
         /// </summary>
         string AccountId { get; }
-
-        /// <summary>
-        /// Gets the character's vocation.
-        /// </summary>
-        string Vocation { get; }
 
         /// <summary>
         /// Gets the world where the character exists.
@@ -37,6 +33,11 @@ namespace Fibula.Data.Entities.Contracts.Abstractions
         /// Gets the character's gender.
         /// </summary>
         byte Gender { get; }
+
+        /// <summary>
+        /// Gets the character's profession.
+        /// </summary>
+        ProfessionType Profession { get; }
 
         /// <summary>
         /// Gets the character's creation date and time.

@@ -75,7 +75,7 @@ namespace Fibula.Creatures
         /// Defaults to <see cref="CombatConstants.DefaultDefenseSpeed"/>.
         /// </param>
         protected CombatantCreature(
-            ICreatureCreationMetadata creationMetadata,
+            ICreatureEntity creationMetadata,
             decimal baseAttackSpeed = CombatConstants.DefaultAttackSpeed,
             decimal baseDefenseSpeed = CombatConstants.DefaultDefenseSpeed)
             : base(creationMetadata)

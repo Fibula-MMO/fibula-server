@@ -23,6 +23,6 @@ namespace Fibula.Creatures.Contracts.Abstractions
         /// Attempts to load the monster catalog.
         /// </summary>
         /// <returns>The catalog, containing a mapping of loaded id to the monster types.</returns>
-        IDictionary<ushort, IMonsterTypeEntity> LoadTypes();
+        IDictionary<string, IMonsterTypeEntity> LoadTypes();
     }
 }

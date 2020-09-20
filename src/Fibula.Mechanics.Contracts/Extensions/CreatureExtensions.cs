@@ -44,7 +44,7 @@ namespace Fibula.Mechanics.Contracts.Extensions
             decimal totalPenalty = 1000 * tilePenalty;
             decimal stepSpeed = Math.Max(1u, creature.Speed);
 
-            var durationInMs = (uint)(Math.Round(totalPenalty / stepSpeed) * creature.LastMovementCostModifier);
+            var durationInMs = (uint)(Math.Round(totalPenalty / stepSpeed, MidpointRounding.ToEven) * creature.LastMovementCostModifier);
 
             return TimeSpan.FromMilliseconds(durationInMs);
         }

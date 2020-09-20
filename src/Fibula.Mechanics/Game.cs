@@ -746,7 +746,7 @@ namespace Fibula.Mechanics
         /// </summary>
         /// <param name="client">The client from which the player is connecting.</param>
         /// <param name="creatureCreationMetadata">The metadata for the player's creation.</param>
-        public void LogPlayerIn(IClient client, ICreatureCreationMetadata creatureCreationMetadata)
+        public void LogPlayerIn(IClient client, ICreatureEntity creatureCreationMetadata)
         {
             client.ThrowIfNull(nameof(client));
             creatureCreationMetadata.ThrowIfNull(nameof(creatureCreationMetadata));

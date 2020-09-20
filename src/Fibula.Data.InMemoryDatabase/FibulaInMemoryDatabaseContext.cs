@@ -14,6 +14,8 @@ namespace Fibula.Data.InMemoryDatabase
     using System;
     using Fibula.Data.Contracts.Abstractions;
     using Fibula.Data.Entities;
+    using Fibula.Data.Entities.Contracts.Enumerations;
+    using Fibula.Data.Entities.Contracts.Structs;
     using Microsoft.EntityFrameworkCore;
 
     /// <summary>
@@ -77,42 +79,66 @@ namespace Fibula.Data.InMemoryDatabase
                 .HasData(new CharacterEntity()
                 {
                     Id = Guid.NewGuid().ToString(),
-                    Name = $"Player {Guid.NewGuid().ToString().Substring(0, 4)}",
+                    Name = "Alpha",
                     AccountId = accountId,
-                    Vocation = "None",
+                    Profession = ProfessionType.None,
                     World = "Fibula",
                     Gender = 0,
                     Creation = DateTimeOffset.UtcNow,
                     LastLogin = DateTimeOffset.UtcNow,
                     IsOnline = false,
+                    Outfit = new Outfit
+                    {
+                        Id = 128,
+                        Head = 114,
+                        Body = 114,
+                        Legs = 114,
+                        Feet = 114,
+                    },
                 });
 
             modelBuilder.Entity<CharacterEntity>()
                 .HasData(new CharacterEntity()
                 {
                     Id = Guid.NewGuid().ToString(),
-                    Name = $"Player {Guid.NewGuid().ToString().Substring(0, 4)}",
+                    Name = "Beta",
                     AccountId = accountId,
-                    Vocation = "None",
+                    Profession = ProfessionType.None,
                     World = "Fibula",
                     Gender = 0,
                     Creation = DateTimeOffset.UtcNow,
                     LastLogin = DateTimeOffset.UtcNow,
                     IsOnline = false,
+                    Outfit = new Outfit
+                    {
+                        Id = 128,
+                        Head = 114,
+                        Body = 114,
+                        Legs = 114,
+                        Feet = 114,
+                    },
                 });
 
             modelBuilder.Entity<CharacterEntity>()
                 .HasData(new CharacterEntity()
                 {
                     Id = Guid.NewGuid().ToString(),
-                    Name = $"Player {Guid.NewGuid().ToString().Substring(0, 4)}",
+                    Name = "Charlie",
                     AccountId = accountId,
-                    Vocation = "None",
+                    Profession = ProfessionType.None,
                     World = "Fibula",
                     Gender = 0,
                     Creation = DateTimeOffset.UtcNow,
                     LastLogin = DateTimeOffset.UtcNow,
                     IsOnline = false,
+                    Outfit = new Outfit
+                    {
+                        Id = 128,
+                        Head = 114,
+                        Body = 114,
+                        Legs = 114,
+                        Feet = 114,
+                    },
                 });
         }
     }

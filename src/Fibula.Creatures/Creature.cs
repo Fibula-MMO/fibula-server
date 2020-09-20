@@ -59,7 +59,7 @@ namespace Fibula.Creatures
         /// Initializes a new instance of the <see cref="Creature"/> class.
         /// </summary>
         /// <param name="creationMetadata">The metadata for this player.</param>
-        protected Creature(ICreatureCreationMetadata creationMetadata)
+        protected Creature(ICreatureEntity creationMetadata)
         {
             creationMetadata.ThrowIfNull(nameof(creationMetadata));
             creationMetadata.Name.ThrowIfNullOrWhiteSpace(nameof(creationMetadata.Name));

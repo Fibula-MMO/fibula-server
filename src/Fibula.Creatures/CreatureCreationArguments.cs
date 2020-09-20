@@ -28,6 +28,6 @@ namespace Fibula.Creatures
         /// <summary>
         /// Gets or sets the metadata for the creature being created.
         /// </summary>
-        public ICreatureCreationMetadata Metadata { get; set; }
+        public ICreatureEntity Metadata { get; set; }
     }
 }

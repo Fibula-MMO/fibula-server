@@ -74,7 +74,7 @@ namespace Fibula.Scheduling
         /// The maximum number of nodes that the internal queue can hold.
         /// </summary>
         /// <remarks>Arbitrarily chosen, resize happens as needed doubling each time, but also costs double time and space each time.</remarks>
-        private int maxQueueNodes = 256;
+        private int maxQueueNodes = 64;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Scheduler"/> class.
@@ -167,17 +167,6 @@ namespace Fibula.Scheduling
                         // Check the current queue and fire any events that are due.
                         while (this.priorityQueue.Count > 0)
                         {
-                            if (this.priorityQueue.Count > (int)(this.maxQueueNodes * 0.80))
-                            {
-                                this.Logger.Warning($"Queue is over 80% capacity, doubling the size of the queue before we run out...");
-
-                                // double the max queue size and resize it.
-                                this.maxQueueNodes *= 2;
-                                this.priorityQueue.Resize(this.maxQueueNodes);
-
-                                this.Logger.Warning($"Resized queue max size to {this.maxQueueNodes}.");
-                            }
-
                             // The first item always points to the next-in-time event available.
                             var evt = this.priorityQueue.First;
                             var isDue = evt.Priority <= priorityDue;
@@ -361,6 +350,17 @@ namespace Fibula.Scheduling
                 if (!castedEvent.HasCancellationHandler)
                 {
                     castedEvent.Cancelled += this.HandleEventCancellation;
+                }
+
+                if (this.priorityQueue.Count == this.maxQueueNodes)
+                {
+                    this.Logger.Warning($"Queue is at capacity ({this.maxQueueNodes}), doubling the size of the queue before scheduling...");
+
+                    // double the max queue size and resize it.
+                    this.maxQueueNodes *= 2;
+                    this.priorityQueue.Resize(this.maxQueueNodes);
+
+                    this.Logger.Warning($"Resized queue max size to {this.maxQueueNodes}.");
                 }
 
                 this.priorityQueue.Enqueue(castedEvent, milliseconds);

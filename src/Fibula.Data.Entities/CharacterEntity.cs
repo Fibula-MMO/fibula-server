@@ -13,6 +13,8 @@ namespace Fibula.Data.Entities
 {
     using System;
     using Fibula.Data.Entities.Contracts.Abstractions;
+    using Fibula.Data.Entities.Contracts.Enumerations;
+    using Fibula.Data.Entities.Contracts.Structs;
 
     /// <summary>
     /// Class that represents a character entity.
@@ -35,11 +37,6 @@ namespace Fibula.Data.Entities
         public string AccountId { get; set; }
 
         /// <summary>
-        /// Gets or sets the character's vocation.
-        /// </summary>
-        public string Vocation { get; set; }
-
-        /// <summary>
         /// Gets or sets the world where the character exists in.
         /// </summary>
         public string World { get; set; }
@@ -48,6 +45,11 @@ namespace Fibula.Data.Entities
         /// Gets or sets the character's chosen gender.
         /// </summary>
         public byte Gender { get; set; }
+
+        /// <summary>
+        /// Gets or sets the character's profession.
+        /// </summary>
+        public ProfessionType Profession { get; set; }
 
         /// <summary>
         /// Gets or sets this character's creation date and time.
@@ -88,5 +90,10 @@ namespace Fibula.Data.Entities
         /// Gets the corpse id to give to the creature.
         /// </summary>
         public ushort Corpse => 4240;
+
+        /// <summary>
+        /// Gets or sets the outfit look for the creature.
+        /// </summary>
+        public Outfit Outfit { get; set; }
     }
 }

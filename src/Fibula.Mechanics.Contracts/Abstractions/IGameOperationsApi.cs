@@ -170,7 +170,7 @@ namespace Fibula.Mechanics.Contracts.Abstractions
         /// </summary>
         /// <param name="client">The client from which the player is connecting.</param>
         /// <param name="creatureCreationMetadata">The metadata for the player's creation.</param>
-        void LogPlayerIn(IClient client, ICreatureCreationMetadata creatureCreationMetadata);
+        void LogPlayerIn(IClient client, ICreatureEntity creatureCreationMetadata);
 
         /// <summary>
         /// Logs a player out of the game.

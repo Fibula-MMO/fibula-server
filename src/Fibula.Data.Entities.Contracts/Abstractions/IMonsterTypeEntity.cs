@@ -13,18 +13,12 @@ namespace Fibula.Data.Entities.Contracts.Abstractions
 {
     using System.Collections.Generic;
     using Fibula.Data.Entities.Contracts.Enumerations;
-    using Fibula.Data.Entities.Contracts.Structs;
 
     /// <summary>
     /// Interface for 'types of monster' entities.
     /// </summary>
-    public interface IMonsterTypeEntity : IIdentifiableEntity, ICreatureCreationMetadata
+    public interface IMonsterTypeEntity : IIdentifiableEntity, ICreatureEntity
     {
-        /// <summary>
-        /// Gets the id of the monster race.
-        /// </summary>
-        ushort RaceId { get; }
-
         /// <summary>
         /// Gets the amount of experience that this type of monster deals.
         /// </summary>
@@ -70,11 +64,6 @@ namespace Fibula.Data.Entities.Contracts.Abstractions
         /// Gets the composition of the inventory that this type of monster has a chance to be created with.
         /// </summary>
         IList<(ushort typeId, byte maxAmount, ushort chance)> InventoryComposition { get; }
-
-        /// <summary>
-        /// Gets this type of monster outfit.
-        /// </summary>
-        Outfit Outfit { get; }
 
         /// <summary>
         /// Gets the type of blood of this monster type.

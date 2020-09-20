@@ -26,7 +26,6 @@ namespace Fibula.Data.Entities
     /// </summary>
     public class MonsterTypeEntity : BaseEntity, IMonsterTypeEntity
     {
-        private ushort raceId;
         private string name;
         private string article;
         private uint experience;
@@ -49,7 +48,7 @@ namespace Fibula.Data.Entities
         /// </summary>
         public MonsterTypeEntity()
         {
-            this.RaceId = 0;
+            this.RaceId = "0";
             this.Name = string.Empty;
             this.MaxManapoints = 0;
 
@@ -79,9 +78,9 @@ namespace Fibula.Data.Entities
         /// <summary>
         /// Gets or sets the id of the monster race.
         /// </summary>
-        public ushort RaceId
+        public string RaceId
         {
-            get => this.raceId;
+            get => this.Id;
 
             set
             {
@@ -90,7 +89,6 @@ namespace Fibula.Data.Entities
                     throw new InvalidOperationException($"Unable to set {nameof(this.RaceId)}. The {nameof(MonsterTypeEntity)} is locked and cannot be altered.");
                 }
 
-                this.raceId = value;
                 this.Id = value.ToString();
             }
         }

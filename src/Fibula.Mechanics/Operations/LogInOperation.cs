@@ -38,7 +38,7 @@ namespace Fibula.Mechanics.Operations
         /// <param name="playerMetadata">The creation metadata of the player that is logging in.</param>
         /// <param name="worldLightLevel">The level of the world light to send to the player.</param>
         /// <param name="worldLightColor">The color of the world light to send to the player.</param>
-        public LogInOperation(uint requestorId, IClient client, ICreatureCreationMetadata playerMetadata, byte worldLightLevel, byte worldLightColor)
+        public LogInOperation(uint requestorId, IClient client, ICreatureEntity playerMetadata, byte worldLightLevel, byte worldLightColor)
             : base(requestorId)
         {
             this.Client = client;
@@ -66,7 +66,7 @@ namespace Fibula.Mechanics.Operations
         /// <summary>
         /// Gets the player metadata.
         /// </summary>
-        public ICreatureCreationMetadata PlayerMetadata { get; }
+        public ICreatureEntity PlayerMetadata { get; }
 
         /// <summary>
         /// Executes the operation's logic.

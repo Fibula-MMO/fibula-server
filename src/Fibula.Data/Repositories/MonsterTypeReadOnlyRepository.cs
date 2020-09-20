@@ -33,7 +33,7 @@ namespace Fibula.Data.Repositories
         /// <summary>
         /// Stores the map between the monster race ids and the actual monster types.
         /// </summary>
-        private static IDictionary<ushort, IMonsterTypeEntity> monsterTypeCatalog;
+        private static IDictionary<string, IMonsterTypeEntity> monsterTypeCatalog;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MonsterTypeReadOnlyRepository"/> class.
@@ -92,9 +92,9 @@ namespace Fibula.Data.Repositories
         /// <returns>The entity found, if any.</returns>
         public IMonsterTypeEntity GetById(string id)
         {
-            if (ushort.TryParse(id, out ushort raceId) && monsterTypeCatalog.ContainsKey(raceId))
+            if (monsterTypeCatalog.ContainsKey(id))
             {
-                return monsterTypeCatalog[raceId];
+                return monsterTypeCatalog[id];
             }
 
             return null;
