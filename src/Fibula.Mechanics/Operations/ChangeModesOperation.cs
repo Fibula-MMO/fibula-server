@@ -12,7 +12,11 @@
 namespace Fibula.Mechanics.Operations
 {
     using Fibula.Common.Contracts.Enumerations;
+    using Fibula.Communications.Packets.Outgoing;
+    using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Abstractions;
+    using Fibula.Mechanics.Notifications;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Class that represents a change modes operation.
@@ -77,6 +81,8 @@ namespace Fibula.Mechanics.Operations
             }
 
             /* combatantCreature.SafeMode = this.IsSafeModeOn; */
+
+            this.SendNotification(context, new GenericNotification(() => new List<IPlayer>() { combatantCreature as IPlayer }, new PlayerModePacket(this.ChaseMode)));
         }
     }
 }
