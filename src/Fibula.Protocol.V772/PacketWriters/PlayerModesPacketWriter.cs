@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------
-// <copyright file="PlayerModePacketWriter.cs" company="2Dudes">
+// <copyright file="PlayerModesPacketWriter.cs" company="2Dudes">
 // Copyright (c) | Jose L. Nunez de Caceres et al.
 // https://linkedin.com/in/nunezdecaceres
 //
@@ -20,13 +20,13 @@ namespace Fibula.Protocol.V772.PacketWriters
     /// <summary>
     /// Class that represents a player mode packet writer for the game server.
     /// </summary>
-    public class PlayerModePacketWriter : BasePacketWriter
+    public class PlayerModesPacketWriter : BasePacketWriter
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="PlayerModePacketWriter"/> class.
+        /// Initializes a new instance of the <see cref="PlayerModesPacketWriter"/> class.
         /// </summary>
         /// <param name="logger">A reference to the logger in use.</param>
-        public PlayerModePacketWriter(ILogger logger)
+        public PlayerModesPacketWriter(ILogger logger)
             : base(logger)
         {
         }
@@ -34,7 +34,7 @@ namespace Fibula.Protocol.V772.PacketWriters
         /// <inheritdoc/>
         public override void WriteToMessage(IOutboundPacket packet, ref INetworkMessage message)
         {
-            if (!(packet is PlayerModePacket playerModePacket))
+            if (!(packet is PlayerModesPacket playerModePacket))
             {
                 this.Logger.Warning($"Invalid packet {packet.GetType().Name} routed to {this.GetType().Name}");
 

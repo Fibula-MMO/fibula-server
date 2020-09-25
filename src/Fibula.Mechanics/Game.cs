@@ -614,7 +614,7 @@ namespace Fibula.Mechanics
                 return;
             }
 
-            var changeModesOp = new ChangeModesOperation(combatant.Id, fightMode, chaseMode, safeModeOn);
+            var changeModesOp = new ChangeModesOperation(combatant, fightMode, chaseMode, safeModeOn);
 
             this.DispatchOperation(changeModesOp);
         }

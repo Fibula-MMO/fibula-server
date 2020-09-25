@@ -119,8 +119,7 @@ namespace Fibula.Protocol.V772.Extensions
                 { OutgoingPacketType.CancelAttack, typeof(PlayerCancelAttackPacketWriter) },
                 { OutgoingPacketType.CancelWalk, typeof(PlayerCancelWalkPacketWriter) },
                 { OutgoingPacketType.WorldLight, typeof(WorldLightPacketWriter) },
-                { OutgoingPacketType.PlayerModes, typeof(PlayerModePacketWriter) },
-
+                { OutgoingPacketType.PlayerModes, typeof(PlayerModesPacketWriter) },
             };
 
             foreach (var (packetType, type) in packetWritersToAdd)

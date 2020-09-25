@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------
-// <copyright file="PlayerModePacket.cs" company="2Dudes">
+// <copyright file="PlayerModesPacket.cs" company="2Dudes">
 // Copyright (c) | Jose L. Nunez de Caceres et al.
 // https://linkedin.com/in/nunezdecaceres
 //
@@ -18,13 +18,13 @@ namespace Fibula.Communications.Packets.Outgoing
     /// <summary>
     /// Class that represents a player's modes packet.
     /// </summary>
-    public class PlayerModePacket : IOutboundPacket
+    public class PlayerModesPacket : IOutboundPacket
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="PlayerModePacket"/> class.
+        /// Initializes a new instance of the <see cref="PlayerModesPacket"/> class.
         /// </summary>
         /// <param name="chaseMode">The chase mode.</param>
-        public PlayerModePacket(ChaseMode chaseMode)
+        public PlayerModesPacket(ChaseMode chaseMode)
         {
             this.ChaseMode = chaseMode;
         }
