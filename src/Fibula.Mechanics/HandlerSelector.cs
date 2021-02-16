@@ -13,9 +13,9 @@ namespace Fibula.Mechanics
 {
     using System;
     using System.Collections.Generic;
-    using Fibula.Common.Utilities;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Abstractions;
+    using Fibula.Utilities.Validation;
     using Serilog;
 
     /// <summary>

@@ -16,8 +16,8 @@ namespace Fibula.Mechanics.Conditions
     using System.Linq;
     using Fibula.Common.Contracts.Abstractions;
     using Fibula.Common.Contracts.Enumerations;
-    using Fibula.Common.Utilities;
     using Fibula.Mechanics.Contracts.Abstractions;
+    using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Class that represents a condition for exhaustion.

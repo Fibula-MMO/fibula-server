@@ -19,7 +19,6 @@ namespace Fibula.Map.SectorFiles
     using System.Threading.Tasks;
     using Fibula.Common.Contracts.Abstractions;
     using Fibula.Common.Contracts.Structs;
-    using Fibula.Common.Utilities;
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Items;
     using Fibula.Items.Contracts.Abstractions;
@@ -30,6 +29,7 @@ namespace Fibula.Map.SectorFiles
     using Fibula.Parsing.CipFiles.Enumerations;
     using Fibula.Parsing.CipFiles.Extensions;
     using Fibula.Parsing.Contracts.Abstractions;
+    using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Options;
     using Serilog;
 

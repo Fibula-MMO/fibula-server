@@ -15,12 +15,12 @@ namespace Fibula.Protocol.V772
     using System.Collections.Generic;
     using System.Linq;
     using System.Net.Sockets;
-    using Fibula.Common.Utilities;
     using Fibula.Communications;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Contracts.Delegates;
     using Fibula.Communications.Contracts.Enumerations;
     using Fibula.Protocol.V772.Extensions;
+    using Fibula.Utilities.Validation;
     using Serilog;
 
     /// <summary>

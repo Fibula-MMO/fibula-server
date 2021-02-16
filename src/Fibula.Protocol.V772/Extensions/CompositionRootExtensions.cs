@@ -13,7 +13,6 @@ namespace Fibula.Protocol.V772.Extensions
 {
     using System;
     using System.Collections.Generic;
-    using Fibula.Common.Utilities;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Contracts.Enumerations;
     using Fibula.Communications.Listeners;
@@ -21,6 +20,7 @@ namespace Fibula.Protocol.V772.Extensions
     using Fibula.Map.Contracts.Abstractions;
     using Fibula.Protocol.V772.PacketReaders;
     using Fibula.Protocol.V772.PacketWriters;
+    using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;

@@ -17,8 +17,8 @@ namespace Fibula.Common
     using Fibula.Common.Contracts.Abstractions;
     using Fibula.Common.Contracts.Delegates;
     using Fibula.Common.Contracts.Structs;
-    using Fibula.Common.Utilities;
     using Fibula.Scheduling.Contracts.Abstractions;
+    using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Class that represents all things in the game.

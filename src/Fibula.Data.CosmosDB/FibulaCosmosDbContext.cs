@@ -12,10 +12,10 @@
 namespace Fibula.Data.CosmosDB
 {
     using System.Security;
-    using Fibula.Common.Utilities;
     using Fibula.Data.Contracts.Abstractions;
     using Fibula.Data.Entities;
     using Fibula.Providers.Contracts;
+    using Fibula.Utilities.Validation;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Options;
 

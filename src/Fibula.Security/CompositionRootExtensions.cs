@@ -11,9 +11,9 @@
 
 namespace Fibula.Security
 {
-    using Fibula.Common.Utilities;
     using Fibula.Security.Contracts;
     using Fibula.Security.Encryption;
+    using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;

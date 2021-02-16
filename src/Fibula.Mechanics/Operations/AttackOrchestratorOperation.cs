@@ -13,11 +13,11 @@ namespace Fibula.Mechanics.Operations
 {
     using System;
     using Fibula.Common.Contracts.Enumerations;
-    using Fibula.Common.Utilities;
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Constants;
     using Fibula.Mechanics.Contracts.Extensions;
+    using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Class that represents a combat operation that orchestrates attack operations.

@@ -11,8 +11,8 @@
 
 namespace Fibula.Data.Loaders.MonFiles
 {
-    using Fibula.Common.Utilities;
     using Fibula.Creatures.Contracts.Abstractions;
+    using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
 

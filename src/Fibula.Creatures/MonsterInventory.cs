@@ -14,11 +14,11 @@ namespace Fibula.Creatures
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Fibula.Common.Utilities;
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Creatures.Contracts.Constants;
     using Fibula.Items;
     using Fibula.Items.Contracts.Abstractions;
+    using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Class that represents an inventory for monsters.

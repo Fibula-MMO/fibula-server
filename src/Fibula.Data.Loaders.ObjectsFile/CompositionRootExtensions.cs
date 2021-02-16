@@ -11,8 +11,8 @@
 
 namespace Fibula.Data.Loaders.ObjectsFile
 {
-    using Fibula.Common.Utilities;
     using Fibula.Items.Contracts.Abstractions;
+    using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
 

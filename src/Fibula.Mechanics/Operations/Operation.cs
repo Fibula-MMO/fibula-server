@@ -16,7 +16,6 @@ namespace Fibula.Mechanics.Operations
     using System.Linq;
     using Fibula.Common.Contracts.Abstractions;
     using Fibula.Common.Contracts.Enumerations;
-    using Fibula.Common.Utilities;
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Map.Contracts.Abstractions;
     using Fibula.Map.Contracts.Extensions;
@@ -26,6 +25,8 @@ namespace Fibula.Mechanics.Operations
     using Fibula.Mechanics.Notifications;
     using Fibula.Scheduling;
     using Fibula.Scheduling.Contracts.Abstractions;
+    using Fibula.Utilities.Common.Extensions;
+    using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Class that represents a common base between game operations.

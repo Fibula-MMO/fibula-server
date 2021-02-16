@@ -14,8 +14,8 @@ namespace Fibula.Mechanics.Contracts.Extensions
     using System;
     using Fibula.Common.Contracts.Abstractions;
     using Fibula.Common.Contracts.Enumerations;
-    using Fibula.Common.Utilities;
     using Fibula.Scheduling.Contracts.Abstractions;
+    using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Static class with helper methods for things.

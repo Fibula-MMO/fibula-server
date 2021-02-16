@@ -14,7 +14,7 @@ namespace Fibula.Common.Contracts
     using System;
     using Fibula.Common.Contracts.Abstractions;
     using Fibula.Common.Contracts.Structs;
-    using Fibula.Common.Utilities;
+    using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Class that represents a converter for a location.

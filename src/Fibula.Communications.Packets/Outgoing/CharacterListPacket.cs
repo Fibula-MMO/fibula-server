@@ -12,10 +12,10 @@
 namespace Fibula.Communications.Packets.Outgoing
 {
     using System.Collections.Generic;
-    using Fibula.Common.Utilities;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Contracts.Enumerations;
     using Fibula.Communications.Packets.Contracts.Abstractions;
+    using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Class that represents an outgoing character list packet.

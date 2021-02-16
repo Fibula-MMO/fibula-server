@@ -18,7 +18,6 @@ namespace Fibula.Creatures
     using Fibula.Common.Contracts.Abstractions;
     using Fibula.Common.Contracts.Enumerations;
     using Fibula.Common.Contracts.Structs;
-    using Fibula.Common.Utilities;
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Creatures.Contracts.Constants;
     using Fibula.Creatures.Contracts.Enumerations;
@@ -29,6 +28,7 @@ namespace Fibula.Creatures
     using Fibula.Items.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Delegates;
+    using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Class that represents all creatures in the game.

@@ -13,11 +13,11 @@ namespace Fibula.Creatures
 {
     using System;
     using Fibula.Common.Contracts.Abstractions;
-    using Fibula.Common.Utilities;
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Creatures.Contracts.Enumerations;
     using Fibula.Data.Entities.Contracts.Abstractions;
     using Fibula.Items.Contracts.Abstractions;
+    using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Class that represents a factory of creatures.

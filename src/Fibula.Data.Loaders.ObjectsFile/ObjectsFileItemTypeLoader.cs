@@ -15,7 +15,6 @@ namespace Fibula.Data.Loaders.ObjectsFile
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using Fibula.Common.Utilities;
     using Fibula.Data.Entities;
     using Fibula.Data.Entities.Contracts.Abstractions;
     using Fibula.Items.Contracts.Abstractions;
@@ -23,6 +22,7 @@ namespace Fibula.Data.Loaders.ObjectsFile
     using Fibula.Parsing.CipFiles;
     using Fibula.Parsing.CipFiles.Enumerations;
     using Fibula.Parsing.CipFiles.Extensions;
+    using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Options;
     using Serilog;
 

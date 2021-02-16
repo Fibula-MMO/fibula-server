@@ -15,7 +15,6 @@ namespace Fibula.Protocol.V772.Extensions
     using Fibula.Common.Contracts.Enumerations;
     using Fibula.Common.Contracts.Extensions;
     using Fibula.Common.Contracts.Structs;
-    using Fibula.Common.Utilities;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Contracts.Enumerations;
     using Fibula.Creatures.Contracts.Abstractions;
@@ -23,6 +22,7 @@ namespace Fibula.Protocol.V772.Extensions
     using Fibula.Data.Entities.Contracts.Structs;
     using Fibula.Items.Contracts.Abstractions;
     using Fibula.Security.Encryption;
+    using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Static class that defines extension methods for an <see cref="INetworkMessage"/>.

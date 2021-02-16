@@ -11,8 +11,8 @@
 
 namespace Fibula.Communications.Packets.Incoming
 {
-    using Fibula.Common.Utilities;
     using Fibula.Communications.Contracts.Abstractions;
+    using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Class that represents the default packet.

@@ -12,9 +12,9 @@
 namespace Fibula.Mechanics.Contracts.Extensions
 {
     using Fibula.Common.Contracts.Abstractions;
-    using Fibula.Common.Utilities;
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Items.Contracts.Abstractions;
+    using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Helper class that provides extensions for the <see cref="IItem"/> implementations.

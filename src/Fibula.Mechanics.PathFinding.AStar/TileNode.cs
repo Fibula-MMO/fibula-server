@@ -16,10 +16,10 @@ namespace Fibula.PathFinding.AStar
     using System.Linq;
     using Fibula.Common.Contracts.Extensions;
     using Fibula.Common.Contracts.Structs;
-    using Fibula.Common.Utilities;
-    using Fibula.Common.Utilities.Pathfinding;
     using Fibula.Map.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Extensions;
+    using Fibula.Utilities.Pathfinding.Abstractions;
+    using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Class that represents a tile node.

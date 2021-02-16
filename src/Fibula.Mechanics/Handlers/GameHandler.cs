@@ -11,8 +11,8 @@
 
 namespace Fibula.Mechanics.Handlers
 {
-    using Fibula.Common.Utilities;
     using Fibula.Mechanics.Contracts.Abstractions;
+    using Fibula.Utilities.Validation;
     using Serilog;
 
     /// <summary>

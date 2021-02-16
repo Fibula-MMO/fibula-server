@@ -13,12 +13,13 @@ namespace Fibula.Mechanics.Operations
 {
     using System.Linq;
     using Fibula.Common.Contracts.Abstractions;
-    using Fibula.Common.Utilities;
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Map.Contracts.Abstractions;
     using Fibula.Map.Contracts.Extensions;
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Mechanics.Notifications;
+    using Fibula.Utilities.Common.Extensions;
+    using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Class that represents a base environment operation.

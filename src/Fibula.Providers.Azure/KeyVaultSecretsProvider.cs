@@ -13,12 +13,12 @@ namespace Fibula.Providers.Azure
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Security;
     using System.Threading.Tasks;
-    using Fibula.Common.Utilities;
     using Fibula.Providers.Contracts;
-    using Microsoft.Azure.KeyVault;
+    using Fibula.Utilities.Validation;
+    using global::Azure.Identity;
+    using global::Azure.Security.KeyVault.Secrets;
     using Microsoft.Extensions.Options;
     using Serilog;
 
@@ -30,7 +30,7 @@ namespace Fibula.Providers.Azure
         /// <summary>
         /// The KeyVault client instance used by this provider.
         /// </summary>
-        private readonly IKeyVaultClient keyVaultClient;
+        private readonly SecretClient keyVaultClient;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="KeyVaultSecretsProvider"/> class.
@@ -48,15 +48,9 @@ namespace Fibula.Providers.Azure
 
             DataAnnotationsValidator.ValidateObjectRecursive(secretsProviderOptions.Value);
 
-            this.BaseUri = new Uri(secretsProviderOptions.Value.VaultBaseUrl);
-            this.keyVaultClient = new KeyVaultClient(new KeyVaultClient.AuthenticationCallback(tokenProvider.TokenCallback));
+            this.keyVaultClient = new SecretClient(new Uri(secretsProviderOptions.Value.VaultBaseUrl), new ManagedIdentityCredential());
             this.Logger = logger.ForContext<KeyVaultSecretsProvider>();
         }
-
-        /// <summary>
-        /// Gets the KeyVault base uri currenly in use by this provider.
-        /// </summary>
-        public Uri BaseUri { get; }
 
         /// <summary>
         /// Gets the logger in use by this provider.
@@ -75,7 +69,7 @@ namespace Fibula.Providers.Azure
             this.Logger.Debug($"Retrieving secret '{secretName}' from Vault...");
 
             // Get the secret
-            var secret = (await this.keyVaultClient.GetSecretAsync(this.BaseUri.AbsoluteUri, secretName)).Value;
+            var secret = (await this.keyVaultClient.GetSecretAsync(secretName)).Value.Value;
 
             // Convert secret to SecureString. 'secret' object still keeps it in plain text.
             var secureSecret = new SecureString();
@@ -96,25 +90,17 @@ namespace Fibula.Providers.Azure
         /// <returns>A list of secret idetifiers.</returns>
         public async Task<IEnumerable<string>> ListSecretIdentifiers()
         {
-            this.Logger.Debug($"Getting list of secret names from Vault: {this.BaseUri}");
+            this.Logger.Debug($"Getting list of secret names from vault...");
 
             List<string> secrets = new List<string>();
 
-            var resultsPage = await this.keyVaultClient.GetSecretsAsync(this.BaseUri.AbsoluteUri);
+            var secretProperties = this.keyVaultClient.GetPropertiesOfSecretsAsync();
 
-            if (resultsPage != null)
+            if (secretProperties != null)
             {
-                secrets.AddRange(resultsPage.Select(item => item.Identifier.Name));
-            }
-
-            // iterate over other pages
-            while (!string.IsNullOrWhiteSpace(resultsPage?.NextPageLink))
-            {
-                resultsPage = await this.keyVaultClient.GetSecretsNextAsync(resultsPage.NextPageLink);
-
-                if (resultsPage != null)
+                await foreach (var secretProperty in secretProperties)
                 {
-                    secrets.AddRange(resultsPage.Select(item => item.Identifier.Name));
+                    secrets.Add(secretProperty.Name);
                 }
             }
 

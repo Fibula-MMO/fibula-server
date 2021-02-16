@@ -14,8 +14,8 @@ namespace Fibula.Mechanics.Contracts.Abstractions
     using System.Collections.Generic;
     using Fibula.Common.Contracts.Enumerations;
     using Fibula.Common.Contracts.Structs;
-    using Fibula.Common.Utilities.Pathfinding;
     using Fibula.Creatures.Contracts.Abstractions;
+    using Fibula.Utilities.Pathfinding;
 
     /// <summary>
     /// Interface for a path finder.

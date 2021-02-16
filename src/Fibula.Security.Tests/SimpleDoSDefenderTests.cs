@@ -12,7 +12,7 @@
 namespace Fibula.Security.Tests
 {
     using System;
-    using Fibula.Common.TestingUtilities;
+    using Fibula.Utilities.Testing;
     using Microsoft.Extensions.Options;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 

@@ -16,7 +16,6 @@ namespace Fibula.Data.Loaders.MonFiles
     using System.IO;
     using System.Linq;
     using Fibula.Common.Contracts.Enumerations;
-    using Fibula.Common.Utilities;
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Creatures.Contracts.Enumerations;
     using Fibula.Data.Entities;
@@ -26,6 +25,7 @@ namespace Fibula.Data.Loaders.MonFiles
     using Fibula.Parsing.CipFiles;
     using Fibula.Parsing.CipFiles.Enumerations;
     using Fibula.Parsing.CipFiles.Extensions;
+    using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Options;
     using Serilog;
 

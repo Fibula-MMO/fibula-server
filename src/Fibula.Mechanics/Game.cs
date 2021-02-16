@@ -22,7 +22,6 @@ namespace Fibula.Mechanics
     using Fibula.Common.Contracts.Constants;
     using Fibula.Common.Contracts.Enumerations;
     using Fibula.Common.Contracts.Structs;
-    using Fibula.Common.Utilities;
     using Fibula.Communications.Packets.Outgoing;
     using Fibula.Creatures;
     using Fibula.Creatures.Contracts.Abstractions;
@@ -46,6 +45,8 @@ namespace Fibula.Mechanics
     using Fibula.Scheduling;
     using Fibula.Scheduling.Contracts.Abstractions;
     using Fibula.Scheduling.Contracts.Delegates;
+    using Fibula.Utilities.Common.Extensions;
+    using Fibula.Utilities.Validation;
     using Serilog;
 
     /// <summary>

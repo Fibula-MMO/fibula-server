@@ -14,8 +14,8 @@ namespace Fibula.Creatures
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
-    using Fibula.Common.Utilities;
     using Fibula.Creatures.Contracts.Abstractions;
+    using Fibula.Utilities.Validation;
     using Serilog;
 
     /// <summary>

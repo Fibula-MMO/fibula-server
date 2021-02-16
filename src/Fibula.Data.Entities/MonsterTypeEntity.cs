@@ -15,11 +15,11 @@ namespace Fibula.Data.Entities
     using System.Collections.Generic;
     using System.Linq;
     using Fibula.Common.Contracts.Enumerations;
-    using Fibula.Common.Utilities;
     using Fibula.Creatures.Contracts.Enumerations;
     using Fibula.Data.Entities.Contracts.Abstractions;
     using Fibula.Data.Entities.Contracts.Enumerations;
     using Fibula.Data.Entities.Contracts.Structs;
+    using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Class that represents a monster type entity.

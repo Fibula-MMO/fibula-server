@@ -14,7 +14,6 @@ namespace Fibula.Mechanics.Notifications
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Fibula.Common.Utilities;
     using Fibula.Communications;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Creatures.Contracts.Abstractions;
@@ -22,6 +21,7 @@ namespace Fibula.Mechanics.Notifications
     using Fibula.Mechanics.Contracts.Delegates;
     using Fibula.Scheduling;
     using Fibula.Scheduling.Contracts.Abstractions;
+    using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Abstract class that represents a notification to a player's connection.

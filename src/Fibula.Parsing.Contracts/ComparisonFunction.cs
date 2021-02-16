@@ -11,8 +11,8 @@
 
 namespace Fibula.Parsing.Contracts
 {
-    using Fibula.Common.Utilities;
     using Fibula.Parsing.Contracts.Enumerations;
+    using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Class that represents a function that is a comparison to a value or constant.

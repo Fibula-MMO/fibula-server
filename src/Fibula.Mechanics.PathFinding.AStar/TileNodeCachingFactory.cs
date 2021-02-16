@@ -14,9 +14,9 @@ namespace Fibula.PathFinding.AStar
     using System;
     using System.Collections.Generic;
     using Fibula.Common.Contracts.Structs;
-    using Fibula.Common.Utilities;
-    using Fibula.Common.Utilities.Pathfinding;
     using Fibula.Map.Contracts.Abstractions;
+    using Fibula.Utilities.Pathfinding.Abstractions;
+    using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Class that represents a tile node factory that caches the created nodes based on the creation arguments.

@@ -15,7 +15,6 @@ namespace Fibula.Creatures
     using Fibula.Client.Contracts.Abstractions;
     using Fibula.Common.Contracts.Abstractions;
     using Fibula.Common.Contracts.Enumerations;
-    using Fibula.Common.Utilities;
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Creatures.Contracts.Enumerations;
     using Fibula.Data.Entities.Contracts.Abstractions;
@@ -24,6 +23,7 @@ namespace Fibula.Creatures
     using Fibula.Mechanics.Contracts.Structs;
     using Fibula.Scripting.Contracts.Abstractions;
     using Fibula.Scripting.Formulae;
+    using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Class that represents all players in the game.

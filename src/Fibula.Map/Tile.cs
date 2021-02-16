@@ -17,7 +17,6 @@ namespace Fibula.Map
     using Fibula.Common.Contracts.Abstractions;
     using Fibula.Common.Contracts.Enumerations;
     using Fibula.Common.Contracts.Structs;
-    using Fibula.Common.Utilities;
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Items;
     using Fibula.Items.Contracts.Abstractions;
@@ -25,6 +24,7 @@ namespace Fibula.Map
     using Fibula.Map.Contracts.Abstractions;
     using Fibula.Map.Contracts.Constants;
     using Fibula.Map.Contracts.Enumerations;
+    using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Class that represents a tile in the map.

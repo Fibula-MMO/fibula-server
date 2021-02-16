@@ -17,12 +17,12 @@ namespace Fibula.Communications.Packets.Incoming.Tests
     using System.Net;
     using Fibula.Common.Contracts.Enumerations;
     using Fibula.Common.Contracts.Structs;
-    using Fibula.Common.TestingUtilities;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Contracts.Enumerations;
     using Fibula.Communications.Packets.Contracts.Abstractions;
     using Fibula.Communications.Packets.Outgoing;
     using Fibula.Creatures.Contracts.Abstractions;
+    using Fibula.Utilities.Testing;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
 

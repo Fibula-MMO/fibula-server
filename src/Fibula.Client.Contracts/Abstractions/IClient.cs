@@ -16,7 +16,7 @@ namespace Fibula.Client.Contracts.Abstractions
     using Fibula.Communications.Contracts.Abstractions;
 
     /// <summary>
-    /// Interface for connections.
+    /// Interface for service clients.
     /// </summary>
     public interface IClient
     {

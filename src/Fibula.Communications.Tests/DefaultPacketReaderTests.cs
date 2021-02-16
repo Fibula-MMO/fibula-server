@@ -12,9 +12,9 @@
 namespace Fibula.Communications.Tests
 {
     using System;
-    using Fibula.Common.TestingUtilities;
     using Fibula.Communications;
     using Fibula.Communications.Contracts.Abstractions;
+    using Fibula.Utilities.Testing;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
     using Serilog;

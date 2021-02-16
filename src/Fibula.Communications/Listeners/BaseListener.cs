@@ -16,10 +16,10 @@ namespace Fibula.Communications.Listeners
     using System.Net.Sockets;
     using System.Threading;
     using System.Threading.Tasks;
-    using Fibula.Common.Utilities;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Contracts.Delegates;
     using Fibula.Security.Contracts;
+    using Fibula.Utilities.Validation;
     using Serilog;
 
     /// <summary>

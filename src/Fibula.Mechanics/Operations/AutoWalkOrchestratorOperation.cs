@@ -16,8 +16,6 @@ namespace Fibula.Mechanics.Operations
     using System.Linq;
     using Fibula.Common.Contracts.Enumerations;
     using Fibula.Common.Contracts.Extensions;
-    using Fibula.Common.Utilities;
-    using Fibula.Common.Utilities.Pathfinding;
     using Fibula.Communications.Packets.Outgoing;
     using Fibula.Creatures;
     using Fibula.Creatures.Contracts.Abstractions;
@@ -27,6 +25,9 @@ namespace Fibula.Mechanics.Operations
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Extensions;
     using Fibula.Mechanics.Notifications;
+    using Fibula.Utilities.Common.Extensions;
+    using Fibula.Utilities.Pathfinding;
+    using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Class that represents an operation that orchestrates auto walk operations.

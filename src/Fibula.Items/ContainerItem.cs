@@ -15,12 +15,12 @@ namespace Fibula.Items
     using System.Collections.Generic;
     using System.Linq;
     using Fibula.Common.Contracts.Abstractions;
-    using Fibula.Common.Utilities;
     using Fibula.Data.Entities.Contracts.Abstractions;
     using Fibula.Items.Contracts.Abstractions;
     using Fibula.Items.Contracts.Constants;
     using Fibula.Items.Contracts.Delegates;
     using Fibula.Items.Contracts.Enumerations;
+    using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Class that represents all container items in the game.

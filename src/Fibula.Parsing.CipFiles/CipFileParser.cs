@@ -13,10 +13,10 @@ namespace Fibula.Parsing.CipFiles
 {
     using System.Collections.Generic;
     using System.Linq;
-    using Fibula.Common.Utilities;
-    using Fibula.Common.Utilities.Extensions;
     using Fibula.Parsing.CipFiles.Models;
     using Fibula.Parsing.Contracts.Abstractions;
+    using Fibula.Utilities.Common.Extensions;
+    using Fibula.Utilities.Validation;
     using Sprache;
 
     /// <summary>

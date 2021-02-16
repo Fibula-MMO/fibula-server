@@ -14,7 +14,6 @@ namespace Fibula.Mechanics.Conditions
     using System;
     using Fibula.Common.Contracts.Abstractions;
     using Fibula.Common.Contracts.Enumerations;
-    using Fibula.Common.Utilities;
     using Fibula.Items;
     using Fibula.Items.Contracts.Abstractions;
     using Fibula.Items.Contracts.Enumerations;
@@ -23,6 +22,7 @@ namespace Fibula.Mechanics.Conditions
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Mechanics.Notifications;
     using Fibula.Mechanics.Operations;
+    using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Class that represents an event for an item expiring.

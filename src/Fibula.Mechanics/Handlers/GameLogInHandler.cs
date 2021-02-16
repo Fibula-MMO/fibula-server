@@ -16,13 +16,14 @@ namespace Fibula.Mechanics.Handlers
     using Fibula.Client.Contracts.Abstractions;
     using Fibula.Common.Contracts.Abstractions;
     using Fibula.Common.Contracts.Enumerations;
-    using Fibula.Common.Utilities;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Packets.Contracts.Abstractions;
     using Fibula.Communications.Packets.Outgoing;
     using Fibula.Data.Entities;
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Enumerations;
+    using Fibula.Utilities.Common.Extensions;
+    using Fibula.Utilities.Validation;
     using Serilog;
 
     /// <summary>

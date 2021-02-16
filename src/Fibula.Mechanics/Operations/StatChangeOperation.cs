@@ -11,10 +11,10 @@
 
 namespace Fibula.Mechanics.Operations
 {
-    using Fibula.Common.Utilities;
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Creatures.Contracts.Enumerations;
     using Fibula.Mechanics.Contracts.Abstractions;
+    using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Class that represents an operation to regenerate a particular stat over time.

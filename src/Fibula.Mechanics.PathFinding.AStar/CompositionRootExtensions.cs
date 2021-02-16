@@ -11,9 +11,9 @@
 
 namespace Fibula.PathFinding.AStar
 {
-    using Fibula.Common.Utilities;
-    using Fibula.Common.Utilities.Pathfinding;
     using Fibula.Mechanics.Contracts.Abstractions;
+    using Fibula.Utilities.Pathfinding.Abstractions;
+    using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
 

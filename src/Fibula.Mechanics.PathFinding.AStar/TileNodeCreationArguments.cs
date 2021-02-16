@@ -12,7 +12,7 @@
 namespace Fibula.PathFinding.AStar
 {
     using Fibula.Common.Contracts.Structs;
-    using Fibula.Common.Utilities.Pathfinding;
+    using Fibula.Utilities.Pathfinding.Abstractions;
 
     /// <summary>
     /// Class that represents arguments for <see cref="TileNode"/> creation.

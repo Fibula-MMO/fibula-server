@@ -13,10 +13,10 @@ namespace Fibula.Mechanics.Handlers
 {
     using System.Collections.Generic;
     using Fibula.Client.Contracts.Abstractions;
-    using Fibula.Common.Utilities;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Packets.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Abstractions;
+    using Fibula.Utilities.Validation;
     using Serilog;
 
     /// <summary>

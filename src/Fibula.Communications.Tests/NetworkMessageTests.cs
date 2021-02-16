@@ -15,9 +15,9 @@ namespace Fibula.Communications.Tests
     using System.Buffers;
     using System.Linq;
     using System.Text;
-    using Fibula.Common.TestingUtilities;
     using Fibula.Communications;
     using Fibula.Communications.Contracts.Abstractions;
+    using Fibula.Utilities.Testing;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     /// <summary>

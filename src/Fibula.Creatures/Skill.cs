@@ -12,11 +12,10 @@
 namespace Fibula.Creatures
 {
     using System;
-    using Fibula.Common.Utilities;
-    using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Data.Entities.Contracts.Enumerations;
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Delegates;
+    using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Class that represents a creature's standard skill.

@@ -11,8 +11,8 @@
 
 namespace Fibula.Providers.Azure
 {
-    using Fibula.Common.Utilities;
     using Fibula.Providers.Contracts;
+    using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;

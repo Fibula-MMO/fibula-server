@@ -14,7 +14,6 @@ namespace Fibula.Mechanics.Operations
     using System;
     using System.Collections.Generic;
     using Fibula.Common.Contracts.Enumerations;
-    using Fibula.Common.Utilities;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Packets.Outgoing;
     using Fibula.Creatures.Contracts.Abstractions;
@@ -27,6 +26,8 @@ namespace Fibula.Mechanics.Operations
     using Fibula.Mechanics.Contracts.Extensions;
     using Fibula.Mechanics.Contracts.Structs;
     using Fibula.Mechanics.Notifications;
+    using Fibula.Utilities.Common.Extensions;
+    using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Class that represents the basic attack operation.

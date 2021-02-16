@@ -11,8 +11,8 @@
 
 namespace Fibula.Data.CosmosDB
 {
-    using Fibula.Common.Utilities;
     using Fibula.Data.Contracts.Abstractions;
+    using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
 

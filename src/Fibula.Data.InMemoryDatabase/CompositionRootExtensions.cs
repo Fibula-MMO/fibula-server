@@ -11,8 +11,8 @@
 
 namespace Fibula.Data.InMemoryDatabase
 {
-    using Fibula.Common.Utilities;
     using Fibula.Data.Contracts.Abstractions;
+    using Fibula.Utilities.Validation;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Diagnostics;
     using Microsoft.Extensions.Configuration;

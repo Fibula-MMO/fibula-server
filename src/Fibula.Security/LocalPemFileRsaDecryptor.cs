@@ -13,8 +13,8 @@ namespace Fibula.Security.Encryption
 {
     using System;
     using System.IO;
-    using Fibula.Common.Utilities;
     using Fibula.Security.Contracts;
+    using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Options;
     using Org.BouncyCastle.Crypto;
     using Org.BouncyCastle.Crypto.Engines;

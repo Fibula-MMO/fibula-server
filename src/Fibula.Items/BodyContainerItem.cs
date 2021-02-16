@@ -17,10 +17,10 @@ namespace Fibula.Items
     using Fibula.Common.Contracts.Constants;
     using Fibula.Common.Contracts.Enumerations;
     using Fibula.Common.Contracts.Structs;
-    using Fibula.Common.Utilities;
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Data.Entities;
     using Fibula.Items.Contracts.Abstractions;
+    using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Class that represents a container item for body slots.

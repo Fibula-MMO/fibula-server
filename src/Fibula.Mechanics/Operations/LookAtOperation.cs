@@ -17,8 +17,6 @@ namespace Fibula.Mechanics.Operations
     using Fibula.Common.Contracts.Abstractions;
     using Fibula.Common.Contracts.Enumerations;
     using Fibula.Common.Contracts.Structs;
-    using Fibula.Common.Utilities;
-    using Fibula.Common.Utilities.Extensions;
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Items.Contracts.Abstractions;
     using Fibula.Items.Contracts.Enumerations;
@@ -26,6 +24,7 @@ namespace Fibula.Mechanics.Operations
     using Fibula.Map.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Mechanics.Notifications;
+    using Fibula.Utilities.Common.Extensions;
 
     /// <summary>
     /// Class that represents an event for a thing description.

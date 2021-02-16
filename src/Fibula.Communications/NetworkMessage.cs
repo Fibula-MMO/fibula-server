@@ -15,8 +15,8 @@ namespace Fibula.Communications
     using System.Buffers;
     using System.Net.Sockets;
     using System.Text;
-    using Fibula.Common.Utilities;
     using Fibula.Communications.Contracts.Abstractions;
+    using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Class that represents a network message.

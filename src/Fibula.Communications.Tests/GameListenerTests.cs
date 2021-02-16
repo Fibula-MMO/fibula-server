@@ -16,10 +16,10 @@ namespace Fibula.Communications.Listeners.Tests
     using System.Net.Sockets;
     using System.Threading;
     using System.Threading.Tasks;
-    using Fibula.Common.TestingUtilities;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Listeners;
     using Fibula.Security.Contracts;
+    using Fibula.Utilities.Testing;
     using Microsoft.Extensions.Options;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;

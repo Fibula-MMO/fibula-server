@@ -13,10 +13,10 @@ namespace Fibula.Common
 {
     using System;
     using Fibula.Common.Contracts.Abstractions;
-    using Fibula.Common.Utilities;
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Data.Repositories;
     using Fibula.Items.Contracts.Abstractions;
+    using Fibula.Utilities.Validation;
     using Microsoft.EntityFrameworkCore;
 
     using IUnitOfWork = Fibula.Data.Contracts.Abstractions.IUnitOfWork<

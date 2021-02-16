@@ -16,8 +16,8 @@ namespace Fibula.Creatures.Contracts.Structs
     using System.Linq;
     using Fibula.Common.Contracts.Enumerations;
     using Fibula.Common.Contracts.Structs;
-    using Fibula.Common.Utilities;
     using Fibula.Creatures.Contracts.Enumerations;
+    using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Class that represents a creature's walk plan.

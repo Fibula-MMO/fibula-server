@@ -11,8 +11,8 @@
 
 namespace Fibula.Map.SectorFiles
 {
-    using Fibula.Common.Utilities;
     using Fibula.Map.Contracts.Abstractions;
+    using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
 

@@ -15,12 +15,12 @@ namespace Fibula.Common
     using System.Threading;
     using Fibula.Common.Contracts.Abstractions;
     using Fibula.Common.Contracts.Models;
-    using Fibula.Common.Utilities;
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Data.Contracts.Abstractions;
     using Fibula.Items.Contracts.Abstractions;
     using Fibula.Scripting.Contracts.Abstractions;
     using Fibula.Security.Contracts;
+    using Fibula.Utilities.Validation;
     using Microsoft.ApplicationInsights;
     using Microsoft.Extensions.Options;
 

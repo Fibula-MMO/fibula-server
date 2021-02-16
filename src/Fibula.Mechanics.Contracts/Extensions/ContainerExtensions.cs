@@ -13,8 +13,8 @@ namespace Fibula.Mechanics.Contracts.Extensions
 {
     using System.Collections.Generic;
     using Fibula.Common.Contracts.Abstractions;
-    using Fibula.Common.Utilities;
     using Fibula.Map.Contracts.Abstractions;
+    using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Helper class that provides extensions for the <see cref="IContainedThing"/> and <see cref="IThingContainer"/> implementations.

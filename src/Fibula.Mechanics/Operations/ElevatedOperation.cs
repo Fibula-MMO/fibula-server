@@ -12,8 +12,8 @@
 namespace Fibula.Mechanics.Operations
 {
     using System;
-    using Fibula.Common.Utilities;
     using Fibula.Mechanics.Contracts.Abstractions;
+    using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Class that represents an elevated base between game operations, for which the context changes.

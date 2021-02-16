@@ -11,9 +11,9 @@
 
 namespace Fibula.Creatures.Contracts.Extensions
 {
-    using Fibula.Common.Utilities;
     using Fibula.Creatures.Contracts.Enumerations;
     using Fibula.Data.Entities.Contracts.Abstractions;
+    using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Static class that contains extension methods for <see cref="IMonsterTypeEntity"/>s.

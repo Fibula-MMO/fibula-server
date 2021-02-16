@@ -11,10 +11,10 @@
 
 namespace Fibula.Communications.Packets.Outgoing
 {
-    using Fibula.Common.Utilities;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Contracts.Enumerations;
     using Fibula.Creatures.Contracts.Abstractions;
+    using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Class that represents a packet with information about a creatue that was added to the game.

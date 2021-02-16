@@ -12,8 +12,8 @@
 namespace Fibula.Communications
 {
     using System;
-    using Fibula.Common.Utilities;
     using Fibula.Communications.Contracts.Abstractions;
+    using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Class that represents the default request data model.

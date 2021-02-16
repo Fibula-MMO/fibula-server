@@ -16,11 +16,12 @@ namespace Fibula.PathFinding.AStar
     using System.Linq;
     using Fibula.Common.Contracts.Enumerations;
     using Fibula.Common.Contracts.Structs;
-    using Fibula.Common.Utilities;
-    using Fibula.Common.Utilities.Pathfinding;
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Map.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Abstractions;
+    using Fibula.Utilities.Pathfinding;
+    using Fibula.Utilities.Pathfinding.Abstractions;
+    using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Options;
 
     /// <summary>

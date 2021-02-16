@@ -34,20 +34,16 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="3.7.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.4" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.4" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="3.1.4" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="3.1.4" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.4" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.4" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.4" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.4" />
-    <PackageReference Include="Serilog" Version="2.9.1-dev-01151" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="3.8.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
+    <PackageReference Include="Serilog" Version="2.10.0" />
     <PackageReference Include="Serilog.Extensions.Hosting" Version="3.1.0" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="3.1.1-dev-00209" />
     <PackageReference Include="Serilog.Sinks.ApplicationInsights" Version="3.1.0" />
@@ -61,7 +57,6 @@
   
   <ItemGroup>
     <ProjectReference Include="..\Fibula.Client\Fibula.Client.csproj" />
-    <ProjectReference Include="..\Fibula.Common.Utilities\Fibula.Common.Utilities.csproj" />
     <ProjectReference Include="..\Fibula.Common\Fibula.Common.csproj" />
     <ProjectReference Include="..\Fibula.Creatures.MonstersDbFile\Fibula.Creatures.MonstersDbFile.csproj" />
     <ProjectReference Include="..\Fibula.Creatures\Fibula.Creatures.csproj" />
@@ -75,7 +70,6 @@
     <ProjectReference Include="..\Fibula.Mechanics.PathFinding.AStar\Fibula.Mechanics.PathFinding.AStar.csproj" />
     <ProjectReference Include="..\Fibula.Mechanics\Fibula.Mechanics.csproj" />
     <ProjectReference Include="..\Fibula.Protocol.V772\Fibula.Protocol.V772.csproj" />
-    <ProjectReference Include="..\Fibula.Scheduling\Fibula.Scheduling.csproj" />
     <ProjectReference Include="..\Fibula.Scripting\Fibula.Scripting.csproj" />
     <ProjectReference Include="..\Fibula.Security\Fibula.Security.csproj" />
     <ProjectReference Include="..\Fibula.Communications\Fibula.Communications.csproj" />

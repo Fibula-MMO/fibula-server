@@ -19,12 +19,12 @@ namespace Fibula.Items
     using Fibula.Common.Contracts.Abstractions;
     using Fibula.Common.Contracts.Enumerations;
     using Fibula.Common.Contracts.Structs;
-    using Fibula.Common.Utilities;
     using Fibula.Data.Entities.Contracts.Abstractions;
     using Fibula.Items.Contracts.Abstractions;
     using Fibula.Items.Contracts.Constants;
     using Fibula.Items.Contracts.Enumerations;
     using Fibula.Items.Contracts.Extensions;
+    using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Class that represents all items in the game.

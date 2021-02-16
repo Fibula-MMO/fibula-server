@@ -14,10 +14,10 @@ namespace Fibula.Map
     using System;
     using System.Collections.Concurrent;
     using Fibula.Common.Contracts.Structs;
-    using Fibula.Common.Utilities;
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Map.Contracts.Abstractions;
     using Fibula.Map.Contracts.Delegates;
+    using Fibula.Utilities.Validation;
     using Serilog;
 
     /// <summary>

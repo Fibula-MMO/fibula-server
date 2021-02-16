@@ -12,10 +12,10 @@
 namespace Fibula.PathFinding.AStar
 {
     using Fibula.Common.Contracts.Structs;
-    using Fibula.Common.Utilities;
-    using Fibula.Common.Utilities.Pathfinding;
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Map.Contracts.Abstractions;
+    using Fibula.Utilities.Pathfinding.Abstractions;
+    using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Class that represents a search context for the AStar pathfinding.

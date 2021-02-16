@@ -17,8 +17,8 @@ namespace Fibula.Client
     using Fibula.Client.Contracts.Abstractions;
     using Fibula.Client.Contracts.Models;
     using Fibula.Common.Contracts.Enumerations;
-    using Fibula.Common.Utilities;
     using Fibula.Communications.Contracts.Abstractions;
+    using Fibula.Utilities.Validation;
     using Serilog;
 
     /// <summary>

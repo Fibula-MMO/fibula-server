@@ -13,11 +13,11 @@ namespace Fibula.Protocol.V772
 {
     using System.Collections.Generic;
     using Fibula.Common.Contracts.Enumerations;
-    using Fibula.Common.Utilities;
     using Fibula.Data.Entities.Contracts.Abstractions;
     using Fibula.Data.Entities.Contracts.Enumerations;
     using Fibula.Items.Contracts.Abstractions;
     using Fibula.Items.Contracts.Enumerations;
+    using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Class that implements a <see cref="IPredefinedItemSet"/> for the protocol version 7.72.

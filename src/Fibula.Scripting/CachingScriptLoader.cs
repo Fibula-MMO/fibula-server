@@ -14,8 +14,8 @@ namespace Fibula.Scripting
     using System;
     using System.Collections.Generic;
     using System.IO;
-    using Fibula.Common.Utilities;
     using Fibula.Scripting.Contracts.Abstractions;
+    using Fibula.Utilities.Validation;
     using Microsoft.CodeAnalysis.CSharp.Scripting;
     using Microsoft.CodeAnalysis.Scripting;
     using Serilog;

@@ -12,8 +12,8 @@
 namespace Fibula.Protocol.V772
 {
     using System.Net.Sockets;
-    using Fibula.Common.Utilities;
     using Fibula.Communications.Contracts.Abstractions;
+    using Fibula.Utilities.Validation;
     using Serilog;
 
     /// <summary>
