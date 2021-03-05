@@ -13,6 +13,7 @@ namespace Fibula.Mechanics.Contracts.Abstractions
 {
     using Fibula.Common.Contracts.Enumerations;
     using Fibula.Creatures.Contracts.Abstractions;
+    using Fibula.Definitions.Enumerations;
 
     /// <summary>
     /// Interface for the API of combat operations.

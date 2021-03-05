@@ -15,6 +15,7 @@ namespace Fibula.Mechanics.Operations
     using Fibula.Creatures.Contracts.Enumerations;
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Class that represents an operation to regenerate a particular stat over time.
@@ -72,7 +73,7 @@ namespace Fibula.Mechanics.Operations
 
             this.Creature.Stats[this.StatId].Increase(this.Amount);
 
-            context.Logger.Verbose($"{this.Creature.Name}'s {this.StatId} changed: {this.Amount}. [{this.Creature.Stats[this.StatId].Current}/{this.Creature.Stats[this.StatId].Maximum}]");
+            context.Logger.LogTrace($"{this.Creature.Name}'s {this.StatId} changed: {this.Amount}. [{this.Creature.Stats[this.StatId].Current}/{this.Creature.Stats[this.StatId].Maximum}]");
         }
     }
 }

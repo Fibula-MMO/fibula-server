@@ -65,7 +65,7 @@ namespace Fibula.Creatures
         /// <returns>A new instance of the chosen <see cref="ICreature"/> implementation.</returns>
         public ICreature CreateCreature(IThingCreationArguments creationArguments)
         {
-            if (!(creationArguments is CreatureCreationArguments creatureCreationArguments))
+            if (creationArguments is not CreatureCreationArguments creatureCreationArguments)
             {
                 throw new ArgumentException($"Invalid type of arguments '{creationArguments.GetType().Name}' supplied, expected {nameof(CreatureCreationArguments)}", nameof(creationArguments));
             }
@@ -82,7 +82,7 @@ namespace Fibula.Creatures
 
                     using (var unitOfWork = this.ApplicationContext.CreateNewUnitOfWork())
                     {
-                        if (!(unitOfWork.MonsterTypes.GetById(creatureCreationArguments.Metadata.Id) is IMonsterTypeEntity monsterType))
+                        if (unitOfWork.MonsterTypes.GetById(creatureCreationArguments.Metadata.Id) is not IMonsterTypeEntity monsterType)
                         {
                             throw new ArgumentException($"Unknown monster with Id {creatureCreationArguments.Metadata.Id} in creation arguments for a monster.", nameof(creatureCreationArguments));
                         }
@@ -97,15 +97,14 @@ namespace Fibula.Creatures
 
                     if (creatureCreationArguments == null ||
                         creatureCreationArguments.Metadata == null ||
-                        !(creatureCreationArguments is PlayerCreationArguments playerCreationArguments))
+                        creatureCreationArguments is not PlayerCreationArguments playerCreationArguments)
                     {
                         throw new ArgumentException("Invalid creation arguments for a player.", nameof(creatureCreationArguments));
                     }
 
                     return new Player(
                         playerCreationArguments.Client,
-                        playerCreationArguments.CharacterMetadata,
-                        this.ApplicationContext.ScriptLoader);
+                        playerCreationArguments.CharacterMetadata);
             }
 
             throw new NotSupportedException($"{nameof(CreatureFactory)} does not support creation of creatures with type {creatureCreationArguments.Type}.");

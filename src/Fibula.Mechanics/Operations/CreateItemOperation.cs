@@ -15,8 +15,8 @@ namespace Fibula.Mechanics.Operations
     using System.Collections.Generic;
     using Fibula.Common.Contracts.Abstractions;
     using Fibula.Common.Contracts.Structs;
-    using Fibula.Items;
-    using Fibula.Items.Contracts.Enumerations;
+    using Fibula.Definitions.Enumerations;
+    using Fibula.Items.Contracts;
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Extensions;
 
@@ -70,7 +70,7 @@ namespace Fibula.Mechanics.Operations
                 Attributes = this.WithAttributes,
             };
 
-            if (inThingContainer == null || !(context.ItemFactory.Create(creationArguments) is IThing thingCreated))
+            if (inThingContainer == null || context.ItemFactory.Create(creationArguments) is not IThing thingCreated)
             {
                 return;
             }

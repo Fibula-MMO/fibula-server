@@ -92,12 +92,12 @@ namespace Fibula.Items
             thingFactory.ThrowIfNull(nameof(thingFactory));
             thing.ThrowIfNull(nameof(thing));
 
-            if (!(thingFactory is IItemFactory itemFactory))
+            if (thingFactory is not IItemFactory itemFactory)
             {
                 throw new ArgumentException($"The {nameof(thingFactory)} must be derived of type {nameof(IItemFactory)}.");
             }
 
-            if (!(thing is IItem item))
+            if (thing is not IItem item)
             {
                 // Containers like this can only add items.
                 return (false, null);
@@ -176,7 +176,7 @@ namespace Fibula.Items
         /// <returns>True if the thing can be dressed in this container, false otherwise.</returns>
         private bool CanDressItemHere(IItem item)
         {
-            if (item == null || !(this.ParentContainer is IPlayer player))
+            if (item == null || this.ParentContainer is not IPlayer player)
             {
                 return false;
             }
@@ -205,7 +205,7 @@ namespace Fibula.Items
 
                 // Valid target, special slots
                 case Slot.LeftHand:
-                    if (!(player.Inventory[(byte)Slot.RightHand] is IContainerItem rightHandContainer))
+                    if (player.Inventory[(byte)Slot.RightHand] is not IContainerItem rightHandContainer)
                     {
                         return false;
                     }
@@ -215,7 +215,7 @@ namespace Fibula.Items
                     return rightHandItem == null || (item.DressPosition != Slot.TwoHanded && rightHandItem.DressPosition != Slot.TwoHanded);
 
                 case Slot.RightHand:
-                    if (!(player.Inventory[(byte)Slot.LeftHand] is IContainerItem leftHandContainer))
+                    if (player.Inventory[(byte)Slot.LeftHand] is not IContainerItem leftHandContainer)
                     {
                         return false;
                     }

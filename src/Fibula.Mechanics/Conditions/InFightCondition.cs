@@ -12,9 +12,9 @@
 namespace Fibula.Mechanics.Conditions
 {
     using Fibula.Common.Contracts.Abstractions;
-    using Fibula.Common.Contracts.Enumerations;
     using Fibula.Communications.Packets.Outgoing;
     using Fibula.Creatures.Contracts.Abstractions;
+    using Fibula.Definitions.Enumerations;
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Mechanics.Notifications;
     using Fibula.Utilities.Common.Extensions;

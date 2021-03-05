@@ -17,9 +17,10 @@ namespace Fibula.Mechanics.Operations
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Creatures.Contracts.Enumerations;
     using Fibula.Creatures.Contracts.Structs;
-    using Fibula.Data.Entities;
+    using Fibula.Data.Entities.Contracts.Abstractions;
     using Fibula.Map.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Abstractions;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Class that represents a monsters spawn operation.
@@ -58,9 +59,9 @@ namespace Fibula.Mechanics.Operations
 
                 var monsterType = uow.MonsterTypes.GetById(this.Spawn.MonsterRaceId.ToString());
 
-                if (!(monsterType is MonsterTypeEntity monsterTypeEntity))
+                if (monsterType is not IMonsterTypeEntity monsterTypeEntity)
                 {
-                    context.Logger.Warning($"Unable to place monster. Could not find a monster with the id {this.Spawn.MonsterRaceId} in the repository. ({nameof(SpawnMonstersOperation)})");
+                    context.Logger.LogWarning($"Unable to place monster. Could not find a monster with the id {this.Spawn.MonsterRaceId} in the repository. ({nameof(SpawnMonstersOperation)})");
 
                     return;
                 }

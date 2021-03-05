@@ -18,6 +18,7 @@ namespace Fibula.Mechanics
     using System.Threading;
     using System.Threading.Tasks;
     using Fibula.Client.Contracts.Abstractions;
+    using Fibula.Common.Contracts;
     using Fibula.Common.Contracts.Abstractions;
     using Fibula.Common.Contracts.Constants;
     using Fibula.Common.Contracts.Enumerations;
@@ -27,12 +28,11 @@ namespace Fibula.Mechanics
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Creatures.Contracts.Enumerations;
     using Fibula.Creatures.Contracts.Structs;
-    using Fibula.Data.Entities;
     using Fibula.Data.Entities.Contracts.Abstractions;
-    using Fibula.Data.Entities.Contracts.Enumerations;
+    using Fibula.Definitions.Enumerations;
+    using Fibula.Definitions.Flags;
     using Fibula.Items.Contracts.Abstractions;
     using Fibula.Items.Contracts.Constants;
-    using Fibula.Items.Contracts.Enumerations;
     using Fibula.Map.Contracts.Abstractions;
     using Fibula.Map.Contracts.Extensions;
     using Fibula.Mechanics.Conditions;
@@ -47,7 +47,7 @@ namespace Fibula.Mechanics
     using Fibula.Scheduling.Contracts.Delegates;
     using Fibula.Utilities.Common.Extensions;
     using Fibula.Utilities.Validation;
-    using Serilog;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Class that represents the game instance.
@@ -145,7 +145,7 @@ namespace Fibula.Mechanics
         /// <param name="monsterSpawnsLoader">A reference to the monster spawns loader.</param>
         /// <param name="scheduler">A reference to the global scheduler instance.</param>
         public Game(
-            ILogger logger,
+            ILogger<Game> logger,
             IApplicationContext applicationContext,
             IMapDescriptor mapDescriptor,
             IMap map,
@@ -171,7 +171,7 @@ namespace Fibula.Mechanics
             monsterSpawnsLoader.ThrowIfNull(nameof(monsterSpawnsLoader));
             scheduler.ThrowIfNull(nameof(scheduler));
 
-            this.logger = logger.ForContext<Game>();
+            this.logger = logger;
             this.applicationContext = applicationContext;
             this.mapDescriptor = mapDescriptor;
             this.map = map;
@@ -187,8 +187,8 @@ namespace Fibula.Mechanics
             this.worldInfo = new WorldInformation()
             {
                 Status = WorldState.Loading,
-                LightColor = (byte)LightColors.White,
-                LightLevel = (byte)LightLevels.World,
+                LightColor = LightConstants.WhiteColor,
+                LightLevel = LightConstants.WorldDay,
             };
 
             this.itemFactory.ItemCreated += this.AfterItemIsCreated;
@@ -213,19 +213,21 @@ namespace Fibula.Mechanics
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            Task.Run(async () =>
-            {
-                var connectionSweepperTask = Task.Factory.StartNew(this.IdlePlayerSweep, cancellationToken, TaskCreationOptions.LongRunning);
-                var miscellaneusEventsTask = Task.Factory.StartNew(this.MiscellaneousEventsLoop, cancellationToken, TaskCreationOptions.LongRunning);
+            Task.Run(
+                async () =>
+                {
+                    var connectionSweepperTask = Task.Factory.StartNew(this.IdlePlayerSweep, cancellationToken, TaskCreationOptions.LongRunning);
+                    var miscellaneusEventsTask = Task.Factory.StartNew(this.MiscellaneousEventsLoop, cancellationToken, TaskCreationOptions.LongRunning);
 
-                // start the scheduler.
-                var schedulerTask = this.scheduler.RunAsync(cancellationToken);
+                    // start the scheduler.
+                    var schedulerTask = this.scheduler.RunAsync(cancellationToken);
 
-                // Open the game world!
-                this.worldInfo.Status = WorldState.Open;
+                    // Open the game world!
+                    this.worldInfo.Status = WorldState.Open;
 
-                await Task.WhenAll(connectionSweepperTask, miscellaneusEventsTask, schedulerTask);
-            });
+                    await Task.WhenAll(connectionSweepperTask, miscellaneusEventsTask, schedulerTask);
+                },
+                cancellationToken);
 
             // return this to allow other IHostedService-s to start.
             return Task.CompletedTask;
@@ -234,7 +236,7 @@ namespace Fibula.Mechanics
         /// <inheritdoc/>
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            this.logger.Warning($"Cancellation requested on game instance, beginning shut-down...");
+            this.logger.LogWarning($"Cancellation requested on game instance, beginning shut-down...");
 
             this.itemFactory.ItemCreated -= this.AfterItemIsCreated;
 
@@ -259,7 +261,7 @@ namespace Fibula.Mechanics
 
             if (additionalAttributes != null)
             {
-                attributesToSet.Union(additionalAttributes);
+                attributesToSet = attributesToSet.Union(additionalAttributes);
             }
 
             var createItemOp = new CreateItemOperation(requestorId: 0, itemType.TypeId, location, attributesToSet.ToArray());
@@ -295,7 +297,7 @@ namespace Fibula.Mechanics
             if (statThatChanged.Type == CreatureStat.HitPoints)
             {
                 // This updates the health as seen by others.
-                this.scheduler.ScheduleEvent(new GenericNotification(() => this.map.PlayersThatCanSee(creature.Location), new CreatureHealthPacket(creature)));
+                this.scheduler.ScheduleEvent(new GenericNotification(() => this.map.FindPlayersThatCanSee(creature.Location), new CreatureHealthPacket(creature)));
             }
 
             if (creature is IPlayer player)
@@ -383,7 +385,7 @@ namespace Fibula.Mechanics
 
                 this.scheduler.ScheduleEvent(condition, duration, scheduleAsync: true);
 
-                this.logger.Verbose($"Added {condition.GetType().Name} to {thing.DescribeForLogger()}.");
+                this.logger.LogTrace($"Added {condition.GetType().Name} to {thing.DescribeForLogger()}.");
 
                 if (thing is IPlayer player)
                 {
@@ -660,12 +662,12 @@ namespace Fibula.Mechanics
         {
             if (skilledCreature == null || skillThatChanged == null)
             {
-                this.logger.Warning($"Null {nameof(skilledCreature)} or {nameof(skillThatChanged)} in {nameof(this.SkilledCreatureSkillChanged)}, ignoring...");
+                this.logger.LogWarning($"Null {nameof(skilledCreature)} or {nameof(skillThatChanged)} in {nameof(this.SkilledCreatureSkillChanged)}, ignoring...");
 
                 return;
             }
 
-            if (!(skilledCreature is IPlayer player))
+            if (skilledCreature is not IPlayer player)
             {
                 return;
             }
@@ -677,7 +679,7 @@ namespace Fibula.Mechanics
 
                 var nameToLog = string.IsNullOrWhiteSpace(player.Article) ? player.Name : $"{player.Article} {player.Name}";
 
-                this.logger.Debug($"{nameToLog} {(isAdvance ? "advanced" : "regressed")} from {previousLevel} to {skillThatChanged.CurrentLevel} in skill {skillThatChanged.Type}.");
+                this.logger.LogDebug($"{nameToLog} {(isAdvance ? "advanced" : "regressed")} from {previousLevel} to {skillThatChanged.CurrentLevel} in skill {skillThatChanged.Type}.");
 
                 var skillChangeNotificationMessage = skillThatChanged.Type switch
                 {
@@ -723,7 +725,7 @@ namespace Fibula.Mechanics
                 // Add the animated text for experience.
                 if (skillThatChanged.Type == SkillType.Experience && countDelta.HasValue && countDelta.Value > 0)
                 {
-                    this.scheduler.ScheduleEvent(new AnimatedTextNotification(() => this.map.PlayersThatCanSee(player.Location), player.Location, TextColor.White, countDelta.Value.ToString()));
+                    this.scheduler.ScheduleEvent(new AnimatedTextNotification(() => this.map.FindPlayersThatCanSee(player.Location), player.Location, TextColor.White, countDelta.Value.ToString()));
                 }
             }
         }
@@ -795,7 +797,7 @@ namespace Fibula.Mechanics
             if (requestorId == fromCreatureId && fromLocation.Type == LocationType.Map && toLocation.Type == LocationType.Map)
             {
                 // The scheduling delay becomes any cooldown debt for this operation.
-                scheduleDelay = creature.RemainingExhaustionTime(ExhaustionType.Movement, this.scheduler.CurrentTime);
+                scheduleDelay = creature.RemainingExhaustionTime(ExhaustionFlag.Movement, this.scheduler.CurrentTime);
             }
 
             this.scheduler.ScheduleEvent(movementOp, scheduleDelay);
@@ -812,9 +814,9 @@ namespace Fibula.Mechanics
 
             var monsterType = uow.MonsterTypes.GetById(raceId);
 
-            if (!(monsterType is MonsterTypeEntity monsterTypeEntity))
+            if (monsterType is not IMonsterTypeEntity monsterTypeEntity)
             {
-                this.logger.Warning($"Unable to place monster. Could not find a monster with the id {raceId} in the repository. ({nameof(this.PlaceMonsterAt)})");
+                this.logger.LogWarning($"Unable to place monster. Could not find a monster with the id {raceId} in the repository. ({nameof(this.PlaceMonsterAt)})");
 
                 return;
             }
@@ -894,7 +896,7 @@ namespace Fibula.Mechanics
                 // Do the same for the creatures attacking it, in case the movement caused it to walk into the range of them.
                 foreach (var combatant in movingCombatant.YieldSingleItem().Union(movingCombatant.AttackedBy))
                 {
-                    if (!combatant.TryRetrieveTrackedOperation(nameof(BasicAttackOperation), out IOperation operation) || !(operation is BasicAttackOperation basicAttackOp))
+                    if (!combatant.TryRetrieveTrackedOperation(nameof(BasicAttackOperation), out IOperation operation) || operation is not BasicAttackOperation basicAttackOp)
                     {
                         continue;
                     }
@@ -919,8 +921,8 @@ namespace Fibula.Mechanics
                 }
 
                 // And check if it walked into new combatants view range.
-                var spectatorsAtDestination = this.map.CreaturesThatCanSee(thing.Location).OfType<ICombatant>();
-                var spectatorsAtSource = this.map.CreaturesThatCanSee(previousLocation).OfType<ICombatant>();
+                var spectatorsAtDestination = this.map.FindCreaturesThatCanSee(thing.Location).OfType<ICombatant>();
+                var spectatorsAtSource = this.map.FindCreaturesThatCanSee(previousLocation).OfType<ICombatant>();
 
                 var spectatorsLost = spectatorsAtSource.Except(spectatorsAtDestination);
 
@@ -1021,10 +1023,6 @@ namespace Fibula.Mechanics
                 // Thread.Sleep here is OK because MiscellaneousEventsLoop runs on it's own thread.
                 Thread.Sleep(TimeSpan.FromSeconds(2));
 
-                const int NightLightLevel = 30;
-                const int DuskDawnLightLevel = 130;
-                const int DayLightLevel = 255;
-
                 // A day is roughly an hour in real time, and night lasts roughly 1/3 of the day in real time
                 // Dusk and Dawns last for 30 minutes roughly, so les aproximate that to 2 minutes.
                 var currentMinute = this.scheduler.CurrentTime.Minute;
@@ -1035,21 +1033,21 @@ namespace Fibula.Mechanics
                 if (currentMinute >= 0 && currentMinute <= 37)
                 {
                     // Day time: [0, 37] minutes on the hour.
-                    this.worldInfo.LightLevel = DayLightLevel;
-                    this.worldInfo.LightColor = (byte)LightColors.White;
+                    this.worldInfo.LightLevel = LightConstants.WorldDay;
+                    this.worldInfo.LightColor = LightConstants.WhiteColor;
                 }
                 else if (currentMinute == 38 || currentMinute == 39 || currentMinute == 58 || currentMinute == 59)
                 {
                     // Dusk: [38, 39] minutes on the hour.
                     // Dawn: [58, 59] minutes on the hour.
-                    this.worldInfo.LightLevel = DuskDawnLightLevel;
-                    this.worldInfo.LightColor = (byte)LightColors.Orange;
+                    this.worldInfo.LightLevel = LightConstants.WorldDuskDawn;
+                    this.worldInfo.LightColor = LightConstants.OrangeColor;
                 }
                 else if (currentMinute >= 40 && currentMinute <= 57)
                 {
                     // Night time: [40, 57] minutes on the hour.
-                    this.worldInfo.LightLevel = NightLightLevel;
-                    this.worldInfo.LightColor = (byte)LightColors.White;
+                    this.worldInfo.LightLevel = LightConstants.WorldNight;
+                    this.worldInfo.LightColor = LightConstants.WhiteColor;
                 }
 
                 if (this.worldInfo.LightLevel != currentLevel || this.worldInfo.LightColor != currentColor)
@@ -1104,12 +1102,12 @@ namespace Fibula.Mechanics
                     this.applicationContext.TelemetryClient.GetMetric(TelemetryConstants.ProcessedEventTimeMetricName, TelemetryConstants.EventTypeDimensionName).TrackValue(sw.ElapsedMilliseconds, evt.GetType().Name);
                 }
 
-                this.logger.Verbose($"Processed {evt.GetType().Name} with id: {evt.EventId}, current game time: {this.scheduler.CurrentTime.ToUnixTimeMilliseconds()}.");
+                this.logger.LogTrace($"Processed {evt.GetType().Name} with id: {evt.EventId}, current game time: {this.scheduler.CurrentTime.ToUnixTimeMilliseconds()}.");
             }
             catch (Exception ex)
             {
-                this.logger.Error($"Error in {evt.GetType().Name} with id: {evt.EventId}: {ex.Message}.");
-                this.logger.Error(ex.StackTrace);
+                this.logger.LogError($"Error in {evt.GetType().Name} with id: {evt.EventId}: {ex.Message}.");
+                this.logger.LogError(ex.StackTrace);
             }
         }
 
@@ -1221,7 +1219,7 @@ namespace Fibula.Mechanics
         {
             itemCreated.ThrowIfNull(nameof(itemCreated));
 
-            this.logger.Verbose($"Item created: {itemCreated.DescribeForLogger()}.");
+            this.logger.LogTrace($"Item created: {itemCreated.DescribeForLogger()}.");
 
             // Start decay for items that need it.
             if (itemCreated.HasExpiration)

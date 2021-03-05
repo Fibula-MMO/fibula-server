@@ -16,10 +16,10 @@ namespace Fibula.Items
     using System.Linq;
     using Fibula.Common.Contracts.Abstractions;
     using Fibula.Data.Entities.Contracts.Abstractions;
+    using Fibula.Definitions.Enumerations;
     using Fibula.Items.Contracts.Abstractions;
     using Fibula.Items.Contracts.Constants;
     using Fibula.Items.Contracts.Delegates;
-    using Fibula.Items.Contracts.Enumerations;
     using Fibula.Utilities.Validation;
 
     /// <summary>
@@ -92,12 +92,12 @@ namespace Fibula.Items
             thingFactory.ThrowIfNull(nameof(thingFactory));
             thing.ThrowIfNull(nameof(thing));
 
-            if (!(thingFactory is IItemFactory itemFactory))
+            if (thingFactory is not IItemFactory itemFactory)
             {
                 throw new ArgumentException($"The {nameof(thingFactory)} must be derived of type {nameof(IItemFactory)}.");
             }
 
-            if (!(thing is IItem item))
+            if (thing is not IItem item)
             {
                 // Containers like this can only add items.
                 return (false, null);
@@ -178,7 +178,7 @@ namespace Fibula.Items
             thingFactory.ThrowIfNull(nameof(thingFactory));
             thing.ThrowIfNull(nameof(thing));
 
-            if (!(thingFactory is IItemFactory itemFactory))
+            if (thingFactory is not IItemFactory itemFactory)
             {
                 throw new ArgumentException($"The {nameof(thingFactory)} must be derived of type {nameof(IItemFactory)}.");
             }
@@ -241,7 +241,7 @@ namespace Fibula.Items
             fromThing.ThrowIfNull(nameof(fromThing));
             toThing.ThrowIfNull(nameof(toThing));
 
-            if (!(thingFactory is IItemFactory itemFactory))
+            if (thingFactory is not IItemFactory itemFactory)
             {
                 throw new ArgumentException($"The {nameof(thingFactory)} must be derived of type {nameof(IItemFactory)}.");
             }

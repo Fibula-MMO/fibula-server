@@ -18,7 +18,7 @@ namespace Fibula.Mechanics.Operations
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Scheduling.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
-    using Serilog;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Class that represents an elevated context for operations.

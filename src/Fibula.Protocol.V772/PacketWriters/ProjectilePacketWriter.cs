@@ -14,6 +14,7 @@ namespace Fibula.Protocol.V772.PacketWriters
     using Fibula.Communications;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Packets.Outgoing;
+    using Fibula.Definitions.Enumerations;
     using Fibula.Protocol.V772.Extensions;
     using Serilog;
 
@@ -38,9 +39,16 @@ namespace Fibula.Protocol.V772.PacketWriters
         /// <param name="message">The message to write into.</param>
         public override void WriteToMessage(IOutboundPacket packet, ref INetworkMessage message)
         {
-            if (!(packet is ProjectilePacket projectilePacket))
+            if (packet is not ProjectilePacket projectilePacket)
             {
                 this.Logger.Warning($"Invalid packet {packet.GetType().Name} routed to {this.GetType().Name}");
+
+                return;
+            }
+
+            if (projectilePacket.Effect == ProjectileType.None)
+            {
+                this.Logger.Debug($"Ignoring {packet.GetType().Name} with {ProjectileType.None} effect.");
 
                 return;
             }
@@ -49,7 +57,28 @@ namespace Fibula.Protocol.V772.PacketWriters
 
             message.AddLocation(projectilePacket.FromLocation);
             message.AddLocation(projectilePacket.ToLocation);
-            message.AddByte((byte)projectilePacket.Effect);
+
+            byte valueToSend = projectilePacket.Effect switch
+            {
+                ProjectileType.Spear => 0x01,
+                ProjectileType.Bolt => 0x02,
+                ProjectileType.Arrow => 0x03,
+                ProjectileType.OrangeOrb => 0x04,
+                ProjectileType.BlueOrb => 0x05,
+                ProjectileType.PoisonArrow => 0x06,
+                ProjectileType.BurstArrow => 0x07,
+                ProjectileType.ThrowingStar => 0x08,
+                ProjectileType.ThrowingKnife => 0x09,
+                ProjectileType.SmallStone => 0x10,
+                ProjectileType.BlackOrb => 0x11,
+                ProjectileType.LargeRock => 0x12,
+                ProjectileType.Snowball => 0x13,
+                ProjectileType.PowerBolt => 0x14,
+                ProjectileType.GreenOrb => 0x15,
+                _ => 0x00,
+            };
+
+            message.AddByte(valueToSend);
         }
     }
 }

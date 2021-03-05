@@ -12,6 +12,7 @@
 namespace Fibula.Communications.Packets.Contracts.Abstractions
 {
     using Fibula.Common.Contracts.Enumerations;
+    using Fibula.Definitions.Enumerations;
 
     /// <summary>
     /// Interface for fight and chase modes information.

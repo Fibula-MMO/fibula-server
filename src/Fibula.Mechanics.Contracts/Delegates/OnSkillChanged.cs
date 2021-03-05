@@ -11,7 +11,7 @@
 
 namespace Fibula.Mechanics.Contracts.Delegates
 {
-    using Fibula.Data.Entities.Contracts.Enumerations;
+    using Fibula.Definitions.Enumerations;
 
     /// <summary>
     /// Delegate meant for a skill change.

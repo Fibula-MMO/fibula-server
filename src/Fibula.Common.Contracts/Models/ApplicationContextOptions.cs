@@ -11,7 +11,6 @@
 
 namespace Fibula.Common.Contracts.Models
 {
-    using System.ComponentModel;
     using System.ComponentModel.DataAnnotations;
 
     /// <summary>
@@ -27,12 +26,6 @@ namespace Fibula.Common.Contracts.Models
         /// </summary>
         [Required(ErrorMessage = "A supported client version must be speficied.")]
         public VersionInformation SupportedClientVersion { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the protocol is using CipSoft RSA keys for encryption.
-        /// </summary>
-        [DefaultValue(false)]
-        public bool UsingCipsoftRsaKeys { get; set; }
 
         /// <summary>
         /// Gets or sets the website url.

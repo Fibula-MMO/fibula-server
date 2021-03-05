@@ -13,7 +13,7 @@ namespace Fibula.Mechanics.Contracts.Abstractions
 {
     using System;
     using System.Collections.Generic;
-    using Fibula.Common.Contracts.Enumerations;
+    using Fibula.Definitions.Flags;
     using Fibula.Scheduling.Contracts.Abstractions;
 
     /// <summary>
@@ -24,6 +24,6 @@ namespace Fibula.Mechanics.Contracts.Abstractions
         /// <summary>
         /// Gets the exhaustion conditions that this operation checks for and produces.
         /// </summary>
-        IDictionary<ExhaustionType, TimeSpan> ExhaustionInfo { get; }
+        IDictionary<ExhaustionFlag, TimeSpan> ExhaustionInfo { get; }
     }
 }

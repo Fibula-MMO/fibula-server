@@ -143,7 +143,7 @@ namespace Fibula.Protocol.V772.Extensions
                 return protocol;
             });
 
-            services.TryAddSingleton<IProtocolTileDescriptor, TileDescriptor_v772>();
+            services.TryAddSingleton<ITileDescriptor, TileDescriptor_v772>();
 
             services.TryAddSingleton<IPredefinedItemSet, PredefinedItemSet_v772>();
 

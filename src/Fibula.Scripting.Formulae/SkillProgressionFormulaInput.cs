@@ -11,7 +11,7 @@
 
 namespace Fibula.Scripting.Formulae
 {
-    using Fibula.Data.Entities.Contracts.Enumerations;
+    using Fibula.Definitions.Enumerations;
 
     /// <summary>
     /// Class that represents the input for a skill's progression formula.

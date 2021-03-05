@@ -30,7 +30,7 @@ namespace Fibula.Map.Contracts.Extensions
         /// <param name="map">A reference to the map.</param>
         /// <param name="locations">The locations to check if players can see.</param>
         /// <returns>A collection of connections.</returns>
-        public static IEnumerable<ICreature> CreaturesThatCanSee(this IMap map, params Location[] locations)
+        public static IEnumerable<ICreature> FindCreaturesThatCanSee(this IMap map, params Location[] locations)
         {
             map.ThrowIfNull(nameof(map));
 
@@ -79,9 +79,9 @@ namespace Fibula.Map.Contracts.Extensions
         /// <param name="map">A reference to the map.</param>
         /// <param name="locations">The locations to check if players can see.</param>
         /// <returns>A collection of connections.</returns>
-        public static IEnumerable<IPlayer> PlayersThatCanSee(this IMap map, params Location[] locations)
+        public static IEnumerable<IPlayer> FindPlayersThatCanSee(this IMap map, params Location[] locations)
         {
-            var creaturesThatCanSee = map.CreaturesThatCanSee(locations);
+            var creaturesThatCanSee = map.FindCreaturesThatCanSee(locations);
 
             return creaturesThatCanSee.OfType<IPlayer>();
         }

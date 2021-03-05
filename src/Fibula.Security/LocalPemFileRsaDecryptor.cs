@@ -64,13 +64,27 @@ namespace Fibula.Security.Encryption
         }
 
         /// <summary>
+        /// Decrypts the data supplied.
+        /// </summary>
+        /// <param name="data">The data to decrypt.</param>
+        /// <returns>The decrypted bytes of data.</returns>
+        public Span<byte> Decrypt(Span<byte> data)
+        {
+            // CopyTo is needed here because ProcessBlock returns a separate array instance.
+            // If they ever implement Span directly here, update.
+            this.rsaEngine.ProcessBlock(data.ToArray(), 0, data.Length).CopyTo(data);
+
+            return data;
+        }
+
+        /// <summary>
         /// Initializes this decryptor's RSA engine.
         /// </summary>
         private void InitializeEngine()
         {
             using StreamReader reader = File.OpenText(this.Options.FilePath);
 
-            if (!(new PemReader(reader).ReadObject() is AsymmetricCipherKeyPair cipherKeyPair))
+            if (new PemReader(reader).ReadObject() is not AsymmetricCipherKeyPair cipherKeyPair)
             {
                 throw new InvalidOperationException($"Failed to create an {nameof(AsymmetricCipherKeyPair)} from the contents of the specified PEM file.");
             }

@@ -43,8 +43,6 @@ namespace Fibula.Standalone
     using Fibula.Protocol.V772.Extensions;
     using Fibula.Scheduling;
     using Fibula.Scheduling.Contracts.Abstractions;
-    using Fibula.Scripting;
-    using Fibula.Scripting.Contracts.Abstractions;
     using Fibula.Security;
     using Fibula.Utilities.Validation;
     using Microsoft.ApplicationInsights.Extensibility;
@@ -144,14 +142,16 @@ namespace Fibula.Standalone
                 clientMap.Remove(connection);
             }
 
-            static void OnNewConnection(IConnection connection)
+            void OnNewConnection(IConnection connection)
             {
                 if (clientMap.ContainsKey(connection))
                 {
                     return;
                 }
 
-                clientMap.Add(connection, new Client(Log.Logger, connection));
+                var clientLogger = host.Services.GetRequiredService<Microsoft.Extensions.Logging.ILogger<Client>>();
+
+                clientMap.Add(connection, new Client(clientLogger, connection));
 
                 connection.PacketReady += OnPacketReady;
 
@@ -197,9 +197,7 @@ namespace Fibula.Standalone
 
             // Add known instances of configuration and logger.
             services.AddSingleton(hostingContext.Configuration);
-            services.AddSingleton(Log.Logger);
 
-            services.AddSingleton<IScriptLoader, CachingScriptLoader>();
             services.AddSingleton<IApplicationContext, ApplicationContext>();
             services.AddSingleton<IScheduler, Scheduler>();
 
@@ -256,7 +254,7 @@ namespace Fibula.Standalone
 
             services.AddSingleton<IHandlerSelector>(s =>
             {
-                var handlerSelector = new HandlerSelector(s.GetRequiredService<ILogger>());
+                var handlerSelector = new HandlerSelector(s.GetRequiredService<Microsoft.Extensions.Logging.ILogger<HandlerSelector>>());
 
                 foreach (var (packetType, type) in packetTypeToHandlersMap)
                 {

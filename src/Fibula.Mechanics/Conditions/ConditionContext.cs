@@ -18,7 +18,7 @@ namespace Fibula.Mechanics.Conditions
     using Fibula.Scheduling;
     using Fibula.Scheduling.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
-    using Serilog;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Class that represents a context for conditions.

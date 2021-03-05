@@ -12,7 +12,7 @@
 namespace Fibula.Creatures
 {
     using System;
-    using Fibula.Data.Entities.Contracts.Enumerations;
+    using Fibula.Definitions.Enumerations;
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Delegates;
     using Fibula.Utilities.Validation;

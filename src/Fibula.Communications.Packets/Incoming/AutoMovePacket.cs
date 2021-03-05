@@ -12,9 +12,9 @@
 namespace Fibula.Communications.Packets.Incoming
 {
     using System;
-    using Fibula.Common.Contracts.Enumerations;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Packets.Contracts.Abstractions;
+    using Fibula.Definitions.Enumerations;
 
     /// <summary>
     /// Class that represents an auto movement packet.

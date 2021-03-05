@@ -16,11 +16,11 @@ namespace Fibula.Map.GrassOnly
     using System.Collections.Generic;
     using System.Linq;
     using Fibula.Common.Contracts.Structs;
-    using Fibula.Items;
+    using Fibula.Items.Contracts;
     using Fibula.Items.Contracts.Abstractions;
-    using Fibula.Map;
     using Fibula.Map.Contracts.Abstractions;
     using Fibula.Map.Contracts.Delegates;
+    using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Class that represents a dummy map loader that yields all grass tiles.
@@ -41,9 +41,14 @@ namespace Fibula.Map.GrassOnly
         /// Initializes a new instance of the <see cref="GrassOnlyDummyMapLoader"/> class.
         /// </summary>
         /// <param name="itemFactory">A reference to the item factory.</param>
-        public GrassOnlyDummyMapLoader(IItemFactory itemFactory)
+        /// <param name="tileFactory">A reference to the tile factory.</param>
+        public GrassOnlyDummyMapLoader(IItemFactory itemFactory, ITileFactory tileFactory)
         {
+            itemFactory.ThrowIfNull(nameof(itemFactory));
+            tileFactory.ThrowIfNull(nameof(tileFactory));
+
             this.ItemFactory = itemFactory;
+            this.TileFactory = tileFactory;
 
             this.tilesAndLocations = new ConcurrentDictionary<Location, ITile>();
         }
@@ -62,6 +67,11 @@ namespace Fibula.Map.GrassOnly
         /// Gets the item factory instance.
         /// </summary>
         public IItemFactory ItemFactory { get; }
+
+        /// <summary>
+        /// Gets the tile factory instance.
+        /// </summary>
+        public ITileFactory TileFactory { get; }
 
         /// <summary>
         /// Gets a value indicating whether this loader has previously loaded the given coordinates.
@@ -101,7 +111,7 @@ namespace Fibula.Map.GrassOnly
                     var groundItem = this.ItemFactory.CreateItem(ItemCreationArguments.WithTypeId(GrassTypeId));
 
                     var location = new Location() { X = x, Y = y, Z = fromZ };
-                    var newTuple = (location, new Tile(location, groundItem));
+                    var newTuple = (location, this.TileFactory.CreateTile(location, groundItem));
 
                     tuplesAdded.Add(newTuple);
                 }

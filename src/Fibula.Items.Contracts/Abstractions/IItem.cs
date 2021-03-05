@@ -16,7 +16,7 @@ namespace Fibula.Items.Contracts.Abstractions
     using Fibula.Common.Contracts.Abstractions;
     using Fibula.Common.Contracts.Enumerations;
     using Fibula.Data.Entities.Contracts.Abstractions;
-    using Fibula.Items.Contracts.Enumerations;
+    using Fibula.Definitions.Enumerations;
 
     /// <summary>
     /// Interface for all items in the game.

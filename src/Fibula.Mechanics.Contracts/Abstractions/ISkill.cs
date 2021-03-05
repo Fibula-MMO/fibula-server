@@ -11,7 +11,7 @@
 
 namespace Fibula.Mechanics.Contracts.Abstractions
 {
-    using Fibula.Data.Entities.Contracts.Enumerations;
+    using Fibula.Definitions.Enumerations;
     using Fibula.Mechanics.Contracts.Delegates;
 
     /// <summary>

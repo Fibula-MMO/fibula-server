@@ -20,6 +20,7 @@ namespace Fibula.Mechanics.Operations
     using Fibula.Mechanics.Notifications;
     using Fibula.Utilities.Common.Extensions;
     using Fibula.Utilities.Validation;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Class that represents a base environment operation.
@@ -75,7 +76,7 @@ namespace Fibula.Mechanics.Operations
                     combatant.SkillChanged += context.GameApi.SkilledCreatureSkillChanged;
 
                     // Find now-spectators of this creature to start tracking that guy.
-                    foreach (var spectator in context.Map.CreaturesThatCanSee(creature.Location))
+                    foreach (var spectator in context.Map.FindCreaturesThatCanSee(creature.Location))
                     {
                         if (spectator is ICombatant combatantSpectator)
                         {
@@ -92,7 +93,7 @@ namespace Fibula.Mechanics.Operations
                 }
                 */
 
-                context.Logger.Debug($"Placed {creature.Name} at {targetTile.Location}.");
+                context.Logger.LogDebug($"Placed {creature.Name} at {targetTile.Location}.");
 
                 var placedAtStackPos = targetTile.GetStackOrderOfThing(creature);
 
@@ -103,10 +104,10 @@ namespace Fibula.Mechanics.Operations
                         {
                             if (creature is IPlayer player)
                             {
-                                return context.Map.PlayersThatCanSee(creature.Location).Except(player.YieldSingleItem());
+                                return context.Map.FindPlayersThatCanSee(creature.Location).Except(player.YieldSingleItem());
                             }
 
-                            return context.Map.PlayersThatCanSee(creature.Location);
+                            return context.Map.FindPlayersThatCanSee(creature.Location);
                         },
                         creature.Id,
                         default,
@@ -179,7 +180,7 @@ namespace Fibula.Mechanics.Operations
                     this.SendNotification(
                         context,
                         new CreatureRemovedNotification(
-                            () => context.Map.PlayersThatCanSee(creature.Location).Union(player.YieldSingleItem()),
+                            () => context.Map.FindPlayersThatCanSee(creature.Location).Union(player.YieldSingleItem()),
                             creature,
                             oldStackpos));
 
@@ -187,7 +188,7 @@ namespace Fibula.Mechanics.Operations
                 }
                 else
                 {
-                    this.SendNotification(context, new CreatureRemovedNotification(() => context.Map.PlayersThatCanSee(creature.Location), creature, oldStackpos));
+                    this.SendNotification(context, new CreatureRemovedNotification(() => context.Map.FindPlayersThatCanSee(creature.Location), creature, oldStackpos));
                 }
             }
 

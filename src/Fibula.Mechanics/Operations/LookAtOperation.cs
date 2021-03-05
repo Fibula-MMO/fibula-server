@@ -18,13 +18,15 @@ namespace Fibula.Mechanics.Operations
     using Fibula.Common.Contracts.Enumerations;
     using Fibula.Common.Contracts.Structs;
     using Fibula.Creatures.Contracts.Abstractions;
+    using Fibula.Data.Entities.Contracts.Extensions;
+    using Fibula.Definitions.Enumerations;
+    using Fibula.Definitions.Flags;
     using Fibula.Items.Contracts.Abstractions;
-    using Fibula.Items.Contracts.Enumerations;
-    using Fibula.Items.Contracts.Extensions;
     using Fibula.Map.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Mechanics.Notifications;
     using Fibula.Utilities.Common.Extensions;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Class that represents an event for a thing description.
@@ -105,7 +107,7 @@ namespace Fibula.Mechanics.Operations
 
             if (thing != null)
             {
-                context.Logger.Debug($"Player {this.PlayerToDescribeFor.Name} looking at {thing}. {this.Location} sector: {this.Location.X / 32}-{this.Location.Y / 32}-{this.Location.Z:00}");
+                context.Logger.LogDebug($"Player {this.PlayerToDescribeFor.Name} looking at {thing}. {this.Location} sector: {this.Location.X / 32}-{this.Location.Y / 32}-{this.Location.Z:00}");
             }
 
             string description = string.Empty;

@@ -13,13 +13,12 @@ namespace Fibula.Mechanics.Notifications
 {
     using System;
     using System.Collections.Generic;
-    using Fibula.Common.Contracts.Enumerations;
+    using Fibula.Common.Contracts.Constants;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Packets.Outgoing;
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Utilities.Common.Extensions;
-    using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Class that represents a notification for a world light change.
@@ -32,7 +31,7 @@ namespace Fibula.Mechanics.Notifications
         /// <param name="findTargetPlayers">A function to determine the target players of this notification.</param>
         /// <param name="lightLevel">The new world light level.</param>
         /// <param name="lightColor">The new world light color.</param>
-        public WorldLightChangedNotification(Func<IEnumerable<IPlayer>> findTargetPlayers, byte lightLevel, byte lightColor = (byte)LightColors.White)
+        public WorldLightChangedNotification(Func<IEnumerable<IPlayer>> findTargetPlayers, byte lightLevel, byte lightColor = LightConstants.WhiteColor)
             : base(findTargetPlayers)
         {
             this.LightLevel = lightLevel;

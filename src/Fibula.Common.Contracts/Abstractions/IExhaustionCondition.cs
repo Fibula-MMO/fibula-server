@@ -13,7 +13,7 @@ namespace Fibula.Common.Contracts.Abstractions
 {
     using System;
     using System.Collections.Generic;
-    using Fibula.Common.Contracts.Enumerations;
+    using Fibula.Definitions.Flags;
 
     /// <summary>
     /// Interface for the special type of exhaustion condition.
@@ -23,6 +23,6 @@ namespace Fibula.Common.Contracts.Abstractions
         /// <summary>
         /// Gets the current types that this exhaustion covers.
         /// </summary>
-        IDictionary<ExhaustionType, DateTimeOffset> ExhaustionTimesPerType { get; }
+        IDictionary<ExhaustionFlag, DateTimeOffset> ExhaustionTimesPerType { get; }
     }
 }

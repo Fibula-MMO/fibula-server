@@ -12,7 +12,7 @@
 namespace Fibula.Items.Contracts.Abstractions
 {
     using Fibula.Data.Entities.Contracts.Abstractions;
-    using Fibula.Data.Entities.Contracts.Enumerations;
+    using Fibula.Definitions.Enumerations;
 
     /// <summary>
     /// Interface that defines pre-defined items that are used by the server logic.
@@ -27,7 +27,7 @@ namespace Fibula.Items.Contracts.Abstractions
         IItemTypeEntity FindSplatterForBloodType(BloodType bloodType);
 
         /// <summary>
-        /// Finds the splatter <see cref="IItemTypeEntity"/> for a given blood type.
+        /// Finds the pool <see cref="IItemTypeEntity"/> for a given blood type.
         /// </summary>
         /// <param name="bloodType">The type of blood to look the item type for.</param>
         /// <returns>The <see cref="IItemTypeEntity"/> that's predefined for that blood type, or null if none is.</returns>

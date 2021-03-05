@@ -19,7 +19,7 @@ namespace Fibula.Client
     using Fibula.Common.Contracts.Enumerations;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
-    using Serilog;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Class that implements an <see cref="IClient"/> for any sort of connection.
@@ -51,12 +51,12 @@ namespace Fibula.Client
         /// </summary>
         /// <param name="logger">A reference to the logger to use.</param>
         /// <param name="connection">The connection that this client uses.</param>
-        public Client(ILogger logger, IConnection connection)
+        public Client(ILogger<Client> logger, IConnection connection)
         {
             logger.ThrowIfNull(nameof(logger));
             connection.ThrowIfNull(nameof(connection));
 
-            this.logger = logger.ForContext<Client>();
+            this.logger = logger;
 
             this.knownCreatures = new Dictionary<uint, long>();
             this.knownCreaturesLock = new object();
@@ -139,7 +139,7 @@ namespace Fibula.Client
             {
                 this.knownCreatures[creatureId] = DateTimeOffset.UtcNow.Ticks;
 
-                this.logger.Verbose($"Added creatureId {creatureId} to player {this.playerId} known set.");
+                this.logger.LogTrace($"Added creatureId {creatureId} to player {this.playerId} known set.");
             }
         }
 
@@ -174,7 +174,7 @@ namespace Fibula.Client
                 {
                     this.knownCreatures.Remove(creatureId);
 
-                    this.logger.Verbose($"Removed creatureId {creatureId} to player {this.playerId} known set.");
+                    this.logger.LogTrace($"Removed creatureId {creatureId} from player {this.playerId} known set.");
                 }
             }
         }

@@ -11,10 +11,10 @@
 
 namespace Fibula.Protocol.V772.PacketWriters
 {
-    using Fibula.Common.Contracts.Enumerations;
     using Fibula.Communications;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Packets.Outgoing;
+    using Fibula.Definitions.Enumerations;
     using Fibula.Protocol.V772.Extensions;
     using Serilog;
 
@@ -39,7 +39,7 @@ namespace Fibula.Protocol.V772.PacketWriters
         /// <param name="message">The message to write into.</param>
         public override void WriteToMessage(IOutboundPacket packet, ref INetworkMessage message)
         {
-            if (!(packet is MagicEffectPacket magicEffectPacket))
+            if (packet is not MagicEffectPacket magicEffectPacket)
             {
                 this.Logger.Warning($"Invalid packet {packet.GetType().Name} routed to {this.GetType().Name}");
 

@@ -17,7 +17,6 @@ namespace Fibula.Data.Repositories
     using System.Linq.Expressions;
     using Fibula.Data.Contracts.Abstractions;
     using Fibula.Data.Entities.Contracts.Abstractions;
-    using Fibula.Items.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
 
     /// <summary>

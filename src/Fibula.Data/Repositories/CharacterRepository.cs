@@ -40,7 +40,7 @@ namespace Fibula.Data.Repositories
         /// <param name="entity">The character to add.</param>
         public void Add(ICharacterEntity entity)
         {
-            if (!(entity is CharacterEntity characterEntity))
+            if (entity is not CharacterEntity characterEntity)
             {
                 throw new ArgumentException($"The {nameof(entity)} must be of type {nameof(CharacterEntity)}.", nameof(entity));
             }

@@ -30,7 +30,7 @@ namespace Fibula.Protocol.V772
     /// <summary>
     /// Class that represents a tile descriptor for protocol 7.72.
     /// </summary>
-    public class TileDescriptor_v772 : IProtocolTileDescriptor
+    public class TileDescriptor_v772 : ITileDescriptor
     {
         /// <summary>
         /// Holds the cache of bytes for tile descriptions, queried by <see cref="Location"/>.

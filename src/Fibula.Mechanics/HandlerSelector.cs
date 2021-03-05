@@ -16,7 +16,7 @@ namespace Fibula.Mechanics
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
-    using Serilog;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Class that represents a handler selector for incoming packets.
@@ -37,11 +37,11 @@ namespace Fibula.Mechanics
         /// Initializes a new instance of the <see cref="HandlerSelector"/> class.
         /// </summary>
         /// <param name="logger">A reference to the logger in use.</param>
-        public HandlerSelector(ILogger logger)
+        public HandlerSelector(ILogger<HandlerSelector> logger)
         {
             logger.ThrowIfNull(nameof(logger));
 
-            this.logger = logger.ForContext<HandlerSelector>();
+            this.logger = logger;
             this.handlersMap = new Dictionary<Type, IHandler>();
         }
 
@@ -60,7 +60,7 @@ namespace Fibula.Mechanics
                 throw new InvalidOperationException($"There is already a handler registered for type: {packetType}.");
             }
 
-            this.logger.Verbose($"Registered packet writer for type {packetType}.");
+            this.logger.LogTrace($"Registered packet writer for type {packetType}.");
 
             this.handlersMap[packetType] = handler;
         }
@@ -89,7 +89,7 @@ namespace Fibula.Mechanics
                 }
             }
 
-            this.logger.Warning($"No handler found for type {packetType}.");
+            this.logger.LogWarning($"No handler found for type {packetType}.");
 
             return null;
         }

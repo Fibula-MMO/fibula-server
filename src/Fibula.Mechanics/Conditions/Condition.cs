@@ -13,7 +13,7 @@ namespace Fibula.Mechanics.Conditions
 {
     using System;
     using Fibula.Common.Contracts.Abstractions;
-    using Fibula.Common.Contracts.Enumerations;
+    using Fibula.Definitions.Enumerations;
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Mechanics.Notifications;
     using Fibula.Scheduling;
@@ -59,7 +59,7 @@ namespace Fibula.Mechanics.Conditions
         {
             context.ThrowIfNull(nameof(context));
 
-            if (!typeof(IConditionContext).IsAssignableFrom(context.GetType()) || !(context is IConditionContext conditionContext))
+            if (!typeof(IConditionContext).IsAssignableFrom(context.GetType()) || context is not IConditionContext conditionContext)
             {
                 throw new ArgumentException($"{nameof(context)} must be an {nameof(IConditionContext)}.");
             }

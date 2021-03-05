@@ -16,7 +16,7 @@ namespace Fibula.Creatures
     using System.Linq;
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Creatures.Contracts.Constants;
-    using Fibula.Items;
+    using Fibula.Items.Contracts;
     using Fibula.Items.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
 
@@ -116,7 +116,7 @@ namespace Fibula.Creatures
                 }
 
                 // Got lucky! This creature has this item.
-                if (!(itemFactory.Create(ItemCreationArguments.WithTypeId(typeId)) is IItem newItem))
+                if (itemFactory.Create(ItemCreationArguments.WithTypeId(typeId)) is not IItem newItem)
                 {
                     // TODO: propper logging.
                     // Console.WriteLine($"Unknown item with id {typeId} as loot in monster type {(this.Owner as Monster)?.Type.RaceId}.");

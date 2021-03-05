@@ -13,7 +13,8 @@ namespace Fibula.Mechanics.Contracts.Extensions
 {
     using System;
     using Fibula.Common.Contracts.Abstractions;
-    using Fibula.Common.Contracts.Enumerations;
+    using Fibula.Definitions.Enumerations;
+    using Fibula.Definitions.Flags;
     using Fibula.Scheduling.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
 
@@ -29,7 +30,7 @@ namespace Fibula.Mechanics.Contracts.Extensions
         /// <param name="exhaustionType">The type of condition.</param>
         /// <param name="currentTime">The current time to calculate from.</param>
         /// <returns>The <see cref="TimeSpan"/> result.</returns>
-        public static TimeSpan RemainingExhaustionTime(this IThing thing, ExhaustionType exhaustionType, DateTimeOffset currentTime)
+        public static TimeSpan RemainingExhaustionTime(this IThing thing, ExhaustionFlag exhaustionType, DateTimeOffset currentTime)
         {
             thing.ThrowIfNull(nameof(thing));
 
@@ -70,7 +71,7 @@ namespace Fibula.Mechanics.Contracts.Extensions
         /// <param name="thing">The thing to check the exhaustion condition on.</param>
         /// <param name="type">The type of exhaustion to check for.</param>
         /// <returns>True if the thing has such condition, false otherwise.</returns>
-        public static bool IsExhausted(this IThing thing, ExhaustionType type)
+        public static bool IsExhausted(this IThing thing, ExhaustionFlag type)
         {
             thing.ThrowIfNull(nameof(thing));
             type.ThrowIfNull(nameof(type));

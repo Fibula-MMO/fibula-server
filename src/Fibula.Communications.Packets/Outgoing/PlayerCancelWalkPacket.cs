@@ -11,9 +11,9 @@
 
 namespace Fibula.Communications.Packets.Outgoing
 {
-    using Fibula.Common.Contracts.Enumerations;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Contracts.Enumerations;
+    using Fibula.Definitions.Enumerations;
 
     /// <summary>
     /// Class that represents a packet for cancelling a player's walk.

@@ -151,20 +151,9 @@ namespace Fibula.Common
                 identifier = evt.EventType;
             }
 
-            evt.Completed += this.StopTrackingEvent;
+            evt.Completed += this.HandleTrackedEventCompletion;
 
             this.TrackedEvents[identifier] = evt;
-        }
-
-        /// <summary>
-        /// Makes the thing stop tracking an event.
-        /// </summary>
-        /// <param name="evt">The event to stop tracking.</param>
-        public void StopTrackingEvent(IEvent evt)
-        {
-            evt.ThrowIfNull(nameof(evt));
-
-            this.StopTrackingEvent(evt, evt.EventType);
         }
 
         /// <summary>
@@ -183,7 +172,7 @@ namespace Fibula.Common
 
             this.TrackedEvents.Remove(identifier);
 
-            evt.Completed -= this.StopTrackingEvent;
+            evt.Completed -= this.HandleTrackedEventCompletion;
         }
 
         /// <summary>
@@ -191,5 +180,17 @@ namespace Fibula.Common
         /// </summary>
         /// <returns>A new <see cref="IThing"/> that is a shallow copy of this instance.</returns>
         public abstract IThing Clone();
+
+        /// <summary>
+        /// Handles a tracked event's <see cref="IEvent.Completed"/> event.
+        /// </summary>
+        /// <param name="evt">The event which completed.</param>
+        private void HandleTrackedEventCompletion(IEvent evt)
+        {
+            evt.ThrowIfNull(nameof(evt));
+
+            // We only care about stopping it from being tracked.
+            this.StopTrackingEvent(evt, evt.EventType);
+        }
     }
 }

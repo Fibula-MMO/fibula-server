@@ -12,7 +12,7 @@
 namespace Fibula.Creatures.Contracts.Abstractions
 {
     using Fibula.Client.Contracts.Abstractions;
-    using Fibula.Data.Entities.Contracts.Enumerations;
+    using Fibula.Definitions.Enumerations;
 
     /// <summary>
     /// Interface for character players in the game.

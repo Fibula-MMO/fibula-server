@@ -17,6 +17,7 @@ namespace Fibula.Mechanics.Operations
     using Fibula.Common.Contracts.Abstractions;
     using Fibula.Common.Contracts.Enumerations;
     using Fibula.Creatures.Contracts.Abstractions;
+    using Fibula.Definitions.Flags;
     using Fibula.Map.Contracts.Abstractions;
     using Fibula.Map.Contracts.Extensions;
     using Fibula.Mechanics.Conditions;
@@ -47,7 +48,7 @@ namespace Fibula.Mechanics.Operations
         {
             this.CanBeCancelled = true;
 
-            this.ExhaustionInfo = new Dictionary<ExhaustionType, TimeSpan>();
+            this.ExhaustionInfo = new Dictionary<ExhaustionFlag, TimeSpan>();
         }
 
         /// <summary>
@@ -63,7 +64,7 @@ namespace Fibula.Mechanics.Operations
         /// <summary>
         /// Gets the exhaustion conditions that this operation checks for and produces.
         /// </summary>
-        public IDictionary<ExhaustionType, TimeSpan> ExhaustionInfo { get; }
+        public IDictionary<ExhaustionFlag, TimeSpan> ExhaustionInfo { get; }
 
         /// <summary>
         /// Gets the creature that is requesting the event, if known.
@@ -162,7 +163,7 @@ namespace Fibula.Mechanics.Operations
                         this.SendNotification(
                             context,
                             new TileUpdatedNotification(
-                                () => context.Map.PlayersThatCanSee(targetTile.Location),
+                                () => context.Map.FindPlayersThatCanSee(targetTile.Location),
                                 targetTile.Location,
                                 context.MapDescriptor.DescribeTile));
 
@@ -188,7 +189,7 @@ namespace Fibula.Mechanics.Operations
         /// <param name="message">Optional. The message to send. Defaults to <see cref="OperationMessage.NotPossible"/>.</param>
         protected void DispatchTextNotification(IOperationContext context, string message = OperationMessage.NotPossible)
         {
-            if (this.RequestorId == 0 || !(context.CreatureFinder.FindCreatureById(this.RequestorId) is IPlayer player))
+            if (this.RequestorId == 0 || context.CreatureFinder.FindCreatureById(this.RequestorId) is not IPlayer player)
             {
                 return;
             }

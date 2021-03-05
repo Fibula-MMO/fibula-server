@@ -14,6 +14,7 @@ namespace Fibula.Mechanics.Operations
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Map.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Abstractions;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Class that represents an operation for placing a creature on the map.
@@ -53,7 +54,7 @@ namespace Fibula.Mechanics.Operations
 
             if (!successfulPlacement)
             {
-                context.Logger.Warning($"Failed to place creature {this.Creature.Name} at {this.AtTile.Location}");
+                context.Logger.LogWarning($"Failed to place creature {this.Creature.Name} at {this.AtTile.Location}");
 
                 return;
             }

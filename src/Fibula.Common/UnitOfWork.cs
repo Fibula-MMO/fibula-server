@@ -13,9 +13,8 @@ namespace Fibula.Common
 {
     using System;
     using Fibula.Common.Contracts.Abstractions;
-    using Fibula.Creatures.Contracts.Abstractions;
+    using Fibula.Data.Entities.Contracts.Abstractions;
     using Fibula.Data.Repositories;
-    using Fibula.Items.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
     using Microsoft.EntityFrameworkCore;
 
@@ -129,7 +128,7 @@ namespace Fibula.Common
         }
 
         /// <summary>
-        /// Disposes this unit of work and it's resources.
+        /// Disposes this unit of work and its resources.
         /// </summary>
         public void Dispose()
         {

@@ -56,14 +56,14 @@ namespace Fibula.Common.Contracts.Abstractions
         /// Makes the thing start tracking an event.
         /// </summary>
         /// <param name="evt">The event to stop tracking.</param>
-        /// <param name="identifier">Optional. The identifier under which to start tracking the event. If no identifier is provided, the event's type name is used.</param>
-        void StartTrackingEvent(IEvent evt, string identifier = "");
+        /// <param name="eventName">Optional. The name under which to start tracking the event. If no identifier is provided, the event's type name is used.</param>
+        void StartTrackingEvent(IEvent evt, string eventName = "");
 
         /// <summary>
         /// Makes the thing stop tracking an event.
         /// </summary>
         /// <param name="evt">The event to stop tracking.</param>
-        /// <param name="identifier">Optional. The identifier under which to look for and stop tracking the event. If no identifier is provided, the event's type name is used.</param>
-        void StopTrackingEvent(IEvent evt, string identifier = "");
+        /// <param name="eventName">Optional. The name under which to look for and stop tracking the event. If no identifier is provided, the event's type name is used.</param>
+        void StopTrackingEvent(IEvent evt, string eventName = "");
     }
 }

@@ -20,9 +20,9 @@ namespace Fibula.Map.SectorFiles
     using Fibula.Common.Contracts.Abstractions;
     using Fibula.Common.Contracts.Structs;
     using Fibula.Creatures.Contracts.Abstractions;
-    using Fibula.Items;
+    using Fibula.Definitions.Enumerations;
+    using Fibula.Items.Contracts;
     using Fibula.Items.Contracts.Abstractions;
-    using Fibula.Items.Contracts.Enumerations;
     using Fibula.Map.Contracts.Abstractions;
     using Fibula.Map.Contracts.Enumerations;
     using Fibula.Parsing.CipFiles;
@@ -134,16 +134,19 @@ namespace Fibula.Map.SectorFiles
         /// <param name="logger">A reference to the logger instance in use.</param>
         /// <param name="creatureFinder">A reference to the creature finder.</param>
         /// <param name="itemFactory">A reference to the item factory.</param>
+        /// <param name="tileFactory">A reference to the tile factory.</param>
         /// <param name="sectorMapLoaderOptions">The options for this map loader.</param>
         public SectorMapLoader(
             ILogger logger,
             ICreatureFinder creatureFinder,
             IItemFactory itemFactory,
+            ITileFactory tileFactory,
             IOptions<SectorMapLoaderOptions> sectorMapLoaderOptions)
         {
             logger.ThrowIfNull(nameof(logger));
             creatureFinder.ThrowIfNull(nameof(creatureFinder));
             itemFactory.ThrowIfNull(nameof(itemFactory));
+            tileFactory.ThrowIfNull(nameof(tileFactory));
             sectorMapLoaderOptions.ThrowIfNull(nameof(sectorMapLoaderOptions));
 
             DataAnnotationsValidator.ValidateObjectRecursive(sectorMapLoaderOptions.Value);
@@ -158,6 +161,7 @@ namespace Fibula.Map.SectorFiles
             this.Logger = logger.ForContext<SectorMapLoader>();
             this.CreatureFinder = creatureFinder;
             this.ItemFactory = itemFactory;
+            this.TileFactory = tileFactory;
 
             this.totalTileCount = 1;
             this.totalLoadedCount = default;
@@ -185,6 +189,11 @@ namespace Fibula.Map.SectorFiles
         /// Gets the item factory instance.
         /// </summary>
         public IItemFactory ItemFactory { get; }
+
+        /// <summary>
+        /// Gets the tile factory instance.
+        /// </summary>
+        public ITileFactory TileFactory { get; }
 
         /// <summary>
         /// Gets the percentage completed loading the map [0, 100].
@@ -316,7 +325,7 @@ namespace Fibula.Map.SectorFiles
                 };
 
                 // start off with a tile that has no ground in it.
-                ITile newTile = new Tile(location, null);
+                ITile newTile = this.TileFactory.CreateTile(location);
 
                 this.AddContent(newTile, CipFileParser.Parse(tileData));
 
@@ -350,14 +359,6 @@ namespace Fibula.Map.SectorFiles
 
                             foreach (var element in elements)
                             {
-                                if (element.IsFlag)
-                                {
-                                    // A flag is unexpected in this context.
-                                    this.Logger.Warning($"Unexpected flag {element.Attributes?.First()?.Name}, ignoring.");
-
-                                    continue;
-                                }
-
                                 IItem item = this.ItemFactory.CreateItem(ItemCreationArguments.WithTypeId((ushort)element.Id));
 
                                 if (item == null)
@@ -413,21 +414,13 @@ namespace Fibula.Map.SectorFiles
             {
                 if ("Content".Equals(attribute.Name) && this is IContainerItem containerItem)
                 {
-                    if (!(attribute.Value is IEnumerable<IParsedElement> contentElements) || !contentElements.Any())
+                    if (attribute.Value is not IEnumerable<IParsedElement> contentElements || !contentElements.Any())
                     {
                         continue;
                     }
 
                     foreach (var element in contentElements)
                     {
-                        if (element.IsFlag)
-                        {
-                            // A flag is unexpected in this context.
-                            this.Logger.Warning($"Unexpected flag {element.Attributes?.First()?.Name}, ignoring.");
-
-                            continue;
-                        }
-
                         IItem contentItem = this.ItemFactory.CreateItem(ItemCreationArguments.WithTypeId((ushort)element.Id));
 
                         if (contentItem == null)
@@ -447,7 +440,7 @@ namespace Fibula.Map.SectorFiles
                 }
 
                 // These are safe to add as Attributes of the item.
-                if (!Enum.TryParse(attribute.Name, out CipItemAttribute cipAttr) || !(cipAttr.ToItemAttribute() is ItemAttribute itemAttribute))
+                if (!Enum.TryParse(attribute.Name, out CipItemAttribute cipAttr) || cipAttr.ToItemAttribute() is not ItemAttribute itemAttribute)
                 {
                     this.Logger.Warning($"Unsupported attribute {attribute.Name} on {item.Type.Name}, ignoring.");
 

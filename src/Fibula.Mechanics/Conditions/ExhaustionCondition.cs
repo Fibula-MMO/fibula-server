@@ -15,7 +15,8 @@ namespace Fibula.Mechanics.Conditions
     using System.Collections.Generic;
     using System.Linq;
     using Fibula.Common.Contracts.Abstractions;
-    using Fibula.Common.Contracts.Enumerations;
+    using Fibula.Definitions.Enumerations;
+    using Fibula.Definitions.Flags;
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
 
@@ -29,10 +30,10 @@ namespace Fibula.Mechanics.Conditions
         /// </summary>
         /// <param name="exhaustionType">The type of exhaustion.</param>
         /// <param name="endTime">The date and time at which the condition is set to end.</param>
-        public ExhaustionCondition(ExhaustionType exhaustionType, DateTimeOffset endTime)
+        public ExhaustionCondition(ExhaustionFlag exhaustionType, DateTimeOffset endTime)
             : base(ConditionType.Exhausted)
         {
-            this.ExhaustionTimesPerType = new Dictionary<ExhaustionType, DateTimeOffset>()
+            this.ExhaustionTimesPerType = new Dictionary<ExhaustionFlag, DateTimeOffset>()
             {
                 { exhaustionType, endTime },
             };
@@ -43,7 +44,7 @@ namespace Fibula.Mechanics.Conditions
         /// <summary>
         /// Gets the current types that this exhaustion covers.
         /// </summary>
-        public IDictionary<ExhaustionType, DateTimeOffset> ExhaustionTimesPerType { get; }
+        public IDictionary<ExhaustionFlag, DateTimeOffset> ExhaustionTimesPerType { get; }
 
         /// <summary>
         /// Aggregates this condition into another of the same type.
@@ -54,7 +55,7 @@ namespace Fibula.Mechanics.Conditions
         {
             conditionOfSameType.ThrowIfNull(nameof(conditionOfSameType));
 
-            if (!(conditionOfSameType is ExhaustionCondition otherExhaustionCondition))
+            if (conditionOfSameType is not ExhaustionCondition otherExhaustionCondition)
             {
                 return false;
             }

@@ -12,10 +12,10 @@
 namespace Fibula.Protocol.V772.PacketReaders
 {
     using System.IO;
-    using Fibula.Common.Contracts.Enumerations;
     using Fibula.Communications;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Packets.Incoming;
+    using Fibula.Definitions.Enumerations;
     using Fibula.Utilities.Validation;
     using Serilog;
 

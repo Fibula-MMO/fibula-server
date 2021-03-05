@@ -19,16 +19,16 @@ namespace Fibula.Mechanics.Operations
     using Fibula.Communications.Packets.Outgoing;
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Creatures.Contracts.Constants;
+    using Fibula.Data.Entities.Contracts.Extensions;
+    using Fibula.Definitions.Flags;
     using Fibula.Items.Contracts.Abstractions;
-    using Fibula.Items.Contracts.Enumerations;
-    using Fibula.Items.Contracts.Extensions;
     using Fibula.Map.Contracts.Abstractions;
     using Fibula.Map.Contracts.Extensions;
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Extensions;
     using Fibula.Mechanics.Notifications;
     using Fibula.Utilities.Common.Extensions;
-    using Fibula.Utilities.Validation;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Class that represents a common base between movements.
@@ -70,7 +70,7 @@ namespace Fibula.Mechanics.Operations
             this.ToCreatureId = toCreatureId;
             this.Amount = amount;
 
-            this.ExhaustionInfo.Add(ExhaustionType.Movement, TimeSpan.Zero);
+            this.ExhaustionInfo.Add(ExhaustionFlag.Movement, TimeSpan.Zero);
         }
 
         /// <summary>
@@ -208,7 +208,7 @@ namespace Fibula.Mechanics.Operations
         {
             var thingMoving = sourceContainer?.FindThingAtIndex(this.FromLocation.ContainerIndex);
 
-            if (!(thingMoving is IItem item))
+            if (thingMoving is not IItem item)
             {
                 this.DispatchTextNotification(context, OperationMessage.MayNotMoveThis);
             }
@@ -226,7 +226,7 @@ namespace Fibula.Mechanics.Operations
             // Declare some pre-conditions.
             var creatureHasDestinationContainerOpen = destinationContainer != null;
 
-            if (!(thingMoving is IItem item))
+            if (thingMoving is not IItem item)
             {
                 this.DispatchTextNotification(context, OperationMessage.MayNotMoveThis);
             }
@@ -245,7 +245,7 @@ namespace Fibula.Mechanics.Operations
         {
             var thingMoving = sourceContainer?.FindThingAtIndex(this.FromLocation.ContainerIndex);
 
-            if (!(thingMoving is IItem item))
+            if (thingMoving is not IItem item)
             {
                 this.DispatchTextNotification(context, OperationMessage.MayNotMoveThis);
 
@@ -285,7 +285,7 @@ namespace Fibula.Mechanics.Operations
             // Declare some pre-conditions.
             var creatureHasSourceContainerOpen = destinationContainer != null;
 
-            if (!(thingMoving is IItem item))
+            if (thingMoving is not IItem item)
             {
                 this.DispatchTextNotification(context, OperationMessage.MayNotMoveThis);
             }
@@ -308,7 +308,7 @@ namespace Fibula.Mechanics.Operations
             var creatureHasSourceContainerOpen = sourceContainer != null;
             var creatureHasDestinationContainerOpen = destinationContainer != null;
 
-            if (!(thingMoving is IItem item))
+            if (thingMoving is not IItem item)
             {
                 this.DispatchTextNotification(context, OperationMessage.MayNotMoveThis);
             }
@@ -331,7 +331,7 @@ namespace Fibula.Mechanics.Operations
         {
             var thingMoving = sourceContainer?.FindThingAtIndex(this.FromLocation.ContainerIndex);
 
-            if (!(thingMoving is IItem item))
+            if (thingMoving is not IItem item)
             {
                 this.DispatchTextNotification(context, OperationMessage.MayNotMoveThis);
 
@@ -611,7 +611,7 @@ namespace Fibula.Mechanics.Operations
                 this.SendNotification(
                     context,
                     new TileUpdatedNotification(
-                        () => context.Map.PlayersThatCanSee(fromTile.Location),
+                        () => context.Map.FindPlayersThatCanSee(fromTile.Location),
                         fromTile.Location,
                         context.MapDescriptor.DescribeTile));
             }
@@ -633,7 +633,7 @@ namespace Fibula.Mechanics.Operations
 
                 if (!this.AddContentToContainerOrFallback(context, fromThingContainer, ref rollbackRemainder, FallbackIndex, includeTileAsFallback: true, requestorCreature))
                 {
-                    context.Logger.Error($"Rollback failed on {nameof(this.PerformItemMovement)}. Thing: {rollbackRemainder.DescribeForLogger()}");
+                    context.Logger.LogError($"Rollback failed on {nameof(this.PerformItemMovement)}. Thing: {rollbackRemainder.DescribeForLogger()}");
                 }
             }
 
@@ -652,7 +652,7 @@ namespace Fibula.Mechanics.Operations
         /// <remarks>Changes game state, should only be performed after all pertinent validations happen.</remarks>
         private bool PerformCreatureMovement(IOperationContext context, ICreature creature, Location toLocation, bool isTeleport = false, ICreature requestorCreature = null)
         {
-            if (creature == null || !(creature.ParentContainer is ITile fromTile) || !context.Map.GetTileAt(toLocation, out ITile toTile))
+            if (creature == null || creature.ParentContainer is not ITile fromTile || !context.Map.GetTileAt(toLocation, out ITile toTile))
             {
                 return false;
             }
@@ -696,19 +696,19 @@ namespace Fibula.Mechanics.Operations
 
             if (toStackPosition == byte.MaxValue)
             {
-                context.Logger.Warning("Unexpected destination stack position during creature movement, suggests that the creature is not found in the destination tile after the move.");
+                context.Logger.LogWarning("Unexpected destination stack position during creature movement, suggests that the creature is not found in the destination tile after the move.");
             }
 
             // Then deal with the consequences of the move.
             creature.Direction = moveDirection.GetClientSafeDirection();
             creature.LastMovementCostModifier = (fromTile.Location - toLocation).Z != 0 ? 2 : moveDirection.IsDiagonal() ? 3 : 1;
 
-            this.ExhaustionInfo[ExhaustionType.Movement] = creature.CalculateStepDuration(fromTile);
+            this.ExhaustionInfo[ExhaustionFlag.Movement] = creature.CalculateStepDuration(fromTile);
 
             this.SendNotification(
                 context,
                 new CreatureMovedNotification(
-                    () => context.Map.PlayersThatCanSee(fromTile.Location, toLocation),
+                    () => context.Map.FindPlayersThatCanSee(fromTile.Location, toLocation),
                     creature.Id,
                     fromTile.Location,
                     fromTileStackPos,

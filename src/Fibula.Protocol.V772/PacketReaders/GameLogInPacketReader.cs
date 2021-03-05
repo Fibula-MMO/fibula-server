@@ -15,6 +15,7 @@ namespace Fibula.Protocol.V772.PacketReaders
     using Fibula.Communications;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Packets.Incoming;
+    using Fibula.Security.Contracts;
     using Fibula.Utilities.Validation;
     using Serilog;
 
@@ -28,18 +29,29 @@ namespace Fibula.Protocol.V772.PacketReaders
         /// </summary>
         /// <param name="logger">A reference to the logger in use.</param>
         /// <param name="applicationContext">A reference to the application context.</param>
-        public GameLogInPacketReader(ILogger logger, IApplicationContext applicationContext)
+        /// <param name="rsaDecryptor">A reference to the RSA decryptor in use.</param>
+        public GameLogInPacketReader(
+            ILogger logger,
+            IApplicationContext applicationContext,
+            IRsaDecryptor rsaDecryptor)
             : base(logger)
         {
             applicationContext.ThrowIfNull(nameof(applicationContext));
+            rsaDecryptor.ThrowIfNull(nameof(rsaDecryptor));
 
             this.ApplicationContext = applicationContext;
+            this.RsaDecryptor = rsaDecryptor;
         }
 
         /// <summary>
         /// Gets a reference to the application context.
         /// </summary>
         public IApplicationContext ApplicationContext { get; }
+
+        /// <summary>
+        /// Gets the RSA decryptor to use.
+        /// </summary>
+        public IRsaDecryptor RsaDecryptor { get; }
 
         /// <summary>
         /// Reads a packet from the given <see cref="INetworkMessage"/>.
@@ -55,9 +67,8 @@ namespace Fibula.Protocol.V772.PacketReaders
             var version = message.GetUInt16();
 
             var targetSpan = message.Buffer[message.Cursor..message.Length];
-            var decryptedBytes = this.ApplicationContext.RsaDecryptor.Decrypt(targetSpan.ToArray());
 
-            decryptedBytes.CopyTo(targetSpan);
+            this.RsaDecryptor.Decrypt(targetSpan);
 
             // Note: there are 92 bytes that follow the password, and I have no idea what they contain.
             return new GameLogInPacket(

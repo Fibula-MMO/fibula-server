@@ -17,7 +17,7 @@ namespace Fibula.Mechanics.Notifications
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Scheduling;
     using Fibula.Utilities.Validation;
-    using Serilog;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Class that represents a context for notifications.

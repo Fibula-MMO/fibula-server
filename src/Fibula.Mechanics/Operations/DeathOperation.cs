@@ -17,12 +17,11 @@ namespace Fibula.Mechanics.Operations
     using Fibula.Common.Contracts.Enumerations;
     using Fibula.Communications.Packets.Outgoing;
     using Fibula.Creatures.Contracts.Abstractions;
-    using Fibula.Items;
+    using Fibula.Items.Contracts;
     using Fibula.Map.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Mechanics.Notifications;
     using Fibula.Utilities.Common.Extensions;
-    using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Class that represents an operation for a creature's death.

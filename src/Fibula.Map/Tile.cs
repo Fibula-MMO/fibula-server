@@ -418,7 +418,7 @@ namespace Fibula.Map
         {
             thingFactory.ThrowIfNull(nameof(thingFactory));
 
-            if (!(thingFactory is IItemFactory itemFactory))
+            if (thingFactory is not IItemFactory itemFactory)
             {
                 throw new ArgumentException($"The {nameof(thingFactory)} must be derived of type {nameof(IItemFactory)}.");
             }
@@ -520,7 +520,7 @@ namespace Fibula.Map
         {
             thingFactory.ThrowIfNull(nameof(thingFactory));
 
-            if (!(thingFactory is IItemFactory itemFactory))
+            if (thingFactory is not IItemFactory itemFactory)
             {
                 throw new ArgumentException($"The {nameof(thingFactory)} must be derived of type {nameof(IItemFactory)}.");
             }

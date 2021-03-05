@@ -22,6 +22,7 @@ namespace Fibula.Mechanics.Notifications
     using Fibula.Scheduling;
     using Fibula.Scheduling.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Abstract class that represents a notification to a player's connection.
@@ -66,7 +67,7 @@ namespace Fibula.Mechanics.Notifications
         {
             context.ThrowIfNull(nameof(context));
 
-            if (!typeof(INotificationContext).IsAssignableFrom(context.GetType()) || !(context is INotificationContext notificationContext))
+            if (!typeof(INotificationContext).IsAssignableFrom(context.GetType()) || context is not INotificationContext notificationContext)
             {
                 throw new ArgumentException($"{nameof(context)} must be an {nameof(INotificationContext)}.");
             }
@@ -88,7 +89,7 @@ namespace Fibula.Mechanics.Notifications
                 {
                     // This one is verbose because it is really common, for example, expiring items or spawning creatures,
                     // which mostly tend to happen while there are no players around.
-                    context.Logger?.Verbose($"Found no targets for {this.GetType().Name}, skipping.");
+                    context.Logger?.LogTrace($"Found no targets for {this.GetType().Name}, skipping.");
                     return;
                 }
 
@@ -114,7 +115,7 @@ namespace Fibula.Mechanics.Notifications
             }
             catch (Exception ex)
             {
-                context.Logger?.Error($"Error while sending {this.GetType().Name}: {ex.Message}");
+                context.Logger?.LogError($"Error while sending {this.GetType().Name}: {ex.Message}");
             }
 
             this.Sent = null;

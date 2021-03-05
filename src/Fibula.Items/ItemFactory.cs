@@ -14,11 +14,11 @@ namespace Fibula.Items
     using System;
     using Fibula.Common.Contracts.Abstractions;
     using Fibula.Data.Entities.Contracts.Abstractions;
+    using Fibula.Data.Entities.Contracts.Extensions;
+    using Fibula.Definitions.Flags;
+    using Fibula.Items.Contracts;
     using Fibula.Items.Contracts.Abstractions;
-    using Fibula.Items.Contracts.Constants;
     using Fibula.Items.Contracts.Delegates;
-    using Fibula.Items.Contracts.Enumerations;
-    using Fibula.Items.Contracts.Extensions;
     using Fibula.Utilities.Validation;
 
     /// <summary>
@@ -64,19 +64,20 @@ namespace Fibula.Items
         /// <returns>The new <see cref="IItem"/> instance.</returns>
         public IItem CreateItem(IThingCreationArguments creationArguments)
         {
-            if (!(creationArguments is ItemCreationArguments itemCreationArguments))
+            if (creationArguments is not ItemCreationArguments itemCreationArguments)
             {
                 throw new ArgumentException($"Invalid type of arguments '{creationArguments.GetType().Name}' supplied, expected {nameof(ItemCreationArguments)}", nameof(creationArguments));
             }
 
-            if (itemCreationArguments.TypeId < ItemConstants.MaximumAmountOfCummulativeItems)
+            // TODO: magic number here- anything under 100 was not a valid type item.
+            if (itemCreationArguments.TypeId < 100)
             {
                 return null;
             }
 
             using var unitOfWork = this.ApplicationContext.CreateNewUnitOfWork();
 
-            if (!(unitOfWork.ItemTypes.GetById(itemCreationArguments.TypeId.ToString()) is IItemTypeEntity itemType))
+            if (unitOfWork.ItemTypes.GetById(itemCreationArguments.TypeId.ToString()) is not IItemTypeEntity itemType)
             {
                 throw new ArgumentException($"Unknown item type with Id {itemCreationArguments.TypeId} in creation arguments for an item.", nameof(creationArguments));
             }

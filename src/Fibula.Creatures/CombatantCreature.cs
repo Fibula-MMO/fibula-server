@@ -19,7 +19,7 @@ namespace Fibula.Creatures
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Creatures.Contracts.Enumerations;
     using Fibula.Data.Entities.Contracts.Abstractions;
-    using Fibula.Data.Entities.Contracts.Enumerations;
+    using Fibula.Definitions.Enumerations;
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Constants;
     using Fibula.Mechanics.Contracts.Delegates;

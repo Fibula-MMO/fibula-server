@@ -13,10 +13,9 @@ namespace Fibula.Mechanics.Conditions
 {
     using System;
     using Fibula.Common.Contracts.Abstractions;
-    using Fibula.Common.Contracts.Enumerations;
-    using Fibula.Items;
+    using Fibula.Definitions.Enumerations;
+    using Fibula.Items.Contracts;
     using Fibula.Items.Contracts.Abstractions;
-    using Fibula.Items.Contracts.Enumerations;
     using Fibula.Map.Contracts.Abstractions;
     using Fibula.Map.Contracts.Extensions;
     using Fibula.Mechanics.Contracts.Abstractions;
@@ -53,7 +52,7 @@ namespace Fibula.Mechanics.Conditions
         {
             conditionOfSameType.ThrowIfNull(nameof(conditionOfSameType));
 
-            if (!(conditionOfSameType is DecayingCondition otherDecayCondition) || otherDecayCondition.Item.TypeId != this.Item.TypeId)
+            if (conditionOfSameType is not DecayingCondition otherDecayCondition || otherDecayCondition.Item.TypeId != this.Item.TypeId)
             {
                 return false;
             }
@@ -71,7 +70,7 @@ namespace Fibula.Mechanics.Conditions
         {
             var inThingContainer = this.Item.ParentContainer;
 
-            if (!(this.Item is IThing existingThing) || !this.Item.HasExpiration || inThingContainer == null)
+            if (this.Item is not IThing existingThing || !this.Item.HasExpiration || inThingContainer == null)
             {
                 // Silent fail.
                 return;
@@ -112,7 +111,7 @@ namespace Fibula.Mechanics.Conditions
                     this.SendNotification(
                         context,
                         new TileUpdatedNotification(
-                            () => context.Map.PlayersThatCanSee(atTile.Location),
+                            () => context.Map.FindPlayersThatCanSee(atTile.Location),
                             atTile.Location,
                             context.MapDescriptor.DescribeTile));
 

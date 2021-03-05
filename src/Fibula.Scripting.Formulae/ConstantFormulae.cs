@@ -11,6 +11,8 @@
 
 namespace Fibula.Scripting.Formulae
 {
+    using System;
+
     /// <summary>
     /// Static class that contains common formulae used in the game.
     /// </summary>
@@ -20,13 +22,13 @@ namespace Fibula.Scripting.Formulae
     public static class ConstantFormulae
     {
         /// <summary>
-        /// The formula used to calculate the next target count for experience.
+        /// Gets the delegate used to calculate the next target count for experience.
         /// </summary>
-        public const string ExperienceNextTargetCountFormula = "return (50 * System.Math.Pow(CurrentLevel, 3) - 150 * System.Math.Pow(CurrentLevel, 2) + 400 * CurrentLevel) / 3;";
+        public static Func<ISkillProgressionFormulaInput, double> ExperienceNextTargetCountDelegate => (input) => ((50 * Math.Pow(input.CurrentLevel, 3)) - (150 * Math.Pow(input.CurrentLevel, 2)) + (400 * input.CurrentLevel)) / 3;
 
         /// <summary>
-        /// The default formula used to calculate the next target count for skills.
+        /// Gets the default delegate used to calculate the next target count for skills.
         /// </summary>
-        public const string DefaultSkillNextTargetCountFormula = "return 50 * (1 - System.Math.Pow(1.1, 1 + CurrentLevel - 10)) / (1 - 1.1);";
+        public static Func<ISkillProgressionFormulaInput, double> DefaultSkillNextTargetCountDelegate => (input) => 50 * (1 - Math.Pow(1.1, 1 + input.CurrentLevel - 10)) / (1 - 1.1);
     }
 }

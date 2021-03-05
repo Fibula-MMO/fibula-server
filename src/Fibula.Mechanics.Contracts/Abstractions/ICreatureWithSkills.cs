@@ -13,7 +13,7 @@ namespace Fibula.Mechanics.Contracts.Abstractions
 {
     using System.Collections.Generic;
     using Fibula.Creatures.Contracts.Abstractions;
-    using Fibula.Data.Entities.Contracts.Enumerations;
+    using Fibula.Definitions.Enumerations;
     using Fibula.Mechanics.Contracts.Delegates;
 
     /// <summary>

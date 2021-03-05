@@ -15,19 +15,17 @@ namespace Fibula.Data.Loaders.MonFiles
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using Fibula.Common.Contracts.Enumerations;
-    using Fibula.Creatures.Contracts.Abstractions;
-    using Fibula.Creatures.Contracts.Enumerations;
     using Fibula.Data.Entities;
     using Fibula.Data.Entities.Contracts.Abstractions;
-    using Fibula.Data.Entities.Contracts.Enumerations;
     using Fibula.Data.Entities.Contracts.Structs;
+    using Fibula.Definitions.Enumerations;
+    using Fibula.Definitions.Flags;
     using Fibula.Parsing.CipFiles;
     using Fibula.Parsing.CipFiles.Enumerations;
     using Fibula.Parsing.CipFiles.Extensions;
     using Fibula.Utilities.Validation;
+    using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
-    using Serilog;
 
     /// <summary>
     /// Class that represents a monster type loader that reads from the .mon files.
@@ -60,7 +58,7 @@ namespace Fibula.Data.Loaders.MonFiles
         /// <param name="logger">A reference to the logger instance.</param>
         /// <param name="options">The options for this loader.</param>
         public MonFilesMonsterTypeLoader(
-            ILogger logger,
+            ILogger<MonFilesMonsterTypeLoader> logger,
             IOptions<MonFilesMonsterTypeLoaderOptions> options)
         {
             logger.ThrowIfNull(nameof(logger));
@@ -69,7 +67,7 @@ namespace Fibula.Data.Loaders.MonFiles
             DataAnnotationsValidator.ValidateObjectRecursive(options.Value);
 
             this.LoaderOptions = options.Value;
-            this.Logger = logger.ForContext<MonFilesMonsterTypeLoader>();
+            this.Logger = logger;
 
             options.Value.MonsterFilesDirectory.ThrowIfNullOrWhiteSpace(nameof(options.Value.MonsterFilesDirectory));
 
@@ -101,7 +99,7 @@ namespace Fibula.Data.Loaders.MonFiles
 
             foreach (var monsterFileInfo in this.monsterFilesDirInfo.GetFiles($"*.{MonsterFileExtension}"))
             {
-                var monsterType = this.ReadMonsterFile(monsterFileInfo);
+                var monsterType = ReadMonsterFile(monsterFileInfo);
 
                 if (monsterType != null)
                 {
@@ -117,7 +115,7 @@ namespace Fibula.Data.Loaders.MonFiles
         /// </summary>
         /// <param name="monsterFileInfo">The information about the monster file.</param>
         /// <returns>The <see cref="IMonsterTypeEntity"/> instance.</returns>
-        private IMonsterTypeEntity ReadMonsterFile(FileInfo monsterFileInfo)
+        private static IMonsterTypeEntity ReadMonsterFile(FileInfo monsterFileInfo)
         {
             monsterFileInfo.ThrowIfNull(nameof(monsterFileInfo));
 
@@ -128,7 +126,7 @@ namespace Fibula.Data.Loaders.MonFiles
 
             var monsterType = new MonsterTypeEntity();
 
-            foreach ((string name, string value) in this.ReadInDataTuples(File.ReadLines(monsterFileInfo.FullName), monsterFileInfo.FullName))
+            foreach ((string name, string value) in ReadInDataTuples(File.ReadLines(monsterFileInfo.FullName), monsterFileInfo.FullName))
             {
                 switch (name)
                 {
@@ -265,7 +263,7 @@ namespace Fibula.Data.Loaders.MonFiles
         /// <param name="fileLines">The file's lines.</param>
         /// <param name="monsterFileName">The current monster file name, for logging purposes.</param>
         /// <returns>A collection of mappings of properties names to values.</returns>
-        private IEnumerable<(string propName, string propValue)> ReadInDataTuples(IEnumerable<string> fileLines, string monsterFileName)
+        private static IEnumerable<(string propName, string propValue)> ReadInDataTuples(IEnumerable<string> fileLines, string monsterFileName)
         {
             fileLines.ThrowIfNull(nameof(fileLines));
 

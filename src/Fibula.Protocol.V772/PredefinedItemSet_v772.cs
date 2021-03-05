@@ -14,9 +14,8 @@ namespace Fibula.Protocol.V772
     using System.Collections.Generic;
     using Fibula.Common.Contracts.Enumerations;
     using Fibula.Data.Entities.Contracts.Abstractions;
-    using Fibula.Data.Entities.Contracts.Enumerations;
+    using Fibula.Definitions.Enumerations;
     using Fibula.Items.Contracts.Abstractions;
-    using Fibula.Items.Contracts.Enumerations;
     using Fibula.Utilities.Validation;
 
     /// <summary>

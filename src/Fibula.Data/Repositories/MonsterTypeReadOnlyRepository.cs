@@ -15,7 +15,6 @@ namespace Fibula.Data.Repositories
     using System.Collections.Generic;
     using System.Linq;
     using System.Linq.Expressions;
-    using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Data.Contracts.Abstractions;
     using Fibula.Data.Entities.Contracts.Abstractions;
     using Fibula.Utilities.Validation;

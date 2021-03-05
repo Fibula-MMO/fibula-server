@@ -19,12 +19,13 @@ namespace Fibula.Mechanics.Operations
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Creatures.Contracts.Enumerations;
     using Fibula.Data.Entities.Contracts.Abstractions;
+    using Fibula.Definitions.Enumerations;
     using Fibula.Map.Contracts.Abstractions;
     using Fibula.Map.Contracts.Constants;
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Mechanics.Notifications;
     using Fibula.Utilities.Common.Extensions;
-    using Fibula.Utilities.Validation;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Class that represents a login operation.
@@ -85,9 +86,9 @@ namespace Fibula.Mechanics.Operations
                 Metadata = this.PlayerMetadata,
             };
 
-            if (!(context.CreatureFactory.CreateCreature(creationArguments) is IPlayer player))
+            if (context.CreatureFactory.CreateCreature(creationArguments) is not IPlayer player)
             {
-                context.Logger.Warning($"Unable to create player instance for {this.PlayerMetadata.Name}, aborting log in.");
+                context.Logger.LogWarning($"Unable to create player instance for {this.PlayerMetadata.Name}, aborting log in.");
 
                 return;
             }

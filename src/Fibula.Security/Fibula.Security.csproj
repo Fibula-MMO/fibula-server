@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -18,7 +18,7 @@
 
   <ItemGroup>
     <PackageReference Include="BouncyCastle.NetCore" Version="1.8.8" />
-    <PackageReference Include="Fibula.Utilities.Validation" Version="1.0.1" />
+    <PackageReference Include="Fibula.Utilities.Validation" Version="1.1.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>

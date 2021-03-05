@@ -90,59 +90,61 @@ namespace Fibula.Communications.Listeners
         /// <returns>A <see cref="Task"/> representing the asynchronous listening operation.</returns>
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            Task.Run(async () =>
-            {
-                try
+            Task.Run(
+                async () =>
                 {
-                    this.tcpListener.Start();
-
-                    // Stop() makes AcceptSocketAsync() throw an ObjectDisposedException.
-                    // This means that when the token is cancelled, the callback action here will be to Stop() the listener,
-                    // which in turn throws the exception and it gets caught below, exiting gracefully.
-                    cancellationToken.Register(() => this.tcpListener.Stop());
-
-                    while (!cancellationToken.IsCancellationRequested)
+                    try
                     {
-                        try
+                        this.tcpListener.Start();
+
+                        // Stop() makes AcceptSocketAsync() throw an ObjectDisposedException.
+                        // This means that when the token is cancelled, the callback action here will be to Stop() the listener,
+                        // which in turn throws the exception and it gets caught below, exiting gracefully.
+                        cancellationToken.Register(() => this.tcpListener.Stop());
+
+                        while (!cancellationToken.IsCancellationRequested)
                         {
-                            var socket = await this.tcpListener.AcceptSocketAsync().ConfigureAwait(false);
-
-                            ISocketConnection socketConnection = this.socketConnectionFactory.Create(socket);
-
-                            if (this.dosDefender?.IsBlocked(socketConnection.SocketIp) ?? false)
+                            try
                             {
-                                // TODO: evaluate if it is worth just leaving the connection open but ignore it, so that they think they are successfully DoSing...
-                                // But we would need to think if it is a connection drain attack then...
-                                socketConnection.Close();
+                                var socket = await this.tcpListener.AcceptSocketAsync().ConfigureAwait(false);
 
-                                continue;
+                                ISocketConnection socketConnection = this.socketConnectionFactory.Create(socket);
+
+                                if (this.dosDefender?.IsBlocked(socketConnection.SocketIp) ?? false)
+                                {
+                                    // TODO: evaluate if it is worth just leaving the connection open but ignore it, so that they think they are successfully DoSing...
+                                    // But we would need to think if it is a connection drain attack then...
+                                    socketConnection.Close();
+
+                                    continue;
+                                }
+
+                                this.NewConnection?.Invoke(socketConnection);
+
+                                socketConnection.Closed += this.OnConnectionClose;
+                                socketConnection.PacketProcessed += this.AfterConnectionMessageProcessed;
+
+                                this.dosDefender?.LogConnectionAttempt(socketConnection.SocketIp);
+
+                                socketConnection.Read();
                             }
-
-                            this.NewConnection?.Invoke(socketConnection);
-
-                            socketConnection.Closed += this.OnConnectionClose;
-                            socketConnection.PacketProcessed += this.AfterConnectionMessageProcessed;
-
-                            this.dosDefender?.LogConnectionAttempt(socketConnection.SocketIp);
-
-                            socketConnection.Read();
-                        }
-                        catch (ObjectDisposedException)
-                        {
-                            // This is normal when the listerner is stopped because of token cancellation.
-                            break;
-                        }
-                        catch (Exception socEx)
-                        {
-                            this.Logger.Error(socEx.ToString());
+                            catch (ObjectDisposedException)
+                            {
+                                // This is normal when the listerner is stopped because of token cancellation.
+                                break;
+                            }
+                            catch (Exception socEx)
+                            {
+                                this.Logger.Error(socEx.ToString());
+                            }
                         }
                     }
-                }
-                catch (SocketException socEx)
-                {
-                    this.Logger.Error(socEx.ToString());
-                }
-            });
+                    catch (SocketException socEx)
+                    {
+                        this.Logger.Error(socEx.ToString());
+                    }
+                },
+                cancellationToken);
 
             // return this to allow other IHostedService-s to start.
             return Task.CompletedTask;

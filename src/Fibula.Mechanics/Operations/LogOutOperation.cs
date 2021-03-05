@@ -14,13 +14,13 @@ namespace Fibula.Mechanics.Operations
     using Fibula.Common.Contracts.Enumerations;
     using Fibula.Communications.Packets.Outgoing;
     using Fibula.Creatures.Contracts.Abstractions;
+    using Fibula.Definitions.Enumerations;
     using Fibula.Map.Contracts.Abstractions;
     using Fibula.Map.Contracts.Extensions;
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Extensions;
     using Fibula.Mechanics.Notifications;
     using Fibula.Utilities.Common.Extensions;
-    using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Class that represents a logout operation.
@@ -81,7 +81,7 @@ namespace Fibula.Mechanics.Operations
 
                 if (!this.Player.IsDead)
                 {
-                    this.SendNotification(context, new GenericNotification(() => context.Map.PlayersThatCanSee(playerLocation), new MagicEffectPacket(playerLocation, AnimatedEffect.Puff)));
+                    this.SendNotification(context, new GenericNotification(() => context.Map.FindPlayersThatCanSee(playerLocation), new MagicEffectPacket(playerLocation, AnimatedEffect.Puff)));
                 }
 
                 context.CreatureManager.UnregisterCreature(this.Player);

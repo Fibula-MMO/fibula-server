@@ -20,10 +20,11 @@ namespace Fibula.Items
     using Fibula.Common.Contracts.Enumerations;
     using Fibula.Common.Contracts.Structs;
     using Fibula.Data.Entities.Contracts.Abstractions;
+    using Fibula.Data.Entities.Contracts.Extensions;
+    using Fibula.Definitions.Enumerations;
+    using Fibula.Definitions.Flags;
     using Fibula.Items.Contracts.Abstractions;
     using Fibula.Items.Contracts.Constants;
-    using Fibula.Items.Contracts.Enumerations;
-    using Fibula.Items.Contracts.Extensions;
     using Fibula.Utilities.Validation;
 
     /// <summary>

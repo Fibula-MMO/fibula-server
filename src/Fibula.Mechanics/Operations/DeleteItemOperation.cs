@@ -48,7 +48,7 @@ namespace Fibula.Mechanics.Operations
             var requestor = this.GetRequestor(context.CreatureFinder);
             var inThingContainer = this.Item.ParentContainer;
 
-            if (inThingContainer == null || !(this.Item is IThing existingThing))
+            if (inThingContainer == null || this.Item is not IThing existingThing)
             {
                 return;
             }
@@ -67,7 +67,7 @@ namespace Fibula.Mechanics.Operations
                 this.SendNotification(
                     context,
                     new TileUpdatedNotification(
-                        () => context.Map.PlayersThatCanSee(atTile.Location),
+                        () => context.Map.FindPlayersThatCanSee(atTile.Location),
                         atTile.Location,
                         context.MapDescriptor.DescribeTile));
             }

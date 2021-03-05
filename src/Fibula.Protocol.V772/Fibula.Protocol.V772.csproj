@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DebugType>full</DebugType>
@@ -30,7 +30,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Fibula.Communications.Packets\Fibula.Communications.Packets.csproj" />
     <ProjectReference Include="..\Fibula.Communications\Fibula.Communications.csproj" />
-    <ProjectReference Include="..\Fibula.Data.Entities\Fibula.Data.Entities.csproj" />
     <ProjectReference Include="..\Fibula.Data\Fibula.Data.csproj" />
     <ProjectReference Include="..\Fibula.Items\Fibula.Items.csproj" />
     <ProjectReference Include="..\Fibula.Map.Contracts\Fibula.Map.Contracts.csproj" />

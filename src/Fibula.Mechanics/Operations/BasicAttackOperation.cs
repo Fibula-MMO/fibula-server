@@ -18,7 +18,8 @@ namespace Fibula.Mechanics.Operations
     using Fibula.Communications.Packets.Outgoing;
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Creatures.Contracts.Enumerations;
-    using Fibula.Data.Entities.Contracts.Enumerations;
+    using Fibula.Definitions.Enumerations;
+    using Fibula.Definitions.Flags;
     using Fibula.Map.Contracts.Extensions;
     using Fibula.Mechanics.Conditions;
     using Fibula.Mechanics.Contracts.Abstractions;
@@ -49,7 +50,7 @@ namespace Fibula.Mechanics.Operations
             this.Target = target;
             this.Attacker = attacker;
 
-            this.ExhaustionInfo[ExhaustionType.Combat] = exhaustionCost;
+            this.ExhaustionInfo[ExhaustionFlag.Combat] = exhaustionCost;
 
             this.TargetIdAtScheduleTime = attacker?.AutoAttackTarget?.Id ?? 0;
         }
@@ -142,7 +143,7 @@ namespace Fibula.Mechanics.Operations
                 if (!attackPerformed)
                 {
                     // Update the actual cost if the attack wasn't performed.
-                    this.ExhaustionInfo.Remove(ExhaustionType.Combat);
+                    this.ExhaustionInfo.Remove(ExhaustionFlag.Combat);
                 }
             }
         }
@@ -254,7 +255,7 @@ namespace Fibula.Mechanics.Operations
                 }
             }
 
-            this.SendNotification(context, new GenericNotification(() => context.Map.PlayersThatCanSee(this.Target.Location), packetsToSendToAllSpectators.ToArray()));
+            this.SendNotification(context, new GenericNotification(() => context.Map.FindPlayersThatCanSee(this.Target.Location), packetsToSendToAllSpectators.ToArray()));
 
             if (this.Target is IPlayer targetPlayer)
             {

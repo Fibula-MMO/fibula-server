@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk;Microsoft.NET.Sdk.Publish">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <ApplicationIcon />
     <StartupObject></StartupObject>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
@@ -58,19 +58,18 @@
   <ItemGroup>
     <ProjectReference Include="..\Fibula.Client\Fibula.Client.csproj" />
     <ProjectReference Include="..\Fibula.Common\Fibula.Common.csproj" />
-    <ProjectReference Include="..\Fibula.Creatures.MonstersDbFile\Fibula.Creatures.MonstersDbFile.csproj" />
+    <ProjectReference Include="..\Fibula.Creatures.MonstersDbFile\Fibula.Plugins.SpawnLoaders.CipMonstersDbFile.csproj" />
     <ProjectReference Include="..\Fibula.Creatures\Fibula.Creatures.csproj" />
-    <ProjectReference Include="..\Fibula.Data.InMemoryDatabase\Fibula.Data.InMemoryDatabase.csproj" />
-    <ProjectReference Include="..\Fibula.Data.Loaders.MonFiles\Fibula.Data.Loaders.MonFiles.csproj" />
-    <ProjectReference Include="..\Fibula.Data.Loaders.ObjectsFile\Fibula.Data.Loaders.ObjectsFile.csproj" />
+    <ProjectReference Include="..\Fibula.Data.InMemoryDatabase\Fibula.Plugins.Database.InMemoryOnly.csproj" />
+    <ProjectReference Include="..\Fibula.Data.Loaders.MonFiles\Fibula.Plugins.MonsterLoaders.CipMonFiles.csproj" />
+    <ProjectReference Include="..\Fibula.Data.Loaders.ObjectsFile\Fibula.Plugins.ItemLoaders.CipObjectsFile.csproj" />
     <ProjectReference Include="..\Fibula.Items\Fibula.Items.csproj" />
-    <ProjectReference Include="..\Fibula.Map.GrassOnly\Fibula.Map.GrassOnly.csproj" />
-    <ProjectReference Include="..\Fibula.Map.SectorFiles\Fibula.Map.SectorFiles.csproj" />
+    <ProjectReference Include="..\Fibula.Map.GrassOnly\Fibula.Plugins.MapLoaders.GrassOnly.csproj" />
+    <ProjectReference Include="..\Fibula.Map.SectorFiles\Fibula.Plugins.MapLoaders.CipSectorFiles.csproj" />
     <ProjectReference Include="..\Fibula.Map\Fibula.Map.csproj" />
     <ProjectReference Include="..\Fibula.Mechanics.PathFinding.AStar\Fibula.Mechanics.PathFinding.AStar.csproj" />
     <ProjectReference Include="..\Fibula.Mechanics\Fibula.Mechanics.csproj" />
     <ProjectReference Include="..\Fibula.Protocol.V772\Fibula.Protocol.V772.csproj" />
-    <ProjectReference Include="..\Fibula.Scripting\Fibula.Scripting.csproj" />
     <ProjectReference Include="..\Fibula.Security\Fibula.Security.csproj" />
     <ProjectReference Include="..\Fibula.Communications\Fibula.Communications.csproj" />
   </ItemGroup>

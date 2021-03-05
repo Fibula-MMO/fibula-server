@@ -20,8 +20,8 @@ namespace Fibula.Mechanics.Operations
     using Fibula.Creatures;
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Creatures.Contracts.Constants;
-    using Fibula.Creatures.Contracts.Enumerations;
-    using Fibula.Creatures.Contracts.Extensions;
+    using Fibula.Definitions.Enumerations;
+    using Fibula.Definitions.Flags;
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Extensions;
     using Fibula.Mechanics.Notifications;
@@ -45,7 +45,7 @@ namespace Fibula.Mechanics.Operations
 
             this.Creature = creature;
 
-            this.ExhaustionInfo.Add(ExhaustionType.Movement, TimeSpan.Zero);
+            this.ExhaustionInfo.Add(ExhaustionFlag.Movement, TimeSpan.Zero);
         }
 
         /// <summary>
@@ -149,7 +149,7 @@ namespace Fibula.Mechanics.Operations
                 if (this.Creature is ICreature creature)
                 {
                     // The scheduling delay becomes any cooldown debt for this operation.
-                    scheduleDelay = creature.RemainingExhaustionTime(ExhaustionType.Movement, context.Scheduler.CurrentTime);
+                    scheduleDelay = creature.RemainingExhaustionTime(ExhaustionFlag.Movement, context.Scheduler.CurrentTime);
                 }
 
                 // Schedule the actual walk operation.

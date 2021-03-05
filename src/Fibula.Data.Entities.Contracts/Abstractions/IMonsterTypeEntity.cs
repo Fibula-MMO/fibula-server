@@ -12,7 +12,7 @@
 namespace Fibula.Data.Entities.Contracts.Abstractions
 {
     using System.Collections.Generic;
-    using Fibula.Data.Entities.Contracts.Enumerations;
+    using Fibula.Definitions.Enumerations;
 
     /// <summary>
     /// Interface for 'types of monster' entities.

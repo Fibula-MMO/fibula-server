@@ -14,6 +14,7 @@ namespace Fibula.Common.Contracts.Structs
     using System;
     using Fibula.Common.Contracts.Constants;
     using Fibula.Common.Contracts.Enumerations;
+    using Fibula.Definitions.Enumerations;
 
     /// <summary>
     /// Structure for all locations in the game.

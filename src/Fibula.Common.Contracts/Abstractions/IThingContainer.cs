@@ -17,7 +17,7 @@ namespace Fibula.Common.Contracts.Abstractions
     public interface IThingContainer : ILocatable
     {
         /// <summary>
-        /// Attempts to find an <see cref="IThing"/> whitin this container.
+        /// Attempts to find a <see cref="IThing"/> whitin this container.
         /// </summary>
         /// <param name="index">The index at which to look for the <see cref="IThing"/>.</param>
         /// <returns>The <see cref="IThing"/> found at the index, if any was found.</returns>

@@ -17,6 +17,7 @@ namespace Fibula.Communications.Packets.Incoming.Tests
     using Fibula.Communications.Contracts.Enumerations;
     using Fibula.Communications.Packets.Contracts.Abstractions;
     using Fibula.Communications.Packets.Incoming;
+    using Fibula.Definitions.Enumerations;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     /// <summary>

@@ -17,9 +17,8 @@ namespace Fibula.Mechanics.Contracts.Abstractions
     using Fibula.Common.Contracts.Enumerations;
     using Fibula.Common.Contracts.Structs;
     using Fibula.Creatures.Contracts.Abstractions;
-    using Fibula.Creatures.Contracts.Enumerations;
     using Fibula.Data.Entities.Contracts.Abstractions;
-    using Fibula.Items.Contracts.Enumerations;
+    using Fibula.Definitions.Enumerations;
 
     /// <summary>
     /// Interface for the operations available in the game API.

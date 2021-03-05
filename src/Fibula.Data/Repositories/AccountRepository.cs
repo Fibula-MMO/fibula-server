@@ -40,7 +40,7 @@ namespace Fibula.Data.Repositories
         /// <param name="entity">The account to add.</param>
         public void Add(IAccountEntity entity)
         {
-            if (!(entity is AccountEntity accountEntity))
+            if (entity is not AccountEntity accountEntity)
             {
                 throw new ArgumentException($"The {nameof(entity)} must be of type {nameof(AccountEntity)}.", nameof(entity));
             }

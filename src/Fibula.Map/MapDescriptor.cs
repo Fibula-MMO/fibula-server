@@ -37,7 +37,7 @@ namespace Fibula.Map
         /// <summary>
         /// A reference to the tile descriptor in use.
         /// </summary>
-        private readonly IProtocolTileDescriptor tileDescriptor;
+        private readonly ITileDescriptor tileDescriptor;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MapDescriptor"/> class.
@@ -45,7 +45,7 @@ namespace Fibula.Map
         /// <param name="logger">A reference to the logger to use.</param>
         /// <param name="map">The reference to the map in use.</param>
         /// <param name="tileDescriptor">A reference to the tile descriptor in use.</param>
-        public MapDescriptor(ILogger logger, IMap map, IProtocolTileDescriptor tileDescriptor)
+        public MapDescriptor(ILogger logger, IMap map, ITileDescriptor tileDescriptor)
         {
             logger.ThrowIfNull(nameof(logger));
             map.ThrowIfNull(nameof(map));

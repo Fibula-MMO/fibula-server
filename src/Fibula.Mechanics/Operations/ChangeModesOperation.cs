@@ -12,7 +12,9 @@
 namespace Fibula.Mechanics.Operations
 {
     using Fibula.Common.Contracts.Enumerations;
+    using Fibula.Definitions.Enumerations;
     using Fibula.Mechanics.Contracts.Abstractions;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Class that represents a change modes operation.
@@ -57,12 +59,12 @@ namespace Fibula.Mechanics.Operations
         {
             var onCreature = this.GetRequestor(context.CreatureFinder);
 
-            if (onCreature == null || !(onCreature is ICombatant combatantCreature))
+            if (onCreature == null || onCreature is not ICombatant combatantCreature)
             {
                 return;
             }
 
-            context.Logger.Debug($"{onCreature.Name} changed modes to {this.FightMode} and {this.ChaseMode}, safety: {this.IsSafeModeOn}.");
+            context.Logger.LogDebug($"{onCreature.Name} changed modes to {this.FightMode} and {this.ChaseMode}, safety: {this.IsSafeModeOn}.");
 
             combatantCreature.FightMode = this.FightMode;
             combatantCreature.ChaseMode = this.ChaseMode;

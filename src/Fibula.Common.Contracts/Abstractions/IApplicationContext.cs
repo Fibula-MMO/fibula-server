@@ -14,8 +14,6 @@ namespace Fibula.Common.Contracts.Abstractions
     using System.Threading;
     using Fibula.Common.Contracts.Models;
     using Fibula.Data.Contracts.Abstractions;
-    using Fibula.Scripting.Contracts.Abstractions;
-    using Fibula.Security.Contracts;
     using Microsoft.ApplicationInsights;
 
     using IUnitOfWork = Fibula.Data.Contracts.Abstractions.IUnitOfWork<
@@ -48,16 +46,6 @@ namespace Fibula.Common.Contracts.Abstractions
         /// Gets the default database context to use.
         /// </summary>
         IFibulaDbContext DefaultDatabaseContext { get; }
-
-        /// <summary>
-        /// Gets the RSA decryptor to use.
-        /// </summary>
-        IRsaDecryptor RsaDecryptor { get; }
-
-        /// <summary>
-        /// Gets the script loader in use.
-        /// </summary>
-        IScriptLoader ScriptLoader { get; }
 
         /// <summary>
         /// Creates a new <see cref="IUnitOfWork"/> for data access.

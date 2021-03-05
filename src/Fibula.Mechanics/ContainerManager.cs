@@ -366,7 +366,7 @@ namespace Fibula.Mechanics
                 // The request has to be sent this way since the container id may be different for each player.
                 foreach (var (containerPosition, creatureId) in this.containersToCreatureIds[container.UniqueId].ToList())
                 {
-                    if (!(this.creatureFinder.FindPlayerById(creatureId) is IPlayer player))
+                    if (this.creatureFinder.FindPlayerById(creatureId) is not IPlayer player)
                     {
                         continue;
                     }
@@ -395,7 +395,7 @@ namespace Fibula.Mechanics
                 // The request has to be sent this way since the container id may be different for each player.
                 foreach (var (containerId, creatureId) in this.containersToCreatureIds[container.UniqueId].ToList())
                 {
-                    if (!(this.creatureFinder.FindPlayerById(creatureId) is IPlayer player))
+                    if (this.creatureFinder.FindPlayerById(creatureId) is not IPlayer player)
                     {
                         continue;
                     }
@@ -430,7 +430,7 @@ namespace Fibula.Mechanics
                 // The request has to be sent this way since the container id may be different for each player.
                 foreach (var (containerId, creatureId) in this.containersToCreatureIds[container.UniqueId].ToList())
                 {
-                    if (!(this.creatureFinder.FindPlayerById(creatureId) is IPlayer player))
+                    if (this.creatureFinder.FindPlayerById(creatureId) is not IPlayer player)
                     {
                         continue;
                     }
@@ -451,7 +451,7 @@ namespace Fibula.Mechanics
         {
             lock (this.internalDictionariesLock)
             {
-                if (!(containerThatChangedAsThing is IContainerItem containerItem) ||
+                if (containerThatChangedAsThing is not IContainerItem containerItem ||
                     this.containersToCreatureIds.ContainsKey(containerItem.UniqueId))
                 {
                     return;
@@ -480,7 +480,7 @@ namespace Fibula.Mechanics
                     // Container was dropped or placed in a container that ultimately sits on the map, figure out which creatures are still in range.
                     foreach (var (containerId, creatureId) in this.containersToCreatureIds[containerItem.UniqueId].ToList())
                     {
-                        if (!(this.creatureFinder.FindPlayerById(creatureId) is IPlayer player))
+                        if (this.creatureFinder.FindPlayerById(creatureId) is not IPlayer player)
                         {
                             continue;
                         }

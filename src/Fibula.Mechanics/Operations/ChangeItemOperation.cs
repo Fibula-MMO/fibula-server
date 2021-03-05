@@ -15,7 +15,7 @@ namespace Fibula.Mechanics.Operations
     using Fibula.Common.Contracts.Enumerations;
     using Fibula.Common.Contracts.Structs;
     using Fibula.Creatures.Contracts.Abstractions;
-    using Fibula.Items;
+    using Fibula.Items.Contracts;
     using Fibula.Items.Contracts.Abstractions;
     using Fibula.Map.Contracts.Abstractions;
     using Fibula.Map.Contracts.Extensions;
@@ -83,7 +83,7 @@ namespace Fibula.Mechanics.Operations
             // Adjust index if this a map location.
             var existingThing = (this.FromLocation.Type == LocationType.Map && (inThingContainer is ITile fromTile)) ? fromTile.FindItemWithTypeId(this.FromTypeId) : inThingContainer?.FindThingAtIndex(index);
 
-            if (existingThing == null || !(existingThing is IItem existingItem))
+            if (existingThing == null || existingThing is not IItem existingItem)
             {
                 // Silent fail.
                 return;
@@ -111,7 +111,7 @@ namespace Fibula.Mechanics.Operations
                     this.SendNotification(
                         context,
                         new TileUpdatedNotification(
-                            () => context.Map.PlayersThatCanSee(atTile.Location),
+                            () => context.Map.FindPlayersThatCanSee(atTile.Location),
                             atTile.Location,
                             context.MapDescriptor.DescribeTile));
 

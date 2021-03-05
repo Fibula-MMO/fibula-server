@@ -55,14 +55,14 @@ namespace Fibula.Mechanics.Handlers
             incomingPacket.ThrowIfNull(nameof(incomingPacket));
             client.ThrowIfNull(nameof(client));
 
-            if (!(incomingPacket is IActionWithoutContentInfo actionInfo))
+            if (incomingPacket is not IActionWithoutContentInfo actionInfo)
             {
                 this.Logger.Error($"Expected packet info of type {nameof(IActionWithoutContentInfo)} but got {incomingPacket.GetType().Name}.");
 
                 return null;
             }
 
-            if (!(this.CreatureFinder.FindCreatureById(client.PlayerId) is IPlayer player))
+            if (this.CreatureFinder.FindCreatureById(client.PlayerId) is not IPlayer player)
             {
                 this.Logger.Warning($"Client's associated player could not be found. [Id={client.PlayerId}]");
 

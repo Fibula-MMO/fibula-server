@@ -17,7 +17,7 @@ namespace Fibula.Map.Contracts.Enumerations
     public enum TileFlag : byte
     {
         /// <summary>
-        /// No flag.
+        /// No flags.
         /// </summary>
         None = 0,
 
@@ -35,5 +35,10 @@ namespace Fibula.Map.Contracts.Enumerations
         /// A tile in which a character is not allowed to voluntarily log out on.
         /// </summary>
         NoLogout = 1 << 3,
+
+        /// <summary>
+        /// A tile that is part of a house.
+        /// </summary>
+        House = 1 << 4,
     }
 }

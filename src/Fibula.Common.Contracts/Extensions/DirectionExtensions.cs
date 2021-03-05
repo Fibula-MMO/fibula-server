@@ -11,7 +11,7 @@
 
 namespace Fibula.Common.Contracts.Extensions
 {
-    using Fibula.Common.Contracts.Enumerations;
+    using Fibula.Definitions.Enumerations;
 
     /// <summary>
     /// Static class that contains extension methods for a <see cref="Direction"/>.

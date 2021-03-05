@@ -11,8 +11,8 @@
 
 namespace Fibula.Mechanics.Operations
 {
-    using Fibula.Common.Contracts.Enumerations;
     using Fibula.Creatures.Contracts.Abstractions;
+    using Fibula.Definitions.Enumerations;
     using Fibula.Map.Contracts.Abstractions;
     using Fibula.Map.Contracts.Extensions;
     using Fibula.Mechanics.Contracts.Abstractions;
@@ -62,7 +62,7 @@ namespace Fibula.Mechanics.Operations
                 this.SendNotification(
                     context,
                     new CreatureTurnedNotification(
-                        () => context.Map.PlayersThatCanSee(this.Creature.Location),
+                        () => context.Map.FindPlayersThatCanSee(this.Creature.Location),
                         this.Creature,
                         playerStackPos));
             }

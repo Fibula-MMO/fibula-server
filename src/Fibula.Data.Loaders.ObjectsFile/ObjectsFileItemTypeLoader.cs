@@ -17,14 +17,14 @@ namespace Fibula.Data.Loaders.ObjectsFile
     using System.Linq;
     using Fibula.Data.Entities;
     using Fibula.Data.Entities.Contracts.Abstractions;
-    using Fibula.Items.Contracts.Abstractions;
-    using Fibula.Items.Contracts.Enumerations;
+    using Fibula.Definitions.Enumerations;
+    using Fibula.Definitions.Flags;
     using Fibula.Parsing.CipFiles;
     using Fibula.Parsing.CipFiles.Enumerations;
     using Fibula.Parsing.CipFiles.Extensions;
     using Fibula.Utilities.Validation;
+    using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
-    using Serilog;
 
     /// <summary>
     /// Class that represents an item type loader that reads from the objects file.
@@ -57,7 +57,7 @@ namespace Fibula.Data.Loaders.ObjectsFile
         /// <param name="logger">A reference to the logger instance.</param>
         /// <param name="options">The options for this loader.</param>
         public ObjectsFileItemTypeLoader(
-            ILogger logger,
+            ILogger<ObjectsFileItemTypeLoader> logger,
             IOptions<ObjectsFileItemTypeLoaderOptions> options)
         {
             logger.ThrowIfNull(nameof(logger));
@@ -66,7 +66,7 @@ namespace Fibula.Data.Loaders.ObjectsFile
             DataAnnotationsValidator.ValidateObjectRecursive(options.Value);
 
             this.LoaderOptions = options.Value;
-            this.Logger = logger.ForContext<ObjectsFileItemTypeLoader>();
+            this.Logger = logger;
         }
 
         /// <summary>
@@ -151,7 +151,7 @@ namespace Fibula.Data.Loaders.ObjectsFile
                                 continue;
                             }
 
-                            this.Logger.Warning($"Unknown flag [{flagName}] found on item with TypeID [{currentType.TypeId}].");
+                            this.Logger.LogWarning($"Unknown flag [{flagName}] found on item with TypeID [{currentType.TypeId}].");
                         }
 
                         break;
@@ -162,7 +162,7 @@ namespace Fibula.Data.Loaders.ObjectsFile
 
                             if (attrPair.Length != 2)
                             {
-                                this.Logger.Error($"Invalid attribute {attrStr}.");
+                                this.Logger.LogError($"Invalid attribute {attrStr}.");
 
                                 continue;
                             }
@@ -180,7 +180,7 @@ namespace Fibula.Data.Loaders.ObjectsFile
                                 continue;
                             }
 
-                            this.Logger.Warning($"Attempted to set an unknown item attribute [{attributeName}].");
+                            this.Logger.LogWarning($"Attempted to set an unknown item attribute [{attributeName}].");
                         }
 
                         break;

@@ -17,7 +17,7 @@ namespace Fibula.Common.Contracts.Abstractions
     public interface IConverter
     {
         /// <summary>
-        /// Converts a string into a strong type (boxed into object) implementation.
+        /// Converts a string into a strong type implementation (boxed into object).
         /// </summary>
         /// <param name="value">The string value to convert.</param>
         /// <returns>A boxed strongly typed implementation.</returns>

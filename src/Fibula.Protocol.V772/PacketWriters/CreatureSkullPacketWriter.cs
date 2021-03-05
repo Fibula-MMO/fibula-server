@@ -38,7 +38,7 @@ namespace Fibula.Protocol.V772.PacketWriters
         /// <param name="message">The message to write into.</param>
         public override void WriteToMessage(IOutboundPacket packet, ref INetworkMessage message)
         {
-            if (!(packet is CreatureSkullPacket creatureSkullPacket))
+            if (packet is not CreatureSkullPacket creatureSkullPacket)
             {
                 this.Logger.Warning($"Invalid packet {packet.GetType().Name} routed to {this.GetType().Name}");
 

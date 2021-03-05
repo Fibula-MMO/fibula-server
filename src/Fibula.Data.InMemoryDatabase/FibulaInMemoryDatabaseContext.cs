@@ -14,8 +14,8 @@ namespace Fibula.Data.InMemoryDatabase
     using System;
     using Fibula.Data.Contracts.Abstractions;
     using Fibula.Data.Entities;
-    using Fibula.Data.Entities.Contracts.Enumerations;
     using Fibula.Data.Entities.Contracts.Structs;
+    using Fibula.Definitions.Enumerations;
     using Microsoft.EntityFrameworkCore;
 
     /// <summary>

@@ -16,6 +16,7 @@ namespace Fibula.Mechanics.Operations
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Extensions;
     using Fibula.Mechanics.Notifications;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Class that represents a speech operation.
@@ -82,19 +83,19 @@ namespace Fibula.Mechanics.Operations
                     {
                         case "increase atk speed":
                             combatant.IncreaseAttackSpeed(0.1m);
-                            context.Logger.Debug($"Combatant {combatant.Name}'s attack speed is now {combatant.AttackSpeed}.");
+                            context.Logger.LogDebug($"Combatant {combatant.Name}'s attack speed is now {combatant.AttackSpeed}.");
                             return;
                         case "decrease atk speed":
                             combatant.DecreaseAttackSpeed(0.1m);
-                            context.Logger.Debug($"Combatant {combatant.Name}'s attack speed is now {combatant.AttackSpeed}.");
+                            context.Logger.LogDebug($"Combatant {combatant.Name}'s attack speed is now {combatant.AttackSpeed}.");
                             return;
                         case "increase def speed":
                             combatant.IncreaseDefenseSpeed(0.1m);
-                            context.Logger.Debug($"Combatant {combatant.Name}'s defense speed is now {combatant.DefenseSpeed}.");
+                            context.Logger.LogDebug($"Combatant {combatant.Name}'s defense speed is now {combatant.DefenseSpeed}.");
                             return;
                         case "decrease def speed":
                             combatant.DecreaseDefenseSpeed(0.1m);
-                            context.Logger.Debug($"Combatant {combatant.Name}'s defense speed is now {combatant.DefenseSpeed}.");
+                            context.Logger.LogDebug($"Combatant {combatant.Name}'s defense speed is now {combatant.DefenseSpeed}.");
                             return;
                     }
 
@@ -129,7 +130,7 @@ namespace Fibula.Mechanics.Operations
             this.SendNotification(
                 context,
                 new CreatureSpeechNotification(
-                    () => context.Map.PlayersThatCanSee(requestor.Location),
+                    () => context.Map.FindPlayersThatCanSee(requestor.Location),
                     requestor,
                     this.Type,
                     this.ChannelId,

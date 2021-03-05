@@ -11,7 +11,7 @@
 
 namespace Fibula.Common.Contracts.Abstractions
 {
-    using Fibula.Common.Contracts.Enumerations;
+    using Fibula.Definitions.Enumerations;
     using Fibula.Scheduling.Contracts.Abstractions;
 
     /// <summary>

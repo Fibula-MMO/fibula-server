@@ -14,14 +14,13 @@ namespace Fibula.Creatures
     using System;
     using Fibula.Client.Contracts.Abstractions;
     using Fibula.Common.Contracts.Abstractions;
-    using Fibula.Common.Contracts.Enumerations;
+    using Fibula.Common.Contracts.Constants;
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Creatures.Contracts.Enumerations;
     using Fibula.Data.Entities.Contracts.Abstractions;
-    using Fibula.Data.Entities.Contracts.Enumerations;
+    using Fibula.Definitions.Enumerations;
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Structs;
-    using Fibula.Scripting.Contracts.Abstractions;
     using Fibula.Scripting.Formulae;
     using Fibula.Utilities.Validation;
 
@@ -35,14 +34,11 @@ namespace Fibula.Creatures
         /// </summary>
         /// <param name="client">The client to associate this player to.</param>
         /// <param name="characterEntity">The player's corresponding character entity lodaded from storage.</param>
-        /// <param name="scriptsLoader">A reference to the scripts loader in use.</param>
         public Player(
             IClient client,
-            ICharacterEntity characterEntity,
-            IScriptLoader scriptsLoader)
+            ICharacterEntity characterEntity)
             : base(characterEntity)
         {
-            scriptsLoader.ThrowIfNull(nameof(scriptsLoader));
             client.ThrowIfNull(nameof(client));
             characterEntity.ThrowIfNull(nameof(characterEntity));
 
@@ -53,7 +49,7 @@ namespace Fibula.Creatures
 
             this.Outfit = characterEntity.Outfit;
 
-            this.InitializeSkills(scriptsLoader);
+            this.InitializeSkills();
 
             var expLevel = this.Skills.TryGetValue(SkillType.Experience, out ISkill expSkill) ? expSkill.CurrentLevel : 1;
 
@@ -69,8 +65,8 @@ namespace Fibula.Creatures
             this.Inventory = new PlayerInventory(this);
 
             // Hard-coded stuff.
-            this.EmittedLightLevel = (byte)LightLevels.Torch;
-            this.EmittedLightColor = (byte)LightColors.Orange;
+            this.EmittedLightLevel = LightConstants.TorchLevel;
+            this.EmittedLightColor = LightConstants.OrangeColor;
         }
 
         /// <summary>
@@ -180,16 +176,15 @@ namespace Fibula.Creatures
             }
         }
 
-        private void InitializeSkills(IScriptLoader scriptsLoader)
+        private void InitializeSkills()
         {
-            (double LowerCountBoundary, double UpperCountBoundary) BoundariesFunc(ICreatureWithSkills creature, ISkill skill, string formula)
+            (double LowerCountBoundary, double UpperCountBoundary) BoundariesFunc(ICreatureWithSkills creature, ISkill skill, Func<ISkillProgressionFormulaInput, double> formula)
             {
                 var input = new SkillProgressionFormulaInput(skill.Type, skill.CurrentLevel, this.Profession);
-                var script = scriptsLoader.LoadScriptInline(formula, typeof(ISkillProgressionFormulaInput));
 
-                if (script != null)
+                if (formula != null)
                 {
-                    var nextTargetCount = Convert.ToDouble(script.RunAsync(input).Result.ReturnValue);
+                    var nextTargetCount = formula(input);
 
                     // The old count for next level is the new low boundary.
                     return (skill.CountForNextLevel, nextTargetCount);
@@ -198,31 +193,31 @@ namespace Fibula.Creatures
                 return (0.00, 0.00);
             }
 
-            this.Skills[SkillType.Experience] = new Skill(this, SkillType.Experience, (c, s) => BoundariesFunc(c, s, ConstantFormulae.ExperienceNextTargetCountFormula), 1, maxLevel: 150, notifyOnEveryCounterChange: true);
+            this.Skills[SkillType.Experience] = new Skill(this, SkillType.Experience, (c, s) => BoundariesFunc(c, s, ConstantFormulae.ExperienceNextTargetCountDelegate), 1, maxLevel: 150, notifyOnEveryCounterChange: true);
             this.Skills[SkillType.Experience].Changed += this.RaiseSkillChange;
 
-            this.Skills[SkillType.Magic] = new Skill(this, SkillType.Magic, (c, s) => BoundariesFunc(c, s, ConstantFormulae.DefaultSkillNextTargetCountFormula), 0, maxLevel: 150);
+            this.Skills[SkillType.Magic] = new Skill(this, SkillType.Magic, (c, s) => BoundariesFunc(c, s, ConstantFormulae.DefaultSkillNextTargetCountDelegate), 0, maxLevel: 150);
             this.Skills[SkillType.Magic].Changed += this.RaiseSkillChange;
 
-            this.Skills[SkillType.NoWeapon] = new Skill(this, SkillType.NoWeapon, (c, s) => BoundariesFunc(c, s, ConstantFormulae.DefaultSkillNextTargetCountFormula), 10, maxLevel: 150);
+            this.Skills[SkillType.NoWeapon] = new Skill(this, SkillType.NoWeapon, (c, s) => BoundariesFunc(c, s, ConstantFormulae.DefaultSkillNextTargetCountDelegate), 10, maxLevel: 150);
             this.Skills[SkillType.NoWeapon].Changed += this.RaiseSkillChange;
 
-            this.Skills[SkillType.Axe] = new Skill(this, SkillType.Axe, (c, s) => BoundariesFunc(c, s, ConstantFormulae.DefaultSkillNextTargetCountFormula), 10, maxLevel: 150);
+            this.Skills[SkillType.Axe] = new Skill(this, SkillType.Axe, (c, s) => BoundariesFunc(c, s, ConstantFormulae.DefaultSkillNextTargetCountDelegate), 10, maxLevel: 150);
             this.Skills[SkillType.Axe].Changed += this.RaiseSkillChange;
 
-            this.Skills[SkillType.Club] = new Skill(this, SkillType.Club, (c, s) => BoundariesFunc(c, s, ConstantFormulae.DefaultSkillNextTargetCountFormula), 10, maxLevel: 150);
+            this.Skills[SkillType.Club] = new Skill(this, SkillType.Club, (c, s) => BoundariesFunc(c, s, ConstantFormulae.DefaultSkillNextTargetCountDelegate), 10, maxLevel: 150);
             this.Skills[SkillType.Club].Changed += this.RaiseSkillChange;
 
-            this.Skills[SkillType.Sword] = new Skill(this, SkillType.Sword, (c, s) => BoundariesFunc(c, s, ConstantFormulae.DefaultSkillNextTargetCountFormula), 10, maxLevel: 150);
+            this.Skills[SkillType.Sword] = new Skill(this, SkillType.Sword, (c, s) => BoundariesFunc(c, s, ConstantFormulae.DefaultSkillNextTargetCountDelegate), 10, maxLevel: 150);
             this.Skills[SkillType.Sword].Changed += this.RaiseSkillChange;
 
-            this.Skills[SkillType.Shield] = new Skill(this, SkillType.Shield, (c, s) => BoundariesFunc(c, s, ConstantFormulae.DefaultSkillNextTargetCountFormula), 10, maxLevel: 150);
+            this.Skills[SkillType.Shield] = new Skill(this, SkillType.Shield, (c, s) => BoundariesFunc(c, s, ConstantFormulae.DefaultSkillNextTargetCountDelegate), 10, maxLevel: 150);
             this.Skills[SkillType.Shield].Changed += this.RaiseSkillChange;
 
-            this.Skills[SkillType.Ranged] = new Skill(this, SkillType.Ranged, (c, s) => BoundariesFunc(c, s, ConstantFormulae.DefaultSkillNextTargetCountFormula), 10, maxLevel: 150);
+            this.Skills[SkillType.Ranged] = new Skill(this, SkillType.Ranged, (c, s) => BoundariesFunc(c, s, ConstantFormulae.DefaultSkillNextTargetCountDelegate), 10, maxLevel: 150);
             this.Skills[SkillType.Ranged].Changed += this.RaiseSkillChange;
 
-            this.Skills[SkillType.Fishing] = new Skill(this, SkillType.Fishing, (c, s) => BoundariesFunc(c, s, ConstantFormulae.DefaultSkillNextTargetCountFormula), 10, maxLevel: 150);
+            this.Skills[SkillType.Fishing] = new Skill(this, SkillType.Fishing, (c, s) => BoundariesFunc(c, s, ConstantFormulae.DefaultSkillNextTargetCountDelegate), 10, maxLevel: 150);
             this.Skills[SkillType.Fishing].Changed += this.RaiseSkillChange;
         }
     }

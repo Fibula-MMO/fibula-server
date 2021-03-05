@@ -19,7 +19,6 @@ namespace Fibula.Mechanics.Notifications
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Utilities.Common.Extensions;
-    using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Class that represents a notification for a creature speech.

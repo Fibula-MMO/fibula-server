@@ -12,8 +12,8 @@
 namespace Fibula.Mechanics.Operations
 {
     using System;
-    using Fibula.Common.Contracts.Enumerations;
     using Fibula.Creatures.Contracts.Abstractions;
+    using Fibula.Definitions.Flags;
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Constants;
     using Fibula.Mechanics.Contracts.Extensions;
@@ -72,7 +72,7 @@ namespace Fibula.Mechanics.Operations
             // Add delay from current exhaustion of the requestor, if any.
             if (this.Attacker is ICreature creature)
             {
-                operationDelay += creature.RemainingExhaustionTime(ExhaustionType.Combat, context.Scheduler.CurrentTime);
+                operationDelay += creature.RemainingExhaustionTime(ExhaustionFlag.Combat, context.Scheduler.CurrentTime);
             }
 
             // Schedule the actual attack operation.

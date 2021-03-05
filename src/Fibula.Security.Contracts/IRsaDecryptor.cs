@@ -24,5 +24,12 @@ namespace Fibula.Security.Contracts
         /// <param name="data">The data to decrypt.</param>
         /// <returns>The decrypted bytes of data.</returns>
         Span<byte> Decrypt(byte[] data);
+
+        /// <summary>
+        /// Decrypts the data supplied.
+        /// </summary>
+        /// <param name="data">The data to decrypt.</param>
+        /// <returns>The decrypted bytes of data.</returns>
+        Span<byte> Decrypt(Span<byte> data);
     }
 }
