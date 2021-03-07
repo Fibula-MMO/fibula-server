@@ -58,17 +58,18 @@
   <ItemGroup>
     <ProjectReference Include="..\Fibula.Client\Fibula.Client.csproj" />
     <ProjectReference Include="..\Fibula.Common\Fibula.Common.csproj" />
-    <ProjectReference Include="..\Fibula.Creatures.MonstersDbFile\Fibula.Plugins.SpawnLoaders.CipMonstersDbFile.csproj" />
     <ProjectReference Include="..\Fibula.Creatures\Fibula.Creatures.csproj" />
-    <ProjectReference Include="..\Fibula.Data.InMemoryDatabase\Fibula.Plugins.Database.InMemoryOnly.csproj" />
-    <ProjectReference Include="..\Fibula.Data.Loaders.MonFiles\Fibula.Plugins.MonsterLoaders.CipMonFiles.csproj" />
-    <ProjectReference Include="..\Fibula.Data.Loaders.ObjectsFile\Fibula.Plugins.ItemLoaders.CipObjectsFile.csproj" />
     <ProjectReference Include="..\Fibula.Items\Fibula.Items.csproj" />
-    <ProjectReference Include="..\Fibula.Map.GrassOnly\Fibula.Plugins.MapLoaders.GrassOnly.csproj" />
-    <ProjectReference Include="..\Fibula.Map.SectorFiles\Fibula.Plugins.MapLoaders.CipSectorFiles.csproj" />
     <ProjectReference Include="..\Fibula.Map\Fibula.Map.csproj" />
     <ProjectReference Include="..\Fibula.Mechanics.PathFinding.AStar\Fibula.Mechanics.PathFinding.AStar.csproj" />
     <ProjectReference Include="..\Fibula.Mechanics\Fibula.Mechanics.csproj" />
+    <ProjectReference Include="..\Fibula.Plugins.Database.CosmosDB\Fibula.Plugins.Database.CosmosDB.csproj" />
+    <ProjectReference Include="..\Fibula.Plugins.Database.InMemoryOnly\Fibula.Plugins.Database.InMemoryOnly.csproj" />
+    <ProjectReference Include="..\Fibula.Plugins.ItemLoaders.CipObjectsFile\Fibula.Plugins.ItemLoaders.CipObjectsFile.csproj" />
+    <ProjectReference Include="..\Fibula.Plugins.MapLoaders.CipSectorFiles\Fibula.Plugins.MapLoaders.CipSectorFiles.csproj" />
+    <ProjectReference Include="..\Fibula.Plugins.MapLoaders.GrassOnly\Fibula.Plugins.MapLoaders.GrassOnly.csproj" />
+    <ProjectReference Include="..\Fibula.Plugins.MonsterLoaders.CipMonFiles\Fibula.Plugins.MonsterLoaders.CipMonFiles.csproj" />
+    <ProjectReference Include="..\Fibula.Plugins.SpawnLoaders.CipMonstersDbFile\Fibula.Plugins.SpawnLoaders.CipMonstersDbFile.csproj" />
     <ProjectReference Include="..\Fibula.Protocol.V772\Fibula.Protocol.V772.csproj" />
     <ProjectReference Include="..\Fibula.Security\Fibula.Security.csproj" />
     <ProjectReference Include="..\Fibula.Communications\Fibula.Communications.csproj" />
