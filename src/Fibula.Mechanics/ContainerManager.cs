@@ -26,7 +26,7 @@ namespace Fibula.Mechanics
     using Fibula.Scheduling.Contracts.Abstractions;
     using Fibula.Utilities.Common.Extensions;
     using Fibula.Utilities.Validation;
-    using Serilog;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Class that represents a manager for all item container operations by creatures.
@@ -49,7 +49,7 @@ namespace Fibula.Mechanics
         /// <param name="scheduler">A reference to the scheduler in use.</param>
         public ContainerManager(ILogger logger, ICreatureFinder creatureFinder, IScheduler scheduler)
         {
-            this.logger = logger.ForContext<ContainerManager>();
+            this.logger = logger;
             this.creatureFinder = creatureFinder;
             this.scheduler = scheduler;
 
@@ -285,7 +285,7 @@ namespace Fibula.Mechanics
                     }
                 }
 
-                this.logger.Verbose($"Creature with id {forCreatureId} closed a {container.Type.Name} at position {atPosition}.");
+                this.logger.LogTrace($"Creature with id {forCreatureId} closed a {container.Type.Name} at position {atPosition}.");
             }
         }
 
@@ -343,7 +343,7 @@ namespace Fibula.Mechanics
 
                 this.containersToCreatureIds[container.UniqueId][openedAt] = forCreatureId;
 
-                this.logger.Verbose($"Creature with id {forCreatureId} opened a {container.Type.Name} at position {openedAt}.");
+                this.logger.LogTrace($"Creature with id {forCreatureId} opened a {container.Type.Name} at position {openedAt}.");
 
                 return openedAt;
             }

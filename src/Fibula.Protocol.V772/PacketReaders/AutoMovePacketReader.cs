@@ -17,7 +17,7 @@ namespace Fibula.Protocol.V772.PacketReaders
     using Fibula.Communications.Packets.Incoming;
     using Fibula.Definitions.Enumerations;
     using Fibula.Utilities.Validation;
-    using Serilog;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Class that represents an auto walk packet reader for the game server.

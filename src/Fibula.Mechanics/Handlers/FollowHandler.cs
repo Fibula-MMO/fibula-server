@@ -18,7 +18,7 @@ namespace Fibula.Mechanics.Handlers
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
-    using Serilog;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Class that represents a handler for follow requests.
@@ -55,14 +55,14 @@ namespace Fibula.Mechanics.Handlers
 
             if (incomingPacket is not IFollowInfo followInfo)
             {
-                this.Logger.Error($"Expected packet info of type {nameof(IFollowInfo)} but got {incomingPacket.GetType().Name}.");
+                this.Logger.LogError($"Expected packet info of type {nameof(IFollowInfo)} but got {incomingPacket.GetType().Name}.");
 
                 return null;
             }
 
             if (this.CreatureFinder.FindCreatureById(client.PlayerId) is not IPlayer player)
             {
-                this.Logger.Warning($"Client's associated player could not be found. [Id={client.PlayerId}]");
+                this.Logger.LogWarning($"Client's associated player could not be found. [Id={client.PlayerId}]");
 
                 return null;
             }

@@ -20,10 +20,10 @@ namespace Fibula.Communications.Listeners.Tests
     using Fibula.Communications.Listeners;
     using Fibula.Security.Contracts;
     using Fibula.Utilities.Testing;
+    using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
-    using Serilog;
 
     /// <summary>
     /// Tests for the <see cref="GameListener{T}"/> class.

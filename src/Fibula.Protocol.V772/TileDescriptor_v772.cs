@@ -25,7 +25,7 @@ namespace Fibula.Protocol.V772
     using Fibula.Map.Contracts.Constants;
     using Fibula.Protocol.V772.Extensions;
     using Fibula.Utilities.Validation;
-    using Serilog;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Class that represents a tile descriptor for protocol 7.72.
@@ -55,7 +55,7 @@ namespace Fibula.Protocol.V772
             this.tileDescriptionCache = new Dictionary<Location, (DateTimeOffset, ReadOnlyMemory<byte>, ReadOnlyMemory<byte>, int[])>();
             this.tilesCacheLock = new object();
 
-            this.Logger = logger.ForContext<TileDescriptor_v772>();
+            this.Logger = logger;
             this.CreatureFinder = creatureFinder;
         }
 
@@ -271,7 +271,7 @@ namespace Fibula.Protocol.V772
 
             this.tileDescriptionCache[tile.Location] = (tile.LastModified, preCreatureDataBytes.ToArray(), postCreatureDataBytes.ToArray(), dataPointers);
 
-            this.Logger.Verbose($"Regenerated description for tile at {tile.Location}.");
+            this.Logger.LogTrace($"Regenerated description for tile at {tile.Location}.");
         }
     }
 }

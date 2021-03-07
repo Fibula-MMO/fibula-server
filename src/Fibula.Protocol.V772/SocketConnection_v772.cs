@@ -21,7 +21,7 @@ namespace Fibula.Protocol.V772
     using Fibula.Communications.Contracts.Enumerations;
     using Fibula.Protocol.V772.Extensions;
     using Fibula.Utilities.Validation;
-    using Serilog;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Class that represents a standard 7.72 client connection over a TCP socket.
@@ -88,7 +88,7 @@ namespace Fibula.Protocol.V772
             this.xteaKey = new uint[4];
             this.isAuthenticated = false;
 
-            this.logger = logger.ForContext<SocketConnection_v772>();
+            this.logger = logger;
             this.protocol = protocol;
         }
 
@@ -175,7 +175,7 @@ namespace Fibula.Protocol.V772
 
                 if (writer == null)
                 {
-                    this.logger.Warning($"Unsupported response packet type {outPacket.PacketType} without a writer. Packet was not added to the message.");
+                    this.logger.LogWarning($"Unsupported response packet type {outPacket.PacketType} without a writer. Packet was not added to the message.");
 
                     continue;
                 }
@@ -187,7 +187,7 @@ namespace Fibula.Protocol.V772
                                                         .ToArray()
                                                         .Select(b => b.ToString("X2")).Aggregate((str, e) => str += " " + e);
 
-                this.logger.Verbose($"Message bytes added by packet {outPacket.GetType().Name}: {packetBytes}");
+                this.logger.LogTrace($"Message bytes added by packet {outPacket.GetType().Name}: {packetBytes}");
 
                 readAlready += thisPacketLen;
             }
@@ -242,11 +242,11 @@ namespace Fibula.Protocol.V772
                         {
                             if (Enum.IsDefined(typeof(IncomingPacketType), packetType))
                             {
-                                this.logger.Warning($"No reader found that supports type '{(IncomingPacketType)packetType}' of packets. Selecting default reader...");
+                                this.logger.LogWarning($"No reader found that supports type '{(IncomingPacketType)packetType}' of packets. Selecting default reader...");
                             }
                             else
                             {
-                                this.logger.Warning($"No reader found that supports type '{packetType}' of packets. Selecting default reader...");
+                                this.logger.LogWarning($"No reader found that supports type '{packetType}' of packets. Selecting default reader...");
                             }
 
                             reader = new DefaultPacketReader(this.logger);
@@ -256,7 +256,7 @@ namespace Fibula.Protocol.V772
 
                         if (dataRead == null)
                         {
-                            this.logger.Error($"Could not read data using reader '{reader.GetType().Name}'.");
+                            this.logger.LogError($"Could not read data using reader '{reader.GetType().Name}'.");
                         }
                         else
                         {
@@ -276,7 +276,7 @@ namespace Fibula.Protocol.V772
             catch (Exception e)
             {
                 // Invalid data from the client
-                this.logger.Warning(e.ToString());
+                this.logger.LogWarning(e.ToString());
             }
             finally
             {
@@ -302,7 +302,7 @@ namespace Fibula.Protocol.V772
             }
             catch (Exception e)
             {
-                this.logger.Error(e.ToString());
+                this.logger.LogError(e.ToString());
 
                 // TODO: is closing the connection really necesary?
                 this.Close();
@@ -327,7 +327,7 @@ namespace Fibula.Protocol.V772
             }
             catch (ObjectDisposedException e)
             {
-                this.logger.Error(e.ToString());
+                this.logger.LogError(e.ToString());
 
                 this.Close();
             }

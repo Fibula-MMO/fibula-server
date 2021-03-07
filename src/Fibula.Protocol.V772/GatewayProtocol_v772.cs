@@ -16,7 +16,7 @@ namespace Fibula.Protocol.V772
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Contracts.Enumerations;
     using Fibula.Utilities.Validation;
-    using Serilog;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Class that represents a gateway protocol for version 7.72.
@@ -46,7 +46,7 @@ namespace Fibula.Protocol.V772
         {
             logger.ThrowIfNull(nameof(logger));
 
-            this.logger = logger.ForContext<GatewayProtocol_v772>();
+            this.logger = logger;
 
             this.packetReadersMap = new Dictionary<IncomingPacketType, IPacketReader>();
             this.packetWritersMap = new Dictionary<OutgoingPacketType, IPacketWriter>();
@@ -66,7 +66,7 @@ namespace Fibula.Protocol.V772
                 throw new InvalidOperationException($"There is already a reader registered for the packet type {forType}.");
             }
 
-            this.logger.Verbose($"Registered packet reader for type {forType}.");
+            this.logger.LogTrace($"Registered packet reader for type {forType}.");
 
             this.packetReadersMap[forType] = packetReader;
         }
@@ -85,7 +85,7 @@ namespace Fibula.Protocol.V772
                 throw new InvalidOperationException($"There is already a writer registered for the packet type: {forType}.");
             }
 
-            this.logger.Verbose($"Registered packet writer for type {forType}.");
+            this.logger.LogTrace($"Registered packet writer for type {forType}.");
 
             this.packetWritersMap[forType] = packetWriter;
         }

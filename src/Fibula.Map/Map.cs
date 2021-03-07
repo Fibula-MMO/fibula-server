@@ -18,7 +18,7 @@ namespace Fibula.Map
     using Fibula.Map.Contracts.Abstractions;
     using Fibula.Map.Contracts.Delegates;
     using Fibula.Utilities.Validation;
-    using Serilog;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Class that represents the map for the game server.
@@ -42,7 +42,7 @@ namespace Fibula.Map
             mapLoader.ThrowIfNull(nameof(mapLoader));
             creatureFinder.ThrowIfNull(nameof(creatureFinder));
 
-            this.Logger = logger.ForContext<Map>();
+            this.Logger = logger;
             this.Loader = mapLoader;
             this.CreatureFinder = creatureFinder;
 

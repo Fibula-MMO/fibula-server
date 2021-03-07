@@ -9,7 +9,7 @@
 // </copyright>
 // -----------------------------------------------------------------
 
-namespace Fibula.Creatures.MonstersDbFile
+namespace Fibula.Plugins.SpawnLoaders.CipMonstersDbFile
 {
     using System;
     using System.Collections.Generic;
@@ -18,8 +18,8 @@ namespace Fibula.Creatures.MonstersDbFile
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Creatures.Contracts.Structs;
     using Fibula.Utilities.Validation;
+    using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
-    using Serilog;
 
     /// <summary>
     /// Class that represents a monster spawn loader that reads from the monster.db file.
@@ -51,7 +51,7 @@ namespace Fibula.Creatures.MonstersDbFile
             DataAnnotationsValidator.ValidateObjectRecursive(options.Value);
 
             this.LoaderOptions = options.Value;
-            this.Logger = logger.ForContext<MonsterDbFileMonsterSpawnLoader>();
+            this.Logger = logger;
 
             options.Value.FilePath.ThrowIfNullOrWhiteSpace(nameof(options.Value.FilePath));
         }

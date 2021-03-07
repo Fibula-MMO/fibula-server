@@ -9,9 +9,9 @@
 // </copyright>
 // -----------------------------------------------------------------
 
-namespace Fibula.Data.Loaders.MonFiles
+namespace Fibula.Plugins.SpawnLoaders.CipMonstersDbFile
 {
-    using Fibula.Data.Entities.Contracts.Abstractions;
+    using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -22,20 +22,20 @@ namespace Fibula.Data.Loaders.MonFiles
     public static class CompositionRootExtensions
     {
         /// <summary>
-        /// Adds all implementations related to *.mon monster type files contained in this library to the services collection.
+        /// Adds all implementations related to the monster Db file contained in this library to the services collection.
         /// Additionally, registers the options related to the concrete implementations added, such as:
-        ///     <see cref="MonFilesMonsterTypeLoaderOptions"/>.
+        ///     <see cref="MonsterDbFileMonsterSpawnLoaderOptions"/>.
         /// </summary>
         /// <param name="services">The services collection.</param>
         /// <param name="configuration">The configuration reference.</param>
-        public static void AddMonFilesMonsterTypeLoader(this IServiceCollection services, IConfiguration configuration)
+        public static void AddMonsterDbFileMonsterSpawnLoader(this IServiceCollection services, IConfiguration configuration)
         {
             configuration.ThrowIfNull(nameof(configuration));
 
             // configure options
-            services.Configure<MonFilesMonsterTypeLoaderOptions>(configuration.GetSection(nameof(MonFilesMonsterTypeLoaderOptions)));
+            services.Configure<MonsterDbFileMonsterSpawnLoaderOptions>(configuration.GetSection(nameof(MonsterDbFileMonsterSpawnLoaderOptions)));
 
-            services.AddSingleton<IMonsterTypeLoader, MonFilesMonsterTypeLoader>();
+            services.AddSingleton<IMonsterSpawnLoader, MonsterDbFileMonsterSpawnLoader>();
         }
     }
 }

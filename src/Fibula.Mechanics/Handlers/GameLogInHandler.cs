@@ -24,7 +24,7 @@ namespace Fibula.Mechanics.Handlers
     using Fibula.Mechanics.Contracts.Enumerations;
     using Fibula.Utilities.Common.Extensions;
     using Fibula.Utilities.Validation;
-    using Serilog;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Class that represents a character log in request handler for the game server.
@@ -66,14 +66,14 @@ namespace Fibula.Mechanics.Handlers
 
             if (incomingPacket is not IGameLogInInfo loginInfo)
             {
-                this.Logger.Error($"Expected packet info of type {nameof(IGameLogInInfo)} but got {incomingPacket.GetType().Name}.");
+                this.Logger.LogError($"Expected packet info of type {nameof(IGameLogInInfo)} but got {incomingPacket.GetType().Name}.");
 
                 return null;
             }
 
             if (client.Connection is not ISocketConnection socketConnection)
             {
-                this.Logger.Error($"Expected a {nameof(ISocketConnection)} got a {client.Connection.GetType().Name}.");
+                this.Logger.LogError($"Expected a {nameof(ISocketConnection)} got a {client.Connection.GetType().Name}.");
 
                 return null;
             }
@@ -83,7 +83,7 @@ namespace Fibula.Mechanics.Handlers
 
             if (loginInfo.ClientVersion != this.ApplicationContext.Options.SupportedClientVersion.Numeric)
             {
-                this.Logger.Information($"Client attempted to connect with version: {loginInfo.ClientVersion}, OS: {loginInfo.ClientOs}. Expected version: {this.ApplicationContext.Options.SupportedClientVersion.Numeric}.");
+                this.Logger.LogInformation($"Client attempted to connect with version: {loginInfo.ClientVersion}, OS: {loginInfo.ClientOs}. Expected version: {this.ApplicationContext.Options.SupportedClientVersion.Numeric}.");
 
                 // TODO: hardcoded messages.
                 return new GameServerDisconnectPacket($"You need client version {this.ApplicationContext.Options.SupportedClientVersion.Description} to connect to this server.").YieldSingleItem();

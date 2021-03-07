@@ -9,7 +9,7 @@
 // </copyright>
 // -----------------------------------------------------------------
 
-namespace Fibula.Map.SectorFiles
+namespace Fibula.Plugins.MapLoaders.CipSectorFiles
 {
     using System.ComponentModel.DataAnnotations;
 

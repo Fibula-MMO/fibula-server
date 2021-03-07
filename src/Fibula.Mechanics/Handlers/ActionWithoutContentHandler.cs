@@ -20,7 +20,7 @@ namespace Fibula.Mechanics.Handlers
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Mechanics.Operations;
     using Fibula.Utilities.Validation;
-    using Serilog;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Class that represents a request handler for actions with no content to be read, for the game server.
@@ -57,14 +57,14 @@ namespace Fibula.Mechanics.Handlers
 
             if (incomingPacket is not IActionWithoutContentInfo actionInfo)
             {
-                this.Logger.Error($"Expected packet info of type {nameof(IActionWithoutContentInfo)} but got {incomingPacket.GetType().Name}.");
+                this.Logger.LogError($"Expected packet info of type {nameof(IActionWithoutContentInfo)} but got {incomingPacket.GetType().Name}.");
 
                 return null;
             }
 
             if (this.CreatureFinder.FindCreatureById(client.PlayerId) is not IPlayer player)
             {
-                this.Logger.Warning($"Client's associated player could not be found. [Id={client.PlayerId}]");
+                this.Logger.LogWarning($"Client's associated player could not be found. [Id={client.PlayerId}]");
 
                 return null;
             }

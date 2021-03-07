@@ -16,7 +16,7 @@ namespace Fibula.Creatures
     using System.Linq;
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
-    using Serilog;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Class that represents a creature manager.
@@ -38,7 +38,7 @@ namespace Fibula.Creatures
 
             this.creatureMap = new ConcurrentDictionary<uint, ICreature>();
 
-            this.Logger = logger.ForContext<CreatureManager>();
+            this.Logger = logger;
         }
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace Fibula.Creatures
 
             if (!this.creatureMap.TryAdd(creature.Id, creature))
             {
-                this.Logger.Warning($"Failed to add {creature.Name} ({creature.Id}) to the creatue manager.");
+                this.Logger.LogWarning($"Failed to add {creature.Name} ({creature.Id}) to the creatue manager.");
             }
         }
 

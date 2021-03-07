@@ -13,8 +13,8 @@ namespace Fibula.Communications.Listeners
 {
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Security.Contracts;
+    using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
-    using Serilog;
 
     /// <summary>
     /// Class that extends the standard <see cref="BaseListener"/> for the gateway protocol.

@@ -17,7 +17,7 @@ namespace Fibula.Protocol.V772.PacketWriters
     using Fibula.Communications.Contracts.Enumerations;
     using Fibula.Communications.Packets.Outgoing;
     using Fibula.Protocol.V772.Extensions;
-    using Serilog;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Class that represents a player login packet writer for the game server.
@@ -42,7 +42,7 @@ namespace Fibula.Protocol.V772.PacketWriters
         {
             if (packet is not PlayerLoginPacket playerLoginPacket)
             {
-                this.Logger.Warning($"Invalid packet {packet.GetType().Name} routed to {this.GetType().Name}");
+                this.Logger.LogWarning($"Invalid packet {packet.GetType().Name} routed to {this.GetType().Name}");
 
                 return;
             }

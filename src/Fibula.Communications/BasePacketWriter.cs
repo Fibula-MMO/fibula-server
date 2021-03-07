@@ -13,7 +13,7 @@ namespace Fibula.Communications
 {
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
-    using Serilog;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Class that represents the base implementation for all packet writers in all protocols.
@@ -28,7 +28,7 @@ namespace Fibula.Communications
         {
             logger.ThrowIfNull(nameof(logger));
 
-            this.Logger = logger.ForContext(this.GetType());
+            this.Logger = logger;
         }
 
         /// <summary>

@@ -14,7 +14,7 @@ namespace Fibula.Protocol.V772
     using System.Net.Sockets;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
-    using Serilog;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Class that implements a <see cref="ISocketConnectionFactory"/> which creates new connections that
@@ -44,7 +44,7 @@ namespace Fibula.Protocol.V772
             logger.ThrowIfNull(nameof(logger));
             protocol.ThrowIfNull(nameof(protocol));
 
-            this.logger = logger.ForContext<ClientConnectionFactory<TProtocol>>();
+            this.logger = logger;
             this.protocol = protocol;
         }
 

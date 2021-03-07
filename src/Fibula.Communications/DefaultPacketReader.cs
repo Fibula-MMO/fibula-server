@@ -13,7 +13,7 @@ namespace Fibula.Communications
 {
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
-    using Serilog;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Class that represents the default packet reader.

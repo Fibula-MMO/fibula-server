@@ -10,7 +10,7 @@
 // -----------------------------------------------------------------
 
 #pragma warning disable 67
-namespace Fibula.Map.GrassOnly
+namespace Fibula.Plugins.MapLoaders.GrassOnly
 {
     using System.Collections.Concurrent;
     using System.Collections.Generic;

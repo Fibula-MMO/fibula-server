@@ -9,7 +9,7 @@
 // </copyright>
 // -----------------------------------------------------------------
 
-namespace Fibula.Map.GrassOnly
+namespace Fibula.Plugins.MapLoaders.GrassOnly
 {
     using Fibula.Map.Contracts.Abstractions;
     using Fibula.Utilities.Validation;

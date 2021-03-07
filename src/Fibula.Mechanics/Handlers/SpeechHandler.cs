@@ -17,7 +17,7 @@ namespace Fibula.Mechanics.Handlers
     using Fibula.Communications.Packets.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
-    using Serilog;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Class that represents a handler for a request to speak.
@@ -47,7 +47,7 @@ namespace Fibula.Mechanics.Handlers
 
             if (incomingPacket is not ISpeechInfo speechInfo)
             {
-                this.Logger.Error($"Expected packet info of type {nameof(ISpeechInfo)} but got {incomingPacket.GetType().Name}.");
+                this.Logger.LogError($"Expected packet info of type {nameof(ISpeechInfo)} but got {incomingPacket.GetType().Name}.");
 
                 return null;
             }

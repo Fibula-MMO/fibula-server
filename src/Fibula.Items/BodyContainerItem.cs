@@ -50,6 +50,7 @@ namespace Fibula.Items
 
         /// <summary>
         /// Gets the capacity of this container.
+        /// Body container items all have a fixed capacity of 1.
         /// </summary>
         public override byte Capacity => 0x01;
 
@@ -59,7 +60,7 @@ namespace Fibula.Items
         public Slot Slot { get; }
 
         /// <summary>
-        /// Gets this body container's location.
+        /// Gets this body container's location, which should fall back to the creature that owns it.
         /// </summary>
         public override Location Location
         {
@@ -70,7 +71,7 @@ namespace Fibula.Items
         }
 
         /// <summary>
-        /// Gets the location where this thing is being carried at, which is none for creatures.
+        /// Gets the location where this thing is being carried at.
         /// </summary>
         public override Location? CarryLocation
         {

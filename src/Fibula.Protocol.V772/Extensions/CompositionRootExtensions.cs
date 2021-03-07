@@ -24,8 +24,8 @@ namespace Fibula.Protocol.V772.Extensions
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;
+    using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
-    using Serilog;
 
     /// <summary>
     /// Static class that adds convenient methods to add the concrete implementations contained in this library.

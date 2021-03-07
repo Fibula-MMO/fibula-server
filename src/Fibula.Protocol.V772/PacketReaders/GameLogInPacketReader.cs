@@ -17,7 +17,7 @@ namespace Fibula.Protocol.V772.PacketReaders
     using Fibula.Communications.Packets.Incoming;
     using Fibula.Security.Contracts;
     using Fibula.Utilities.Validation;
-    using Serilog;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Class that represents a log in packet reader for the game server.

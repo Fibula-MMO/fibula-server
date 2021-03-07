@@ -9,7 +9,7 @@
 // </copyright>
 // -----------------------------------------------------------------
 
-namespace Fibula.Creatures.MonstersDbFile
+namespace Fibula.Plugins.SpawnLoaders.CipMonstersDbFile
 {
     using System.ComponentModel.DataAnnotations;
 

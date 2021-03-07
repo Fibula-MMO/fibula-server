@@ -15,9 +15,9 @@ namespace Fibula.Communications.Tests
     using Fibula.Communications;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Utilities.Testing;
+    using Microsoft.Extensions.Logging;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
-    using Serilog;
 
     /// <summary>
     /// Tests for the <see cref="DefaultPacketReader"/> class.

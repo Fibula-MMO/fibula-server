@@ -9,9 +9,9 @@
 // </copyright>
 // -----------------------------------------------------------------
 
-namespace Fibula.Creatures.MonstersDbFile
+namespace Fibula.Plugins.MapLoaders.CipSectorFiles
 {
-    using Fibula.Creatures.Contracts.Abstractions;
+    using Fibula.Map.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -22,20 +22,20 @@ namespace Fibula.Creatures.MonstersDbFile
     public static class CompositionRootExtensions
     {
         /// <summary>
-        /// Adds all implementations related to the monster Db file contained in this library to the services collection.
+        /// Adds all implementations related to Sector map files contained in this library to the services collection.
         /// Additionally, registers the options related to the concrete implementations added, such as:
-        ///     <see cref="MonsterDbFileMonsterSpawnLoaderOptions"/>.
+        ///     <see cref="SectorMapLoaderOptions"/>.
         /// </summary>
         /// <param name="services">The services collection.</param>
         /// <param name="configuration">The configuration reference.</param>
-        public static void AddMonsterDbFileMonsterSpawnLoader(this IServiceCollection services, IConfiguration configuration)
+        public static void AddSectorFilesMapLoader(this IServiceCollection services, IConfiguration configuration)
         {
             configuration.ThrowIfNull(nameof(configuration));
 
             // configure options
-            services.Configure<MonsterDbFileMonsterSpawnLoaderOptions>(configuration.GetSection(nameof(MonsterDbFileMonsterSpawnLoaderOptions)));
+            services.Configure<SectorMapLoaderOptions>(configuration.GetSection(nameof(SectorMapLoaderOptions)));
 
-            services.AddSingleton<IMonsterSpawnLoader, MonsterDbFileMonsterSpawnLoader>();
+            services.AddSingleton<IMapLoader, SectorMapLoader>();
         }
     }
 }

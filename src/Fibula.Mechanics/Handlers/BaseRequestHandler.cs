@@ -16,7 +16,7 @@ namespace Fibula.Mechanics.Handlers
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
-    using Serilog;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Class that represents the base implementation for all request handlers in all protocols.
@@ -31,7 +31,7 @@ namespace Fibula.Mechanics.Handlers
         {
             logger.ThrowIfNull(nameof(logger));
 
-            this.Logger = logger.ForContext(this.GetType());
+            this.Logger = logger;
         }
 
         /// <summary>

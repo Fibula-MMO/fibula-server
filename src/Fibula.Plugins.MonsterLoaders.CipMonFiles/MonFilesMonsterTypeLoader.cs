@@ -9,13 +9,12 @@
 // </copyright>
 // -----------------------------------------------------------------
 
-namespace Fibula.Data.Loaders.MonFiles
+namespace Fibula.Plugins.MonsterLoaders.CipMonFiles
 {
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using Fibula.Data.Entities;
     using Fibula.Data.Entities.Contracts.Abstractions;
     using Fibula.Data.Entities.Contracts.Structs;
     using Fibula.Definitions.Enumerations;
@@ -124,7 +123,7 @@ namespace Fibula.Data.Loaders.MonFiles
                 return null;
             }
 
-            var monsterType = new MonsterTypeEntity();
+            var monsterType = new CipMonsterTypeEntity();
 
             foreach ((string name, string value) in ReadInDataTuples(File.ReadLines(monsterFileInfo.FullName), monsterFileInfo.FullName))
             {
@@ -251,8 +250,6 @@ namespace Fibula.Data.Loaders.MonFiles
                         break;
                 }
             }
-
-            monsterType.Lock();
 
             return monsterType;
         }

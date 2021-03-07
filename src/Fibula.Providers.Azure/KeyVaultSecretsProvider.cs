@@ -19,8 +19,8 @@ namespace Fibula.Providers.Azure
     using Fibula.Utilities.Validation;
     using global::Azure.Identity;
     using global::Azure.Security.KeyVault.Secrets;
+    using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
-    using Serilog;
 
     /// <summary>
     /// Class that represents a secrets provider from Azure KeyVault.
@@ -49,7 +49,7 @@ namespace Fibula.Providers.Azure
             DataAnnotationsValidator.ValidateObjectRecursive(secretsProviderOptions.Value);
 
             this.keyVaultClient = new SecretClient(new Uri(secretsProviderOptions.Value.VaultBaseUrl), new ManagedIdentityCredential());
-            this.Logger = logger.ForContext<KeyVaultSecretsProvider>();
+            this.Logger = logger;
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace Fibula.Providers.Azure
         {
             secretName.ThrowIfNullOrWhiteSpace(nameof(secretName));
 
-            this.Logger.Debug($"Retrieving secret '{secretName}' from Vault...");
+            this.Logger.LogDebug($"Retrieving secret '{secretName}' from Vault...");
 
             // Get the secret
             var secret = (await this.keyVaultClient.GetSecretAsync(secretName)).Value.Value;
@@ -90,7 +90,7 @@ namespace Fibula.Providers.Azure
         /// <returns>A list of secret idetifiers.</returns>
         public async Task<IEnumerable<string>> ListSecretIdentifiers()
         {
-            this.Logger.Debug($"Getting list of secret names from vault...");
+            this.Logger.LogDebug($"Getting list of secret names from vault...");
 
             List<string> secrets = new List<string>();
 

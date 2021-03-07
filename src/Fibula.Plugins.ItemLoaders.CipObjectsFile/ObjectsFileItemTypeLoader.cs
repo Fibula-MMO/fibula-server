@@ -9,13 +9,12 @@
 // </copyright>
 // -----------------------------------------------------------------
 
-namespace Fibula.Data.Loaders.ObjectsFile
+namespace Fibula.Plugins.ItemLoaders.CipObjectsFile
 {
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using Fibula.Data.Entities;
     using Fibula.Data.Entities.Contracts.Abstractions;
     using Fibula.Definitions.Enumerations;
     using Fibula.Definitions.Flags;
@@ -88,7 +87,7 @@ namespace Fibula.Data.Loaders.ObjectsFile
             var itemDictionary = new Dictionary<ushort, IItemTypeEntity>();
             var objectsFilePath = Path.Combine(Environment.CurrentDirectory, this.LoaderOptions.FilePath);
 
-            var currentType = new ItemTypeEntity();
+            var currentType = new CipItemTypeEntity();
 
             foreach (var readLine in File.ReadLines(objectsFilePath))
             {
@@ -108,10 +107,9 @@ namespace Fibula.Data.Loaders.ObjectsFile
                         continue;
                     }
 
-                    currentType.LockChanges();
                     itemDictionary.Add(currentType.TypeId, currentType);
 
-                    currentType = new ItemTypeEntity();
+                    currentType = new CipItemTypeEntity();
                     continue;
                 }
 
@@ -190,7 +188,6 @@ namespace Fibula.Data.Loaders.ObjectsFile
             // wrap up the last ItemType and add it if it has enough properties set:
             if (currentType.TypeId != 0 && !string.IsNullOrWhiteSpace(currentType.Name))
             {
-                currentType.LockChanges();
                 itemDictionary.Add(currentType.TypeId, currentType);
             }
 

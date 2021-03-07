@@ -13,7 +13,7 @@ namespace Fibula.Mechanics.Handlers
 {
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
-    using Serilog;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Class that represents a handler that exposes a reference to the game instance, for convenience.

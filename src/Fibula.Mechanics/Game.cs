@@ -596,7 +596,7 @@ namespace Fibula.Mechanics
 
             if (async)
             {
-                this.scheduler.ScheduleEvent(cancelOp);
+                this.DispatchOperation(cancelOp);
                 return;
             }
 

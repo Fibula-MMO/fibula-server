@@ -9,7 +9,7 @@
 // </copyright>
 // -----------------------------------------------------------------
 
-namespace Fibula.Data.Loaders.ObjectsFile
+namespace Fibula.Plugins.ItemLoaders.CipObjectsFile
 {
     using Fibula.Data.Entities.Contracts.Abstractions;
     using Fibula.Utilities.Validation;

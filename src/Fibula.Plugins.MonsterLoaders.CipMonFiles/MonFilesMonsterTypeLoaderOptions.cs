@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------
-// <copyright file="ObjectsFileItemTypeLoaderOptions.cs" company="2Dudes">
+// <copyright file="MonFilesMonsterTypeLoaderOptions.cs" company="2Dudes">
 // Copyright (c) | Jose L. Nunez de Caceres et al.
 // https://linkedin.com/in/nunezdecaceres
 //
@@ -9,19 +9,19 @@
 // </copyright>
 // -----------------------------------------------------------------
 
-namespace Fibula.Data.Loaders.ObjectsFile
+namespace Fibula.Plugins.MonsterLoaders.CipMonFiles
 {
     using System.ComponentModel.DataAnnotations;
 
     /// <summary>
-    /// Class that represents options for the <see cref="ObjectsFileItemTypeLoader"/>.
+    /// Class that represents options for the <see cref="MonFilesMonsterTypeLoader"/>.
     /// </summary>
-    public class ObjectsFileItemTypeLoaderOptions
+    public class MonFilesMonsterTypeLoaderOptions
     {
         /// <summary>
-        /// Gets or sets the path to the file to load.
+        /// Gets or sets the directory for the monster (*.mon) files.
         /// </summary>
-        [Required(ErrorMessage = "A path for the objects file must be specified.")]
-        public string FilePath { get; set; }
+        [Required(ErrorMessage = "A directory for the monster (*.mon) files files must be specified.")]
+        public string MonsterFilesDirectory { get; set; }
     }
 }

@@ -1,0 +1,301 @@
+﻿// -----------------------------------------------------------------
+// <copyright file="CipMonsterTypeEntity.cs" company="2Dudes">
+// Copyright (c) | Jose L. Nunez de Caceres et al.
+// https://linkedin.com/in/nunezdecaceres
+//
+// All Rights Reserved.
+//
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// </copyright>
+// -----------------------------------------------------------------
+
+namespace Fibula.Plugins.MonsterLoaders.CipMonFiles
+{
+    using System.Collections.Generic;
+    using System.Linq;
+    using Fibula.Data.Entities.Contracts.Abstractions;
+    using Fibula.Data.Entities.Contracts.Structs;
+    using Fibula.Definitions.Enumerations;
+    using Fibula.Definitions.Flags;
+    using Fibula.Utilities.Validation;
+
+    /// <summary>
+    /// Class that represents a monster type entity from the Cip files.
+    /// </summary>
+    public sealed class CipMonsterTypeEntity : IMonsterTypeEntity
+    {
+        private string name;
+        private string article;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CipMonsterTypeEntity"/> class.
+        /// </summary>
+        public CipMonsterTypeEntity()
+        {
+            this.RaceId = "0";
+            this.Name = string.Empty;
+            this.MaxManapoints = 0;
+
+            this.BaseAttack = 1;
+            this.BaseDefense = 1;
+            this.BaseArmorRating = 1;
+
+            this.BaseExperienceYield = 0;
+            this.SummonCost = 0;
+            this.HitpointFleeThreshold = 0;
+            this.LoseTargetDistance = 0;
+            this.ConditionInfect = 0;
+
+            // this.KnownSpells = new HashSet<KnownSpell>();
+            this.Phrases = new List<string>();
+            this.Skills = new Dictionary<SkillType, (int DefaultLevel, int CurrentLevel, int MaximumLevel, uint TargetCount, uint CountIncreaseFactor, byte IncreaserPerLevel)>();
+            this.InventoryComposition = new List<(ushort, byte, ushort)>();
+        }
+
+        /// <summary>
+        /// Gets or sets the id of the monster race.
+        /// </summary>
+        public string RaceId
+        {
+            get => this.Id;
+
+            set
+            {
+                this.Id = value.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the name of the monster type.
+        /// </summary>
+        public string Name
+        {
+            get => this.name;
+
+            set
+            {
+                this.name = value.Trim('\"');
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the article to use with the name.
+        /// </summary>
+        public string Article
+        {
+            get => this.article;
+
+            set
+            {
+                this.article = value.Trim('\"');
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the amount of experience that this type of monster yields.
+        /// </summary>
+        public uint BaseExperienceYield { get; set; }
+
+        /// <summary>
+        /// Gets or sets the base cost to summon this type of monster.
+        /// </summary>
+        public ushort SummonCost { get; set; }
+
+        /// <summary>
+        /// Gets or sets the threshold value under which this type of monster begins to flee battle.
+        /// </summary>
+        public ushort HitpointFleeThreshold { get; set; }
+
+        /// <summary>
+        /// Gets or sets the distance in tiles after which this type of monster looses track of their target.
+        /// </summary>
+        public byte LoseTargetDistance { get; set; }
+
+        /// <summary>
+        /// Gets an encoded value containing <see cref="ConditionType"/>s, detailing if this type of monster infects upon
+        /// successfuly dealing basic damange in combat.
+        /// </summary>
+        public ushort ConditionInfect { get; private set; }
+
+        ///// <summary>
+        ///// Gets a collection of spells known by this type of monster.
+        ///// </summary>
+        // public ISet<ISpell> KnownSpells { get; private set; }
+
+        /// <summary>
+        /// Gets the flags set for this type of monster.
+        /// </summary>
+        /// <remarks>The flags are stored as bits in a 64 bit unsigned integer.</remarks>
+        public ulong Flags { get; private set; }
+
+        /// <summary>
+        /// Gets the skills that this type of monster starts with.
+        /// </summary>
+        public IDictionary<SkillType, (int DefaultLevel, int CurrentLevel, int MaximumLevel, uint TargetCount, uint CountIncreaseFactor, byte IncreaserPerLevel)> Skills { get; private set; }
+
+        /// <summary>
+        /// Gets the phrases that this monster type uses.
+        /// </summary>
+        public IList<string> Phrases { get; private set; }
+
+        /// <summary>
+        /// Gets the composition of the inventory that this type of monster has a chance to be created with.
+        /// </summary>
+        public IList<(ushort typeId, byte maxAmount, ushort chance)> InventoryComposition { get; private set; }
+
+        /// <summary>
+        /// Gets or sets this type of monster outfit.
+        /// </summary>
+        public Outfit Outfit { get; set; }
+
+        /// <summary>
+        /// Gets or sets this type of monster's corpse item type id.
+        /// </summary>
+        public ushort Corpse { get; set; }
+
+        /// <summary>
+        /// Gets the current hitpoints of the monster type.
+        /// </summary>
+        public ushort CurrentHitpoints => this.MaxHitpoints;
+
+        /// <summary>
+        /// Gets or sets the maximum hitpoints that this monster type starts with.
+        /// </summary>
+        public ushort MaxHitpoints { get; set; }
+
+        /// <summary>
+        /// Gets the current manapoints of the monster type.
+        /// </summary>
+        public ushort CurrentManapoints => this.MaxManapoints;
+
+        /// <summary>
+        /// Gets the maximum manapoints that this monster type starts with.
+        /// </summary>
+        public ushort MaxManapoints { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the type of blood of this monster type.
+        /// </summary>
+        public BloodType BloodType { get; set; }
+
+        /// <summary>
+        /// Gets or sets the base movement speed for this type of monster.
+        /// </summary>
+        public ushort BaseSpeed { get; set; }
+
+        /// <summary>
+        /// Gets or sets the maximum capacity for this type of monster.
+        /// </summary>
+        public ushort Capacity { get; set; }
+
+        /// <summary>
+        /// Gets or sets the fighting strategy of this type of monster.
+        /// </summary>
+        public (byte switchToClosest, byte switchToLowestHp, byte switchToHigestDmgDealt, byte randomSwitch) Strategy { get; set; }
+
+        /// <summary>
+        /// Gets or sets the base attack for this type of monster.
+        /// </summary>
+        public ushort BaseAttack { get; set; }
+
+        /// <summary>
+        /// Gets or sets the base defense for this type of monster.
+        /// </summary>
+        public ushort BaseDefense { get; set; }
+
+        /// <summary>
+        /// Gets or sets the base armor rating for this type of monster.
+        /// </summary>
+        public ushort BaseArmorRating { get; set; }
+
+        /// <summary>
+        /// Gets the id of this monster type.
+        /// </summary>
+        public string Id { get; private set; }
+
+        /// <summary>
+        /// Sets a creature flag in this type's <see cref="Flags"/>.
+        /// </summary>
+        /// <param name="creatureFlag">The flag to set in the type.</param>
+        public void SetCreatureFlag(CreatureFlag creatureFlag)
+        {
+            this.Flags |= (ulong)creatureFlag;
+        }
+
+        /// <summary>
+        /// Sets a given skill for this monster type.
+        /// </summary>
+        /// <param name="skillType">The type of skill to set.</param>
+        /// <param name="currentLevel">The current skill level.</param>
+        /// <param name="defaultLevel">The default level of the skill.</param>
+        /// <param name="maximumLevel">The maximum skill level.</param>
+        /// <param name="targetCount">The next target count for skill advancement.</param>
+        /// <param name="countIncreaseFactor">The factor by which the next target count increases upon advancement.</param>
+        /// <param name="increaserPerLevel">The base increase per level upon advancement.</param>
+        public void SetSkill(SkillType skillType, int currentLevel, int defaultLevel, int maximumLevel, uint targetCount, uint countIncreaseFactor, byte increaserPerLevel)
+        {
+            this.Skills[skillType] = (defaultLevel, currentLevel, maximumLevel, targetCount, countIncreaseFactor, increaserPerLevel);
+        }
+
+        /// <summary>
+        /// Sets a type's infection condition flag.
+        /// </summary>
+        /// <param name="condition">The type of condition flag.</param>
+        /// <param name="value">The base value by which to infect.</param>
+        public void SetConditionInfect(ConditionType condition, ushort value)
+        {
+            // TODO: implement.
+        }
+
+        /// <summary>
+        /// Sets the type's spells.
+        /// </summary>
+        /// <param name="spells">The spells of the monster type.</param>
+        public void SetSpells(IEnumerable<(IEnumerable<string> conditions, IEnumerable<string> effects, string chance)> spells)
+        {
+            // TODO: implement.
+        }
+
+        /// <summary>
+        /// Sets the type's inventory.
+        /// </summary>
+        /// <param name="possibleInventory">The inventory of the monster type.</param>
+        public void SetInventory(IEnumerable<(ushort typeId, byte maxAmount, ushort dropChance)> possibleInventory)
+        {
+            possibleInventory.ThrowIfNull(nameof(possibleInventory));
+
+            if (!possibleInventory.Any())
+            {
+                // no loot on this one.
+                return;
+            }
+
+            foreach (var entry in possibleInventory)
+            {
+                this.InventoryComposition.Add(entry);
+            }
+        }
+
+        /// <summary>
+        /// Sets the type's phrases.
+        /// </summary>
+        /// <param name="phrases">The phrases of the monster type.</param>
+        public void SetPhrases(IEnumerable<string> phrases)
+        {
+            if (phrases == null || !phrases.Any())
+            {
+                return;
+            }
+
+            foreach (var phrase in phrases)
+            {
+                if (string.IsNullOrWhiteSpace(phrase))
+                {
+                    continue;
+                }
+
+                this.Phrases.Add(phrase);
+            }
+        }
+    }
+}

@@ -9,9 +9,9 @@
 // </copyright>
 // -----------------------------------------------------------------
 
-namespace Fibula.Map.SectorFiles
+namespace Fibula.Plugins.MonsterLoaders.CipMonFiles
 {
-    using Fibula.Map.Contracts.Abstractions;
+    using Fibula.Data.Entities.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -22,20 +22,20 @@ namespace Fibula.Map.SectorFiles
     public static class CompositionRootExtensions
     {
         /// <summary>
-        /// Adds all implementations related to Sector map files contained in this library to the services collection.
+        /// Adds all implementations related to *.mon monster type files contained in this library to the services collection.
         /// Additionally, registers the options related to the concrete implementations added, such as:
-        ///     <see cref="SectorMapLoaderOptions"/>.
+        ///     <see cref="MonFilesMonsterTypeLoaderOptions"/>.
         /// </summary>
         /// <param name="services">The services collection.</param>
         /// <param name="configuration">The configuration reference.</param>
-        public static void AddSectorFilesMapLoader(this IServiceCollection services, IConfiguration configuration)
+        public static void AddMonFilesMonsterTypeLoader(this IServiceCollection services, IConfiguration configuration)
         {
             configuration.ThrowIfNull(nameof(configuration));
 
             // configure options
-            services.Configure<SectorMapLoaderOptions>(configuration.GetSection(nameof(SectorMapLoaderOptions)));
+            services.Configure<MonFilesMonsterTypeLoaderOptions>(configuration.GetSection(nameof(MonFilesMonsterTypeLoaderOptions)));
 
-            services.AddSingleton<IMapLoader, SectorMapLoader>();
+            services.AddSingleton<IMonsterTypeLoader, MonFilesMonsterTypeLoader>();
         }
     }
 }

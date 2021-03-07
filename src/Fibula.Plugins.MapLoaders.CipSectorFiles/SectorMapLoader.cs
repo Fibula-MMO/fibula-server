@@ -9,7 +9,7 @@
 // </copyright>
 // -----------------------------------------------------------------
 
-namespace Fibula.Map.SectorFiles
+namespace Fibula.Plugins.MapLoaders.CipSectorFiles
 {
     using System;
     using System.Collections.Generic;
@@ -30,8 +30,8 @@ namespace Fibula.Map.SectorFiles
     using Fibula.Parsing.CipFiles.Extensions;
     using Fibula.Parsing.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
+    using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
-    using Serilog;
 
     /// <summary>
     /// Class that represents a map loader that loads from the sector files from CipSoft.
@@ -158,7 +158,7 @@ namespace Fibula.Map.SectorFiles
                 throw new ApplicationException($"The map directory '{sectorMapLoaderOptions.Value.LiveMapDirectory}' could not be found.");
             }
 
-            this.Logger = logger.ForContext<SectorMapLoader>();
+            this.Logger = logger;
             this.CreatureFinder = creatureFinder;
             this.ItemFactory = itemFactory;
             this.TileFactory = tileFactory;
@@ -280,7 +280,7 @@ namespace Fibula.Map.SectorFiles
 
                             this.sectorsLoaded[sectorX - SectorXMin, sectorY - SectorYMin, sectorZ - SectorZMin] = true;
 
-                            this.Logger.Debug($"Loaded sector {sectorFileName} [{this.totalLoadedCount} out of {this.totalTileCount}].");
+                            this.Logger.LogDebug($"Loaded sector {sectorFileName} [{this.totalLoadedCount} out of {this.totalTileCount}].");
                         });
                     });
                 });
@@ -332,7 +332,7 @@ namespace Fibula.Map.SectorFiles
                 loadedTilesList.Add((location, newTile));
             }
 
-            this.Logger.Verbose($"Sector file {fileName}: {loadedTilesList.Count} tiles loaded.");
+            this.Logger.LogTrace($"Sector file {fileName}: {loadedTilesList.Count} tiles loaded.");
 
             return loadedTilesList;
         }
@@ -363,7 +363,7 @@ namespace Fibula.Map.SectorFiles
 
                                 if (item == null)
                                 {
-                                    this.Logger.Warning($"Item with id {element.Id} not found in the catalog, skipping.");
+                                    this.Logger.LogWarning($"Item with id {element.Id} not found in the catalog, skipping.");
 
                                     continue;
                                 }
@@ -396,7 +396,7 @@ namespace Fibula.Map.SectorFiles
                         }
                         else
                         {
-                            this.Logger.Warning($"Unknown flag [{attribute.Name}] found on tile at location {tile.Location}.");
+                            this.Logger.LogWarning($"Unknown flag [{attribute.Name}] found on tile at location {tile.Location}.");
                         }
                     }
                 }
@@ -425,7 +425,7 @@ namespace Fibula.Map.SectorFiles
 
                         if (contentItem == null)
                         {
-                            this.Logger.Warning($"Item with id {element.Id} not found in the catalog, skipping.");
+                            this.Logger.LogWarning($"Item with id {element.Id} not found in the catalog, skipping.");
 
                             continue;
                         }
@@ -442,7 +442,7 @@ namespace Fibula.Map.SectorFiles
                 // These are safe to add as Attributes of the item.
                 if (!Enum.TryParse(attribute.Name, out CipItemAttribute cipAttr) || cipAttr.ToItemAttribute() is not ItemAttribute itemAttribute)
                 {
-                    this.Logger.Warning($"Unsupported attribute {attribute.Name} on {item.Type.Name}, ignoring.");
+                    this.Logger.LogWarning($"Unsupported attribute {attribute.Name} on {item.Type.Name}, ignoring.");
 
                     continue;
                 }
@@ -453,7 +453,7 @@ namespace Fibula.Map.SectorFiles
                 }
                 catch
                 {
-                    this.Logger.Warning($"Unexpected attribute {attribute.Name} with illegal value {attribute.Value} on item {item.Type.Name}, ignoring.");
+                    this.Logger.LogWarning($"Unexpected attribute {attribute.Name} with illegal value {attribute.Value} on item {item.Type.Name}, ignoring.");
                 }
             }
         }

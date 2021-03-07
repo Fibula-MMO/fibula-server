@@ -22,7 +22,7 @@ namespace Fibula.Map
     using Fibula.Map.Contracts.Abstractions;
     using Fibula.Map.Contracts.Constants;
     using Fibula.Utilities.Validation;
-    using Serilog;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Class that implements a standard map descriptor.
@@ -51,7 +51,7 @@ namespace Fibula.Map
             map.ThrowIfNull(nameof(map));
             tileDescriptor.ThrowIfNull(nameof(tileDescriptor));
 
-            this.Logger = logger.ForContext<MapDescriptor>();
+            this.Logger = logger;
 
             this.map = map;
             this.tileDescriptor = tileDescriptor;
@@ -117,12 +117,12 @@ namespace Fibula.Map
 
             if (windowSizeX > MapConstants.DefaultWindowSizeX)
             {
-                this.Logger.Debug($"{nameof(this.DescribeWindow)} {nameof(windowSizeX)} is over {nameof(MapConstants.DefaultWindowSizeX)} ({MapConstants.DefaultWindowSizeX}).");
+                this.Logger.LogDebug($"{nameof(this.DescribeWindow)} {nameof(windowSizeX)} is over {nameof(MapConstants.DefaultWindowSizeX)} ({MapConstants.DefaultWindowSizeX}).");
             }
 
             if (windowSizeY > MapConstants.DefaultWindowSizeY)
             {
-                this.Logger.Debug($"{nameof(this.DescribeWindow)} {nameof(windowSizeY)} is over {nameof(MapConstants.DefaultWindowSizeY)} ({MapConstants.DefaultWindowSizeY}).");
+                this.Logger.LogDebug($"{nameof(this.DescribeWindow)} {nameof(windowSizeY)} is over {nameof(MapConstants.DefaultWindowSizeY)} ({MapConstants.DefaultWindowSizeY}).");
             }
 
             var allCreatureIdsToLearn = new List<uint>();

@@ -16,7 +16,7 @@ namespace Fibula.Mechanics.Handlers
     using Fibula.Client.Contracts.Abstractions;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
-    using Serilog;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Special kind of handler that is used as a fall back when no other handler is picked.
@@ -45,7 +45,7 @@ namespace Fibula.Mechanics.Handlers
 
             if (incomingPacket is not IBytesInfo debugInfo)
             {
-                this.Logger.Error($"Expected packet info of type {nameof(IBytesInfo)} but got {incomingPacket.GetType().Name}.");
+                this.Logger.LogError($"Expected packet info of type {nameof(IBytesInfo)} but got {incomingPacket.GetType().Name}.");
 
                 return null;
             }
@@ -57,7 +57,7 @@ namespace Fibula.Mechanics.Handlers
                 sb.AppendFormat("{0:x2} ", b);
             }
 
-            this.Logger.Information($"Default handler drained packet with content:\n\n{sb}");
+            this.Logger.LogInformation($"Default handler drained packet with content:\n\n{sb}");
 
             return null;
         }

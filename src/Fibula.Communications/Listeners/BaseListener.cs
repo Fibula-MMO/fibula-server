@@ -20,7 +20,7 @@ namespace Fibula.Communications.Listeners
     using Fibula.Communications.Contracts.Delegates;
     using Fibula.Security.Contracts;
     using Fibula.Utilities.Validation;
-    using Serilog;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Class that is the base implementation for all TCP listeners.
@@ -70,7 +70,7 @@ namespace Fibula.Communications.Listeners
 
             this.tcpListener = tcpListener ?? new FibulaTcpListener(IPAddress.Any, options?.Port ?? 0);
 
-            this.Logger = logger.ForContext(this.GetType());
+            this.Logger = logger;
         }
 
         /// <summary>
@@ -135,13 +135,13 @@ namespace Fibula.Communications.Listeners
                             }
                             catch (Exception socEx)
                             {
-                                this.Logger.Error(socEx.ToString());
+                                this.Logger.LogError(socEx.ToString());
                             }
                         }
                     }
                     catch (SocketException socEx)
                     {
-                        this.Logger.Error(socEx.ToString());
+                        this.Logger.LogError(socEx.ToString());
                     }
                 },
                 cancellationToken);
@@ -194,7 +194,7 @@ namespace Fibula.Communications.Listeners
         {
             if (connection == null)
             {
-                this.Logger.Warning($"{nameof(this.OnConnectionClose)} called with a null {nameof(connection)} argument.");
+                this.Logger.LogWarning($"{nameof(this.OnConnectionClose)} called with a null {nameof(connection)} argument.");
 
                 return;
             }
