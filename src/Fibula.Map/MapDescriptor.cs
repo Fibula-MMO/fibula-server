@@ -27,7 +27,7 @@ namespace Fibula.Map
     /// <summary>
     /// Class that implements a standard map descriptor.
     /// </summary>
-    public class MapDescriptor : IMapDescriptor
+    public sealed class MapDescriptor : IMapDescriptor
     {
         /// <summary>
         /// A reference to the map.
@@ -45,7 +45,7 @@ namespace Fibula.Map
         /// <param name="logger">A reference to the logger to use.</param>
         /// <param name="map">The reference to the map in use.</param>
         /// <param name="tileDescriptor">A reference to the tile descriptor in use.</param>
-        public MapDescriptor(ILogger logger, IMap map, ITileDescriptor tileDescriptor)
+        public MapDescriptor(ILogger<MapDescriptor> logger, IMap map, ITileDescriptor tileDescriptor)
         {
             logger.ThrowIfNull(nameof(logger));
             map.ThrowIfNull(nameof(map));
@@ -117,12 +117,12 @@ namespace Fibula.Map
 
             if (windowSizeX > MapConstants.DefaultWindowSizeX)
             {
-                this.Logger.LogDebug($"{nameof(this.DescribeWindow)} {nameof(windowSizeX)} is over {nameof(MapConstants.DefaultWindowSizeX)} ({MapConstants.DefaultWindowSizeX}).");
+                this.Logger.LogWarning($"{nameof(this.DescribeWindow)} {nameof(windowSizeX)} is over {nameof(MapConstants.DefaultWindowSizeX)} ({MapConstants.DefaultWindowSizeX}).");
             }
 
             if (windowSizeY > MapConstants.DefaultWindowSizeY)
             {
-                this.Logger.LogDebug($"{nameof(this.DescribeWindow)} {nameof(windowSizeY)} is over {nameof(MapConstants.DefaultWindowSizeY)} ({MapConstants.DefaultWindowSizeY}).");
+                this.Logger.LogWarning($"{nameof(this.DescribeWindow)} {nameof(windowSizeY)} is over {nameof(MapConstants.DefaultWindowSizeY)} ({MapConstants.DefaultWindowSizeY}).");
             }
 
             var allCreatureIdsToLearn = new List<uint>();

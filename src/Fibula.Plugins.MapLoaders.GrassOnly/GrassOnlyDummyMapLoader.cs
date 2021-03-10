@@ -25,7 +25,7 @@ namespace Fibula.Plugins.MapLoaders.GrassOnly
     /// <summary>
     /// Class that represents a dummy map loader that yields all grass tiles.
     /// </summary>
-    public class GrassOnlyDummyMapLoader : IMapLoader
+    public sealed class GrassOnlyDummyMapLoader : IMapLoader
     {
         /// <summary>
         /// The id of the type for a grass tile.

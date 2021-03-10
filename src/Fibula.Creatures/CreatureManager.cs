@@ -32,7 +32,7 @@ namespace Fibula.Creatures
         /// Initializes a new instance of the <see cref="CreatureManager"/> class.
         /// </summary>
         /// <param name="logger">A reference to the logger to use.</param>
-        public CreatureManager(ILogger logger)
+        public CreatureManager(ILogger<CreatureManager> logger)
         {
             logger.ThrowIfNull(nameof(logger));
 

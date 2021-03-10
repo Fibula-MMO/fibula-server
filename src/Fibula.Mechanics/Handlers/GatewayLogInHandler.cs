@@ -34,7 +34,7 @@ namespace Fibula.Mechanics.Handlers
         /// </summary>
         /// <param name="logger">A reference to the logger in use.</param>
         /// <param name="applicationContext">A reference to the application context.</param>
-        public GatewayLogInHandler(ILogger logger, IApplicationContext applicationContext)
+        public GatewayLogInHandler(ILogger<GatewayLogInHandler> logger, IApplicationContext applicationContext)
             : base(logger)
         {
             applicationContext.ThrowIfNull(nameof(applicationContext));

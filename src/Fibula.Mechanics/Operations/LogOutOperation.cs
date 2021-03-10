@@ -25,7 +25,7 @@ namespace Fibula.Mechanics.Operations
     /// <summary>
     /// Class that represents a logout operation.
     /// </summary>
-    public class LogOutOperation : BaseEnvironmentOperation
+    public class LogOutOperation : Operation
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="LogOutOperation"/> class.
@@ -47,7 +47,7 @@ namespace Fibula.Mechanics.Operations
         /// Executes the operation's logic.
         /// </summary>
         /// <param name="context">A reference to the operation context.</param>
-        protected override void Execute(IElevatedOperationContext context)
+        protected override void Execute(IOperationContext context)
         {
             if (!this.Player.IsDead && this.Player.HasCondition(ConditionType.InFight))
             {
@@ -70,7 +70,7 @@ namespace Fibula.Mechanics.Operations
 
             // At this point, we're allowed to log this player out, so go for it.
             var playerLocation = this.Player.Location;
-            var removedFromMap = this.RemoveCreature(context, this.Player);
+            var removedFromMap = context.GameApi.RemoveCreatureFromGame(this.Player);
 
             if (removedFromMap || this.Player.IsDead)
             {
@@ -83,8 +83,6 @@ namespace Fibula.Mechanics.Operations
                 {
                     this.SendNotification(context, new GenericNotification(() => context.Map.FindPlayersThatCanSee(playerLocation), new MagicEffectPacket(playerLocation, AnimatedEffect.Puff)));
                 }
-
-                context.CreatureManager.UnregisterCreature(this.Player);
             }
         }
     }

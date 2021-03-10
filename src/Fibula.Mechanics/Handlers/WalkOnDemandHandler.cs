@@ -23,7 +23,7 @@ namespace Fibula.Mechanics.Handlers
     /// <summary>
     /// Abstract class that represents the base for all player walk handlers.
     /// </summary>
-    public class WalkOnDemandHandler : GameHandler
+    public sealed class WalkOnDemandHandler : GameHandler
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="WalkOnDemandHandler"/> class.
@@ -31,7 +31,7 @@ namespace Fibula.Mechanics.Handlers
         /// <param name="logger">A reference to the logger in use.</param>
         /// <param name="gameInstance">A reference to the game instance.</param>
         /// <param name="creatureFinder">A reference to the creature finder in use.</param>
-        public WalkOnDemandHandler(ILogger logger, IGame gameInstance, ICreatureFinder creatureFinder)
+        public WalkOnDemandHandler(ILogger<WalkOnDemandHandler> logger, IGame gameInstance, ICreatureFinder creatureFinder)
             : base(logger, gameInstance)
         {
             this.CreatureFinder = creatureFinder;
@@ -67,7 +67,7 @@ namespace Fibula.Mechanics.Handlers
                 return null;
             }
 
-            this.Game.ResetCreatureStaticWalkPlan(player, new[] { walkOnDemandInfo.Direction });
+            this.Game.ResetCreatureWalkPlan(player, new[] { walkOnDemandInfo.Direction });
 
             return null;
         }

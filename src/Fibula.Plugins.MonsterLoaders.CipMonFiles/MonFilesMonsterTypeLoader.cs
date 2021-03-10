@@ -29,7 +29,7 @@ namespace Fibula.Plugins.MonsterLoaders.CipMonFiles
     /// <summary>
     /// Class that represents a monster type loader that reads from the .mon files.
     /// </summary>
-    public class MonFilesMonsterTypeLoader : IMonsterTypeLoader
+    public sealed class MonFilesMonsterTypeLoader : IMonsterTypeLoader
     {
         /// <summary>
         /// Character for comments.

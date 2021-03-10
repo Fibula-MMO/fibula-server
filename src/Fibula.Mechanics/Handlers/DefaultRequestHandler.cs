@@ -21,13 +21,13 @@ namespace Fibula.Mechanics.Handlers
     /// <summary>
     /// Special kind of handler that is used as a fall back when no other handler is picked.
     /// </summary>
-    public class DefaultRequestHandler : BaseRequestHandler
+    public sealed class DefaultRequestHandler : BaseRequestHandler
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="DefaultRequestHandler"/> class.
         /// </summary>
         /// <param name="logger">A reference to the logger in use.</param>
-        public DefaultRequestHandler(ILogger logger)
+        public DefaultRequestHandler(ILogger<DefaultRequestHandler> logger)
             : base(logger)
         {
         }

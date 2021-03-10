@@ -327,6 +327,7 @@ namespace Fibula.Standalone
             // should be injected by the protocol library selected.
             services.AddSingleton<IMap, Map>();
             services.AddSingleton<IMapDescriptor, MapDescriptor>();
+            services.AddSingleton<ITileFactory, TileFactory>();
 
             // Choose a type of map loader:
             // services.AddGrassOnlyDummyMapLoader(hostingContext.Configuration);

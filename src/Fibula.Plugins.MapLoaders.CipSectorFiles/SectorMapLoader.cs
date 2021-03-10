@@ -36,7 +36,7 @@ namespace Fibula.Plugins.MapLoaders.CipSectorFiles
     /// <summary>
     /// Class that represents a map loader that loads from the sector files from CipSoft.
     /// </summary>
-    public class SectorMapLoader : IMapLoader
+    public sealed class SectorMapLoader : IMapLoader
     {
         /// <summary>
         /// The symbol used for comments.
@@ -137,7 +137,7 @@ namespace Fibula.Plugins.MapLoaders.CipSectorFiles
         /// <param name="tileFactory">A reference to the tile factory.</param>
         /// <param name="sectorMapLoaderOptions">The options for this map loader.</param>
         public SectorMapLoader(
-            ILogger logger,
+            ILogger<SectorMapLoader> logger,
             ICreatureFinder creatureFinder,
             IItemFactory itemFactory,
             ITileFactory tileFactory,
@@ -412,7 +412,7 @@ namespace Fibula.Plugins.MapLoaders.CipSectorFiles
 
             foreach (var attribute in attributes)
             {
-                if ("Content".Equals(attribute.Name) && this is IContainerItem containerItem)
+                if ("Content".Equals(attribute.Name) && item is IContainerItem containerItem)
                 {
                     if (attribute.Value is not IEnumerable<IParsedElement> contentElements || !contentElements.Any())
                     {

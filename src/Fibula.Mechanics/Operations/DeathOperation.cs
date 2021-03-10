@@ -26,7 +26,7 @@ namespace Fibula.Mechanics.Operations
     /// <summary>
     /// Class that represents an operation for a creature's death.
     /// </summary>
-    public class DeathOperation : BaseEnvironmentOperation
+    public class DeathOperation : Operation
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="DeathOperation"/> class.
@@ -48,7 +48,7 @@ namespace Fibula.Mechanics.Operations
         /// Executes the operation's logic.
         /// </summary>
         /// <param name="context">A reference to the operation context.</param>
-        protected override void Execute(IElevatedOperationContext context)
+        protected override void Execute(IOperationContext context)
         {
             if (this.Creature is IPlayer player)
             {
@@ -93,12 +93,12 @@ namespace Fibula.Mechanics.Operations
                     TypeId = this.Creature.CorpseTypeId,
                 };
 
-                if (context.ItemFactory.Create(corpseCreationArguments) is IThing corpseCreated && this.AddContentToContainerOrFallback(context, creatureTile, ref corpseCreated))
+                if (context.ItemFactory.Create(corpseCreationArguments) is IThing corpseCreated && context.GameApi.AddContentToContainerOrFallback(creatureTile, ref corpseCreated))
                 {
                     context.GameApi.CreateItemAtLocation(creatureTile.Location, context.PredefinedItemSet.FindPoolForBloodType(this.Creature.BloodType));
                 }
 
-                this.RemoveCreature(context, this.Creature);
+                context.GameApi.RemoveCreatureFromGame(this.Creature);
             }
         }
     }

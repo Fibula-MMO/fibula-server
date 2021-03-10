@@ -47,7 +47,7 @@ namespace Fibula.Protocol.V772
         /// </summary>
         /// <param name="logger">A reference to the logger in use.</param>
         /// <param name="creatureFinder">A reference to the creature finder in use.</param>
-        public TileDescriptor_v772(ILogger logger, ICreatureFinder creatureFinder)
+        public TileDescriptor_v772(ILogger<TileDescriptor_v772> logger, ICreatureFinder creatureFinder)
         {
             logger.ThrowIfNull(nameof(logger));
             creatureFinder.ThrowIfNull(nameof(creatureFinder));

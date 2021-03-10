@@ -22,14 +22,14 @@ namespace Fibula.Mechanics.Handlers
     /// <summary>
     /// Class that represents a handler for a request to speak.
     /// </summary>
-    public class SpeechHandler : GameHandler
+    public sealed class SpeechHandler : GameHandler
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SpeechHandler"/> class.
         /// </summary>
         /// <param name="logger">A reference to the logger in use.</param>
         /// <param name="gameInstance">A reference to the game instance.</param>
-        public SpeechHandler(ILogger logger, IGame gameInstance)
+        public SpeechHandler(ILogger<SpeechHandler> logger, IGame gameInstance)
             : base(logger, gameInstance)
         {
         }
@@ -52,7 +52,7 @@ namespace Fibula.Mechanics.Handlers
                 return null;
             }
 
-            this.Game.CreatureSpeech(client.PlayerId, speechInfo.SpeechType, speechInfo.ChannelType, speechInfo.Content, speechInfo.Receiver);
+            this.Game.DoCreatureSpeechAsync(client.PlayerId, speechInfo.SpeechType, speechInfo.ChannelType, speechInfo.Content, speechInfo.Receiver);
 
             return null;
         }

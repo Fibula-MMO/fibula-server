@@ -23,7 +23,7 @@ namespace Fibula.Mechanics.Handlers
     /// <summary>
     /// Class that represents a handler for follow requests.
     /// </summary>
-    public class FollowHandler : GameHandler
+    public sealed class FollowHandler : GameHandler
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="FollowHandler"/> class.
@@ -31,7 +31,7 @@ namespace Fibula.Mechanics.Handlers
         /// <param name="logger">A reference to the logger in use.</param>
         /// <param name="gameInstance">A reference to the game instance.</param>
         /// <param name="creatureFinder">A reference to the creature finder in use.</param>
-        public FollowHandler(ILogger logger, IGame gameInstance, ICreatureFinder creatureFinder)
+        public FollowHandler(ILogger<FollowHandler> logger, IGame gameInstance, ICreatureFinder creatureFinder)
             : base(logger, gameInstance)
         {
             this.CreatureFinder = creatureFinder;

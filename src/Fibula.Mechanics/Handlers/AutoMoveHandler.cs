@@ -23,7 +23,7 @@ namespace Fibula.Mechanics.Handlers
     /// <summary>
     /// Class that represents a handler for auto movement requests.
     /// </summary>
-    public class AutoMoveHandler : GameHandler
+    public sealed class AutoMoveHandler : GameHandler
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="AutoMoveHandler"/> class.
@@ -31,7 +31,7 @@ namespace Fibula.Mechanics.Handlers
         /// <param name="logger">A reference to the logger in use.</param>
         /// <param name="gameInstance">A reference to the game instance.</param>
         /// <param name="creatureFinder">A reference to the creature finder in use.</param>
-        public AutoMoveHandler(ILogger logger, IGame gameInstance, ICreatureFinder creatureFinder)
+        public AutoMoveHandler(ILogger<AutoMoveHandler> logger, IGame gameInstance, ICreatureFinder creatureFinder)
             : base(logger, gameInstance)
         {
             this.CreatureFinder = creatureFinder;
@@ -67,7 +67,7 @@ namespace Fibula.Mechanics.Handlers
                 return null;
             }
 
-            this.Game.ResetCreatureStaticWalkPlan(player, autoMoveInfo.Directions);
+            this.Game.ResetCreatureWalkPlan(player, autoMoveInfo.Directions);
 
             return null;
         }

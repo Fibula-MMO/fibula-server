@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <PackageReference Include="Fibula.Parsing.CipFiles" Version="1.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="5.0.0" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
@@ -25,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Fibula.Data.Contracts\Fibula.Data.Contracts.csproj" />
+    <ProjectReference Include="..\Fibula.Data.Entities.Contracts\Fibula.Data.Entities.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

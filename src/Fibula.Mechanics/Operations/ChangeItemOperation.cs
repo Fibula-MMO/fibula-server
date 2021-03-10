@@ -26,7 +26,7 @@ namespace Fibula.Mechanics.Operations
     /// <summary>
     /// Class that represents an event for an item change.
     /// </summary>
-    public class ChangeItemOperation : BaseEnvironmentOperation
+    public class ChangeItemOperation : Operation
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ChangeItemOperation"/> class.
@@ -74,7 +74,7 @@ namespace Fibula.Mechanics.Operations
         /// Executes the operation's logic.
         /// </summary>
         /// <param name="context">A reference to the operation context.</param>
-        protected override void Execute(IElevatedOperationContext context)
+        protected override void Execute(IOperationContext context)
         {
             const byte FallbackIndex = 0xFF;
 
@@ -101,7 +101,7 @@ namespace Fibula.Mechanics.Operations
 
             if (!replaceSuccessful || replaceRemainder != null)
             {
-                this.AddContentToContainerOrFallback(context, inThingContainer, ref replaceRemainder, FallbackIndex, includeTileAsFallback: true, this.GetRequestor(context.CreatureFinder));
+                context.GameApi.AddContentToContainerOrFallback(inThingContainer, ref replaceRemainder, FallbackIndex, includeTileAsFallback: true, this.GetRequestor(context.CreatureFinder));
             }
 
             if (replaceSuccessful)

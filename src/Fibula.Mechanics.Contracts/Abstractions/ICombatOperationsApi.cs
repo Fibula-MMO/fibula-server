@@ -12,7 +12,6 @@
 namespace Fibula.Mechanics.Contracts.Abstractions
 {
     using Fibula.Common.Contracts.Enumerations;
-    using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Definitions.Enumerations;
 
     /// <summary>
@@ -20,40 +19,6 @@ namespace Fibula.Mechanics.Contracts.Abstractions
     /// </summary>
     public interface ICombatOperationsApi
     {
-        /// <summary>
-        /// Handles a death from a combatant.
-        /// </summary>
-        /// <param name="combatant">The combatant that died.</param>
-        void CombatantDeath(ICombatant combatant);
-
-        /// <summary>
-        /// Handles an attack target change from a combatant.
-        /// </summary>
-        /// <param name="combatant">The combatant that died.</param>
-        /// <param name="oldTarget">The previous attack target, which can be null.</param>
-        void CombatantAttackTargetChanged(ICombatant combatant, ICombatant oldTarget);
-
-        /// <summary>
-        /// Handles a follow target change from a combatant.
-        /// </summary>
-        /// <param name="combatant">The creature that changed follow target.</param>
-        /// <param name="oldTarget">The old follow target, if any.</param>
-        void CreatureFollowTargetChanged(ICombatant combatant, ICreature oldTarget);
-
-        /// <summary>
-        /// Handles the event when a creature has seen another creature.
-        /// </summary>
-        /// <param name="creature">The monster that sees the other.</param>
-        /// <param name="creatureSeen">The creature that was seen.</param>
-        void CreatureHasSeenCreature(ICreatureThatSensesOthers creature, ICreature creatureSeen);
-
-        /// <summary>
-        /// Handles the event when a creature has lost another creature.
-        /// </summary>
-        /// <param name="creature">The monster that sees the other.</param>
-        /// <param name="creatureLost">The creature that was lost.</param>
-        void CreatureHasLostCreature(ICreatureThatSensesOthers creature, ICreature creatureLost);
-
         /// <summary>
         /// Sets the fight, chase and safety modes of a combatant.
         /// </summary>

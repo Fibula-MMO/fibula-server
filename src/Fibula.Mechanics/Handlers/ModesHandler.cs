@@ -23,7 +23,7 @@ namespace Fibula.Mechanics.Handlers
     /// <summary>
     /// Class that represents a handler for changing modes.
     /// </summary>
-    public class ModesHandler : GameHandler
+    public sealed class ModesHandler : GameHandler
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ModesHandler"/> class.
@@ -31,7 +31,7 @@ namespace Fibula.Mechanics.Handlers
         /// <param name="logger">A reference to the logger in use.</param>
         /// <param name="gameInstance">A reference to the game instance.</param>
         /// <param name="creatureFinder">A reference to the creature finder in use.</param>
-        public ModesHandler(ILogger logger, IGame gameInstance, ICreatureFinder creatureFinder)
+        public ModesHandler(ILogger<ModesHandler> logger, IGame gameInstance, ICreatureFinder creatureFinder)
             : base(logger, gameInstance)
         {
             this.CreatureFinder = creatureFinder;

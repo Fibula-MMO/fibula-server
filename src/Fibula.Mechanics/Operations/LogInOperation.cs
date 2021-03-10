@@ -30,7 +30,7 @@ namespace Fibula.Mechanics.Operations
     /// <summary>
     /// Class that represents a login operation.
     /// </summary>
-    public class LogInOperation : BaseEnvironmentOperation
+    public class LogInOperation : Operation
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="LogInOperation"/> class.
@@ -74,7 +74,7 @@ namespace Fibula.Mechanics.Operations
         /// Executes the operation's logic.
         /// </summary>
         /// <param name="context">A reference to the operation context.</param>
-        protected override void Execute(IElevatedOperationContext context)
+        protected override void Execute(IOperationContext context)
         {
             // This will eventually come from the character, or fall back.
             var targetLoginLocation = MapConstants.ThaisTempleMark;
@@ -93,7 +93,7 @@ namespace Fibula.Mechanics.Operations
                 return;
             }
 
-            if (!context.Map.GetTileAt(targetLoginLocation, out ITile targetTile) || !this.PlaceCreature(context, targetTile, player))
+            if (!context.GameApi.AddCreatureToGame(targetLoginLocation, player))
             {
                 // Unable to place the player in the map.
                 context.Scheduler.ScheduleEvent(
@@ -138,7 +138,7 @@ namespace Fibula.Mechanics.Operations
                 };
             }
 
-            notification.Send(new NotificationContext(context.Logger, context.MapDescriptor, context.CreatureFinder));
+            this.SendNotification(context, notification);
         }
     }
 }

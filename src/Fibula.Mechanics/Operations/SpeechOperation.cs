@@ -116,7 +116,7 @@ namespace Fibula.Mechanics.Operations
                 {
                     var raceId = this.Content.Replace("!mon", string.Empty).Trim();
 
-                    context.GameApi.PlaceMonsterAt(raceId, requestor.RandomAdjacentLocation(includeDiagonals: true));
+                    context.GameApi.PlaceNewMonsterAtAsync(raceId, requestor.RandomAdjacentLocation(includeDiagonals: true));
 
                     return;
                 }

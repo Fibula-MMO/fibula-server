@@ -38,7 +38,7 @@ namespace Fibula.Plugins.ItemLoaders.CipObjectsFile
     ///     Attributes  = {Capacity=1,Weight=0}
     /// .
     /// </remarks>
-    public class ObjectsFileItemTypeLoader : IItemTypeLoader
+    public sealed class ObjectsFileItemTypeLoader : IItemTypeLoader
     {
         /// <summary>
         /// Character for comments.

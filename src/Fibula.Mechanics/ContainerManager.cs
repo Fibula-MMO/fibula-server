@@ -47,7 +47,7 @@ namespace Fibula.Mechanics
         /// <param name="logger">A reference to the logger in use.</param>
         /// <param name="creatureFinder">A reference to the creature finder in use.</param>
         /// <param name="scheduler">A reference to the scheduler in use.</param>
-        public ContainerManager(ILogger logger, ICreatureFinder creatureFinder, IScheduler scheduler)
+        public ContainerManager(ILogger<ContainerManager> logger, ICreatureFinder creatureFinder, IScheduler scheduler)
         {
             this.logger = logger;
             this.creatureFinder = creatureFinder;

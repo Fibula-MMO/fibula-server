@@ -19,7 +19,7 @@ namespace Fibula.Mechanics.Operations
     /// <summary>
     /// Class that represents an operation for placing a creature on the map.
     /// </summary>
-    public class PlaceCreatureOperation : BaseEnvironmentOperation
+    public class PlaceCreatureOperation : Operation
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PlaceCreatureOperation"/> class.
@@ -48,9 +48,9 @@ namespace Fibula.Mechanics.Operations
         /// Executes the operation's logic.
         /// </summary>
         /// <param name="context">A reference to the operation context.</param>
-        protected override void Execute(IElevatedOperationContext context)
+        protected override void Execute(IOperationContext context)
         {
-            bool successfulPlacement = this.PlaceCreature(context, this.AtTile, this.Creature);
+            bool successfulPlacement = context.GameApi.AddCreatureToGame(this.AtTile.Location, this.Creature);
 
             if (!successfulPlacement)
             {

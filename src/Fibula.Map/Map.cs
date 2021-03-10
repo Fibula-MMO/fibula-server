@@ -23,7 +23,7 @@ namespace Fibula.Map
     /// <summary>
     /// Class that represents the map for the game server.
     /// </summary>
-    public class Map : IMap
+    public sealed class Map : IMap
     {
         /// <summary>
         /// Holds the <see cref="ITile"/>s data based on <see cref="Location"/>.
@@ -36,7 +36,7 @@ namespace Fibula.Map
         /// <param name="logger">A reference to the logger to use.</param>
         /// <param name="mapLoader">The map loader to use to load this map.</param>
         /// <param name="creatureFinder">A reference to the creature finder.</param>
-        public Map(ILogger logger, IMapLoader mapLoader, ICreatureFinder creatureFinder)
+        public Map(ILogger<Map> logger, IMapLoader mapLoader, ICreatureFinder creatureFinder)
         {
             logger.ThrowIfNull(nameof(logger));
             mapLoader.ThrowIfNull(nameof(mapLoader));

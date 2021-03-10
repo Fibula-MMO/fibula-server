@@ -25,7 +25,7 @@ namespace Fibula.Mechanics.Handlers
     /// <summary>
     /// Class that represents a request handler for actions with no content to be read, for the game server.
     /// </summary>
-    public class ActionWithoutContentHandler : GameHandler
+    public sealed class ActionWithoutContentHandler : GameHandler
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ActionWithoutContentHandler"/> class.
@@ -33,7 +33,7 @@ namespace Fibula.Mechanics.Handlers
         /// <param name="logger">A reference to the logger in use.</param>
         /// <param name="gameInstance">A reference to the game instance.</param>
         /// <param name="creatureFinder">A reference to the creature finder in use.</param>
-        public ActionWithoutContentHandler(ILogger logger, IGame gameInstance, ICreatureFinder creatureFinder)
+        public ActionWithoutContentHandler(ILogger<ActionWithoutContentHandler> logger, IGame gameInstance, ICreatureFinder creatureFinder)
             : base(logger, gameInstance)
         {
             this.CreatureFinder = creatureFinder;
@@ -72,13 +72,13 @@ namespace Fibula.Mechanics.Handlers
             switch (actionInfo.Action)
             {
                 case IncomingPacketType.AutoMoveCancel:
-                    this.Game.CancelPlayerActions(player, typeof(MovementOperation), async: true);
+                    this.Game.CancelPlayerOperationsAsync(player, typeof(MovementOperation));
                     break;
                 case IncomingPacketType.HeartbeatResponse:
                     // NO-OP.
                     break;
                 case IncomingPacketType.Heartbeat:
-                    this.Game.SendHeartbeatResponse(player);
+                    this.Game.SendHeartbeatResponseAsync(player);
                     break;
                 case IncomingPacketType.LogOut:
                     this.Game.LogPlayerOut(player);
@@ -87,7 +87,7 @@ namespace Fibula.Mechanics.Handlers
                     // this.Game.RequestPlayerOutfitChange(player);
                     break;
                 case IncomingPacketType.StopAllActions:
-                    this.Game.CancelPlayerActions(player, null, async: true);
+                    this.Game.CancelPlayerOperationsAsync(player);
                     break;
             }
 

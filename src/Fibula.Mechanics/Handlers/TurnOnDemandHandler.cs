@@ -23,7 +23,7 @@ namespace Fibula.Mechanics.Handlers
     /// <summary>
     /// Abstract class that represents the player turning to a direction handler.
     /// </summary>
-    public class TurnOnDemandHandler : GameHandler
+    public sealed class TurnOnDemandHandler : GameHandler
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="TurnOnDemandHandler"/> class.
@@ -31,7 +31,7 @@ namespace Fibula.Mechanics.Handlers
         /// <param name="logger">A reference to the logger in use.</param>
         /// <param name="gameInstance">A reference to the game instance.</param>
         /// <param name="creatureFinder">A reference to the creature finder in use.</param>
-        public TurnOnDemandHandler(ILogger logger, IGame gameInstance, ICreatureFinder creatureFinder)
+        public TurnOnDemandHandler(ILogger<TurnOnDemandHandler> logger, IGame gameInstance, ICreatureFinder creatureFinder)
             : base(logger, gameInstance)
         {
             this.CreatureFinder = creatureFinder;
@@ -68,7 +68,7 @@ namespace Fibula.Mechanics.Handlers
             }
 
             // TODO: cancel other pending actions.
-            this.Game.CreatureTurn(player.Id, player, turnOnDemandInfo.Direction);
+            this.Game.DoCreatureTurnAsync(player.Id, player, turnOnDemandInfo.Direction);
 
             return null;
         }

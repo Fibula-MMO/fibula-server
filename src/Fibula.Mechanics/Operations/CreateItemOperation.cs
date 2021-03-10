@@ -23,7 +23,7 @@ namespace Fibula.Mechanics.Operations
     /// <summary>
     /// Class that represents an event for an item creation.
     /// </summary>
-    public class CreateItemOperation : BaseEnvironmentOperation
+    public class CreateItemOperation : Operation
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="CreateItemOperation"/> class.
@@ -59,7 +59,7 @@ namespace Fibula.Mechanics.Operations
         /// Executes the operation's logic.
         /// </summary>
         /// <param name="context">A reference to the operation context.</param>
-        protected override void Execute(IElevatedOperationContext context)
+        protected override void Execute(IOperationContext context)
         {
             var requestor = this.GetRequestor(context.CreatureFinder);
             var inThingContainer = this.AtLocation.DecodeContainer(context.Map, context.ContainerManager, out byte index, requestor);
@@ -76,7 +76,7 @@ namespace Fibula.Mechanics.Operations
             }
 
             // At this point, we were able to generate the new one, let's proceed to add it.
-            this.AddContentToContainerOrFallback(context, inThingContainer, ref thingCreated, index, includeTileAsFallback: true, requestor);
+            context.GameApi.AddContentToContainerOrFallback(inThingContainer, ref thingCreated, index, includeTileAsFallback: true, requestor);
         }
     }
 }

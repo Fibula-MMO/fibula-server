@@ -29,7 +29,7 @@ namespace Fibula.Mechanics.Handlers
     /// <summary>
     /// Class that represents a character log in request handler for the game server.
     /// </summary>
-    public class GameLogInHandler : GameHandler
+    public sealed class GameLogInHandler : GameHandler
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="GameLogInHandler"/> class.
@@ -39,7 +39,7 @@ namespace Fibula.Mechanics.Handlers
         /// <param name="gameInstance">A reference to the game instance.</param>
         public GameLogInHandler(
             IApplicationContext applicationContext,
-            ILogger logger,
+            ILogger<GameLogInHandler> logger,
             IGame gameInstance)
             : base(logger, gameInstance)
         {

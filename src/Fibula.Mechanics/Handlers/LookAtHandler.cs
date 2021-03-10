@@ -23,7 +23,7 @@ namespace Fibula.Mechanics.Handlers
     /// <summary>
     /// Class that represents a look at handler for the game server.
     /// </summary>
-    public class LookAtHandler : GameHandler
+    public sealed class LookAtHandler : GameHandler
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="LookAtHandler"/> class.
@@ -31,7 +31,7 @@ namespace Fibula.Mechanics.Handlers
         /// <param name="logger">A reference to the logger in use.</param>
         /// <param name="gameInstance">A reference to the game instance.</param>
         /// <param name="creatureFinder">A reference to the creature finder in use.</param>
-        public LookAtHandler(ILogger logger, IGame gameInstance, ICreatureFinder creatureFinder)
+        public LookAtHandler(ILogger<LookAtHandler> logger, IGame gameInstance, ICreatureFinder creatureFinder)
             : base(logger, gameInstance)
         {
             this.CreatureFinder = creatureFinder;

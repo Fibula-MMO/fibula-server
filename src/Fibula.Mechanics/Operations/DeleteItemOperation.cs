@@ -21,7 +21,7 @@ namespace Fibula.Mechanics.Operations
     /// <summary>
     /// Class that represents an event for an item deletion.
     /// </summary>
-    public class DeleteItemOperation : BaseEnvironmentOperation
+    public class DeleteItemOperation : Operation
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="DeleteItemOperation"/> class.
@@ -43,7 +43,7 @@ namespace Fibula.Mechanics.Operations
         /// Executes the operation's logic.
         /// </summary>
         /// <param name="context">A reference to the operation context.</param>
-        protected override void Execute(IElevatedOperationContext context)
+        protected override void Execute(IOperationContext context)
         {
             var requestor = this.GetRequestor(context.CreatureFinder);
             var inThingContainer = this.Item.ParentContainer;

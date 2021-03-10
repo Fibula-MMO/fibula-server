@@ -221,7 +221,7 @@ namespace Fibula.Mechanics.Operations
 
             if (damageDoneInfo.ApplyBloodToEnvironment)
             {
-                context.GameApi.CreateItemAtLocation(this.Target.Location, context.PredefinedItemSet.FindSplatterForBloodType(this.Target.BloodType));
+                context.GameApi.CreateItemAtLocationAsync(this.Target.Location, context.PredefinedItemSet.FindSplatterForBloodType(this.Target.BloodType));
             }
 
             if (this.Attacker != null)

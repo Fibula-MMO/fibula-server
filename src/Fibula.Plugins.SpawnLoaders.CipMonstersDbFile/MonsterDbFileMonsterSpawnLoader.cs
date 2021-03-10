@@ -24,7 +24,7 @@ namespace Fibula.Plugins.SpawnLoaders.CipMonstersDbFile
     /// <summary>
     /// Class that represents a monster spawn loader that reads from the monster.db file.
     /// </summary>
-    public class MonsterDbFileMonsterSpawnLoader : IMonsterSpawnLoader
+    public sealed class MonsterDbFileMonsterSpawnLoader : IMonsterSpawnLoader
     {
         /// <summary>
         /// Character for comments.
@@ -42,7 +42,7 @@ namespace Fibula.Plugins.SpawnLoaders.CipMonstersDbFile
         /// <param name="logger">A reference to the logger instance.</param>
         /// <param name="options">The options for this loader.</param>
         public MonsterDbFileMonsterSpawnLoader(
-            ILogger logger,
+            ILogger<MonsterDbFileMonsterSpawnLoader> logger,
             IOptions<MonsterDbFileMonsterSpawnLoaderOptions> options)
         {
             logger.ThrowIfNull(nameof(logger));

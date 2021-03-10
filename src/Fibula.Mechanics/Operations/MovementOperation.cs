@@ -626,12 +626,12 @@ namespace Fibula.Mechanics.Operations
                 toIndex--;
             }
 
-            if (!this.AddContentToContainerOrFallback(context, toThingContainer, ref addRemainder, toIndex, includeTileAsFallback: false, requestorCreature) || addRemainder != null)
+            if (!context.GameApi.AddContentToContainerOrFallback(toThingContainer, ref addRemainder, toIndex, includeTileAsFallback: false, requestorCreature) || addRemainder != null)
             {
                 // There is some rollback to do, as we failed to add the entire thing.
                 IThing rollbackRemainder = addRemainder ?? item;
 
-                if (!this.AddContentToContainerOrFallback(context, fromThingContainer, ref rollbackRemainder, FallbackIndex, includeTileAsFallback: true, requestorCreature))
+                if (!context.GameApi.AddContentToContainerOrFallback(fromThingContainer, ref rollbackRemainder, FallbackIndex, includeTileAsFallback: true, requestorCreature))
                 {
                     context.Logger.LogError($"Rollback failed on {nameof(this.PerformItemMovement)}. Thing: {rollbackRemainder.DescribeForLogger()}");
                 }

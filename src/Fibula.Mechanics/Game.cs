@@ -250,11 +250,40 @@ namespace Fibula.Mechanics
         /// <param name="location">The location at which to create the item.</param>
         /// <param name="itemType">The type of item to create.</param>
         /// <param name="additionalAttributes">Optional. Additional item attributes to set on the new item.</param>
-        public void CreateItemAtLocation(Location location, IItemTypeEntity itemType, params (ItemAttribute, IConvertible)[] additionalAttributes)
+        /// <returns>True if the item is created successfully, false otherwise.</returns>
+        public bool CreateItemAtLocation(Location location, IItemTypeEntity itemType, params (ItemAttribute, IConvertible)[] additionalAttributes)
         {
             if (itemType == null)
             {
-                return;
+                return false;
+            }
+
+            var attributesToSet = itemType.DefaultAttributes.Select(kvp => ((ItemAttribute)kvp.Key, kvp.Value));
+
+            if (additionalAttributes != null)
+            {
+                attributesToSet = attributesToSet.Union(additionalAttributes);
+            }
+
+            var createItemOp = new CreateItemOperation(requestorId: 0, itemType.TypeId, location, attributesToSet.ToArray());
+
+            createItemOp.Execute(this.PrepareContextForEvent(createItemOp));
+
+            return true;
+        }
+
+        /// <summary>
+        /// Creates item at the specified location.
+        /// </summary>
+        /// <param name="location">The location at which to create the item.</param>
+        /// <param name="itemType">The type of item to create.</param>
+        /// <param name="additionalAttributes">Optional. Additional item attributes to set on the new item.</param>
+        /// <returns>The operation that was scheduled as a result, or null if nothing is done.</returns>
+        public IOperation CreateItemAtLocationAsync(Location location, IItemTypeEntity itemType, params (ItemAttribute, IConvertible)[] additionalAttributes)
+        {
+            if (itemType == null)
+            {
+                return null;
             }
 
             var attributesToSet = itemType.DefaultAttributes.Select(kvp => ((ItemAttribute)kvp.Key, kvp.Value));
@@ -267,6 +296,8 @@ namespace Fibula.Mechanics
             var createItemOp = new CreateItemOperation(requestorId: 0, itemType.TypeId, location, attributesToSet.ToArray());
 
             this.DispatchOperation(createItemOp);
+
+            return createItemOp;
         }
 
         /// <summary>
@@ -275,97 +306,14 @@ namespace Fibula.Mechanics
         /// <param name="location">The location at which to create the item.</param>
         /// <param name="itemTypeId">The type id of the item to create.</param>
         /// <param name="additionalAttributes">Optional. Additional item attributes to set on the new item.</param>
-        public void CreateItemAtLocation(Location location, ushort itemTypeId, params (ItemAttribute, IConvertible)[] additionalAttributes)
+        /// <returns>The operation that was scheduled as a result, or null if nothing is done.</returns>
+        public IOperation CreateItemAtLocationAsync(Location location, ushort itemTypeId, params (ItemAttribute, IConvertible)[] additionalAttributes)
         {
             var createItemOp = new CreateItemOperation(requestorId: 0, itemTypeId, location, additionalAttributes);
 
             this.DispatchOperation(createItemOp);
-        }
 
-        /// <summary>
-        /// Handles a stat change event from a creature.
-        /// </summary>
-        /// <param name="creature">The creature for which the stat changed.</param>
-        /// <param name="statThatChanged">The stat that changed.</param>
-        /// <param name="previousValue">The previous stat value.</param>
-        /// <param name="previousPercent">The previous percent for the stat.</param>
-        public void CreatureStatChanged(ICreature creature, IStat statThatChanged, uint previousValue, byte previousPercent)
-        {
-            creature.ThrowIfNull(nameof(creature));
-            statThatChanged.ThrowIfNull(nameof(statThatChanged));
-
-            if (statThatChanged.Type == CreatureStat.HitPoints)
-            {
-                // This updates the health as seen by others.
-                this.scheduler.ScheduleEvent(new GenericNotification(() => this.map.FindPlayersThatCanSee(creature.Location), new CreatureHealthPacket(creature)));
-            }
-
-            if (creature is IPlayer player)
-            {
-                if (statThatChanged.Type == CreatureStat.BaseSpeed)
-                {
-                    this.scheduler.ScheduleEvent(new GenericNotification(() => player.YieldSingleItem(), new CreatureSpeedChangePacket(player)));
-                }
-
-                // And this updates the health of the player.
-                this.scheduler.ScheduleEvent(new GenericNotification(() => player.YieldSingleItem(), new PlayerStatsPacket(player)));
-            }
-        }
-
-        /// <summary>
-        /// Handles the death of a combatant.
-        /// </summary>
-        /// <param name="combatant">The combatant that died.</param>
-        public void CombatantDeath(ICombatant combatant)
-        {
-            if (combatant is IPlayer playerCombatant)
-            {
-                this.CancelPlayerActions(playerCombatant, typeof(IOperation), async: true);
-            }
-
-            var rng = new Random();
-            var deathDelay = TimeSpan.FromMilliseconds(rng.Next(DefaultDeathDelayMs));
-            var deathOp = new DeathOperation(requestorId: 0, combatant);
-
-            this.DispatchOperation(deathOp, deathDelay);
-        }
-
-        /// <summary>
-        /// Handles an attack target change from a combatant.
-        /// </summary>
-        /// <param name="combatant">The combatant that died.</param>
-        /// <param name="oldTarget">The previous attack target, which can be null.</param>
-        public void CombatantAttackTargetChanged(ICombatant combatant, ICombatant oldTarget)
-        {
-            if (combatant == null)
-            {
-                return;
-            }
-
-            this.scheduler.CancelAllFor(combatant.Id, typeof(AttackOrchestratorOperation));
-
-            if (combatant.AutoAttackTarget != null)
-            {
-                var autoAttackOrchestrationOp = new AttackOrchestratorOperation(combatant);
-
-                this.DispatchOperation(autoAttackOrchestrationOp);
-
-                if (combatant is IPlayer attackerPlayer)
-                {
-                    this.AddOrAggregateCondition(
-                        attackerPlayer,
-                        new InFightCondition(attackerPlayer),
-                        duration: TimeSpan.FromMilliseconds(CombatConstants.DefaultInFightTimeInMs));
-                }
-
-                if (combatant.AutoAttackTarget is IPlayer targetPlayer)
-                {
-                    this.AddOrAggregateCondition(
-                        targetPlayer,
-                        new InFightCondition(targetPlayer),
-                        duration: TimeSpan.FromMilliseconds(CombatConstants.DefaultInFightTimeInMs));
-                }
-            }
+            return createItemOp;
         }
 
         /// <summary>
@@ -412,56 +360,6 @@ namespace Fibula.Mechanics
         }
 
         /// <summary>
-        /// Handles a follow target change from a combatant.
-        /// </summary>
-        /// <param name="combatant">The creature that changed follow target.</param>
-        /// <param name="oldTarget">The old follow target, if any.</param>
-        public void CreatureFollowTargetChanged(ICombatant combatant, ICreature oldTarget)
-        {
-            if (combatant == null)
-            {
-                return;
-            }
-
-            if (combatant.ChaseTarget != oldTarget)
-            {
-                this.ResetCreatureDynamicWalkPlan(combatant, combatant.ChaseTarget, targetDistance: combatant.AutoAttackRange);
-            }
-        }
-
-        /// <summary>
-        /// Handles the event when a creature has seen another creature.
-        /// </summary>
-        /// <param name="creature">The monster that sees the other.</param>
-        /// <param name="creatureSeen">The creature that was seen.</param>
-        public void CreatureHasSeenCreature(ICreatureThatSensesOthers creature, ICreature creatureSeen)
-        {
-            creature.ThrowIfNull(nameof(creature));
-            creatureSeen.ThrowIfNull(nameof(creatureSeen));
-
-            if (creature is ICombatant combatant && creatureSeen is ICombatant combatantSeen)
-            {
-                combatant.AddToCombatList(combatantSeen);
-            }
-        }
-
-        /// <summary>
-        /// Handles the event when a creature has lost another creature.
-        /// </summary>
-        /// <param name="creature">The monster that sees the other.</param>
-        /// <param name="creatureLost">The creature that was lost.</param>
-        public void CreatureHasLostCreature(ICreatureThatSensesOthers creature, ICreature creatureLost)
-        {
-            creature.ThrowIfNull(nameof(creature));
-            creatureLost.ThrowIfNull(nameof(creatureLost));
-
-            if (creature is ICombatant combatant && creatureLost is ICombatant combatantLost)
-            {
-                combatant.RemoveFromCombatList(combatantLost);
-            }
-        }
-
-        /// <summary>
         /// Re-sets the attack target of the attacker and it's (possibly new) target.
         /// </summary>
         /// <param name="attacker">The attacker.</param>
@@ -497,7 +395,7 @@ namespace Fibula.Mechanics
         /// <param name="creature">The creature to reset the walk plan of.</param>
         /// <param name="directions">The directions for the new plan.</param>
         /// <param name="strategy">Optional. The strategy to follow in the plan.</param>
-        public void ResetCreatureStaticWalkPlan(ICreature creature, Direction[] directions, WalkPlanStrategy strategy = WalkPlanStrategy.DoNotRecalculate)
+        public void ResetCreatureWalkPlan(ICreature creature, Direction[] directions, WalkPlanStrategy strategy = WalkPlanStrategy.DoNotRecalculate)
         {
             if (creature == null || !directions.Any())
             {
@@ -536,7 +434,7 @@ namespace Fibula.Mechanics
         /// <param name="strategy">Optional. The strategy to follow in the plan.</param>
         /// <param name="targetDistance">Optional. The target distance to calculate from the target creature.</param>
         /// <param name="excludeCurrentLocation">Optional. A value indicating whether to exclude the current creature's location from being the goal location.</param>
-        public void ResetCreatureDynamicWalkPlan(ICreature creature, ICreature targetCreature, WalkPlanStrategy strategy = WalkPlanStrategy.ConservativeRecalculation, int targetDistance = 1, bool excludeCurrentLocation = false)
+        public void ResetCreatureWalkPlan(ICreature creature, ICreature targetCreature, WalkPlanStrategy strategy = WalkPlanStrategy.ConservativeRecalculation, int targetDistance = 1, bool excludeCurrentLocation = false)
         {
             if (creature == null)
             {
@@ -580,27 +478,40 @@ namespace Fibula.Mechanics
         }
 
         /// <summary>
-        /// Cancels all actions that a player has pending.
+        /// Cancels all operations that a player has pending, immediately.
         /// </summary>
-        /// <param name="player">The player to cancel actions for.</param>
-        /// <param name="typeOfActionToCancel">Optional. The specific type of action to cancel.</param>
-        /// <param name="async">Optional. A value indicating whether to execute the cancellation asynchronously.</param>
-        public void CancelPlayerActions(IPlayer player, Type typeOfActionToCancel = null, bool async = false)
+        /// <param name="player">The player to cancel operations for.</param>
+        /// <param name="typeOfOperationToCancel">Optional. The specific type of operation to cancel. All operations are cancelled if no type is specified.</param>
+        public void CancelPlayerOperations(IPlayer player, Type typeOfOperationToCancel = null)
         {
-            if (player == null || (typeOfActionToCancel != null && !typeof(IOperation).IsAssignableFrom(typeOfActionToCancel)))
+            if (player == null || (typeOfOperationToCancel != null && !typeof(IOperation).IsAssignableFrom(typeOfOperationToCancel)))
             {
                 return;
             }
 
-            var cancelOp = new CancelOperationsOperation(player.Id, player, typeOfActionToCancel);
-
-            if (async)
-            {
-                this.DispatchOperation(cancelOp);
-                return;
-            }
+            var cancelOp = new CancelOperationsOperation(player.Id, player, typeOfOperationToCancel);
 
             cancelOp.Execute(this.PrepareContextForEvent(cancelOp));
+        }
+
+        /// <summary>
+        /// Cancels all operations that a player has pending asynchronously.
+        /// </summary>
+        /// <param name="player">The player to cancel operations for.</param>
+        /// <param name="typeOfOperationToCancel">Optional. The specific type of operation to cancel. All operations are cancelled if no type is specified.</param>
+        /// <returns>The operation that was scheduled as a result, or null if nothing is done.</returns>
+        public IOperation CancelPlayerOperationsAsync(IPlayer player, Type typeOfOperationToCancel = null)
+        {
+            if (player == null || (typeOfOperationToCancel != null && !typeof(IOperation).IsAssignableFrom(typeOfOperationToCancel)))
+            {
+                return null;
+            }
+
+            var cancelOp = new CancelOperationsOperation(player.Id, player, typeOfOperationToCancel);
+
+            this.DispatchOperation(cancelOp);
+
+            return cancelOp;
         }
 
         /// <summary>
@@ -623,111 +534,37 @@ namespace Fibula.Mechanics
         }
 
         /// <summary>
-        /// Handles creature speech.
+        /// Performs creature speech asynchronously.
         /// </summary>
         /// <param name="creatureId">The id of the creature.</param>
         /// <param name="speechType">The type of speech.</param>
         /// <param name="channelType">The type of channel of the speech.</param>
         /// <param name="content">The content of the speech.</param>
         /// <param name="receiver">Optional. The receiver of the speech, if any.</param>
-        public void CreatureSpeech(uint creatureId, SpeechType speechType, ChatChannelType channelType, string content, string receiver = "")
+        /// <returns>The operation that was scheduled as a result, or null if nothing is done.</returns>
+        public IOperation DoCreatureSpeechAsync(uint creatureId, SpeechType speechType, ChatChannelType channelType, string content, string receiver = "")
         {
             var speechOp = new SpeechOperation(creatureId, speechType, channelType, content, receiver);
 
             this.DispatchOperation(speechOp);
+
+            return speechOp;
         }
 
         /// <summary>
-        /// Turns a creature to a direction.
+        /// Performs a creature turn asynchronously.
         /// </summary>
         /// <param name="requestorId">The id of the creature.</param>
         /// <param name="creature">The creature to turn.</param>
         /// <param name="direction">The direction to turn to.</param>
-        public void CreatureTurn(uint requestorId, ICreature creature, Direction direction)
+        /// <returns>The operation that was scheduled as a result, or null if nothing is done.</returns>
+        public IOperation DoCreatureTurnAsync(uint requestorId, ICreature creature, Direction direction)
         {
             var turnToDirOp = new TurnToDirectionOperation(creature, direction);
 
             this.DispatchOperation(turnToDirOp);
-        }
 
-        /// <summary>
-        /// Handles a skill level change from a skilled creature.
-        /// </summary>
-        /// <param name="skilledCreature">The skilled creature for which the skill changed.</param>
-        /// <param name="skillThatChanged">The skill that changed.</param>
-        /// <param name="previousLevel">The previous skill level.</param>
-        /// <param name="previousPercent">The previous percent of completion to next level.</param>
-        /// <param name="countDelta">Optional. The delta in the count for this skill. Not always sent.</param>
-        public void SkilledCreatureSkillChanged(ICreatureWithSkills skilledCreature, ISkill skillThatChanged, uint previousLevel, byte previousPercent, long? countDelta = null)
-        {
-            if (skilledCreature == null || skillThatChanged == null)
-            {
-                this.logger.LogWarning($"Null {nameof(skilledCreature)} or {nameof(skillThatChanged)} in {nameof(this.SkilledCreatureSkillChanged)}, ignoring...");
-
-                return;
-            }
-
-            if (skilledCreature is not IPlayer player)
-            {
-                return;
-            }
-
-            // Send the advancement or regression text.
-            if (skillThatChanged.CurrentLevel != previousLevel)
-            {
-                bool isAdvance = skillThatChanged.CurrentLevel > previousLevel;
-
-                var nameToLog = string.IsNullOrWhiteSpace(player.Article) ? player.Name : $"{player.Article} {player.Name}";
-
-                this.logger.LogDebug($"{nameToLog} {(isAdvance ? "advanced" : "regressed")} from {previousLevel} to {skillThatChanged.CurrentLevel} in skill {skillThatChanged.Type}.");
-
-                var skillChangeNotificationMessage = skillThatChanged.Type switch
-                {
-                    SkillType.Experience => $"You {(isAdvance ? "advanced" : "were downgraded")} from level {previousLevel} to level {skillThatChanged.CurrentLevel}.",
-                    SkillType.Magic => $"You advanced to magic level {skillThatChanged.CurrentLevel}.",
-                    _ => isAdvance ? $"You advanced in {skillThatChanged.Type.ToFriendlySkillName()}." : string.Empty,
-                };
-
-                // Send the message only if we actually have text to send.
-                if (!string.IsNullOrWhiteSpace(skillChangeNotificationMessage))
-                {
-                    this.scheduler.ScheduleEvent(new TextMessageNotification(() => player.YieldSingleItem(), MessageType.EventAdvance, skillChangeNotificationMessage));
-                }
-
-                // Increase the creature's stats.
-                if (skillThatChanged.Type == SkillType.Experience)
-                {
-                    var changeFactor = (int)((long)skillThatChanged.CurrentLevel - previousLevel);
-
-                    if (changeFactor > 0)
-                    {
-                        player.Stats[CreatureStat.HitPoints].IncreaseMaximum(15 * changeFactor);
-                        player.Stats[CreatureStat.ManaPoints].IncreaseMaximum(15 * changeFactor);
-                        player.Stats[CreatureStat.CarryStrength].IncreaseMaximum(30 * changeFactor);
-                    }
-                    else
-                    {
-                        player.Stats[CreatureStat.HitPoints].DecreaseMaximum(15 * changeFactor);
-                        player.Stats[CreatureStat.ManaPoints].DecreaseMaximum(15 * changeFactor);
-                        player.Stats[CreatureStat.CarryStrength].DecreaseMaximum(30 * changeFactor);
-                    }
-
-                    // And send the updated speed.
-                    player.Stats[CreatureStat.BaseSpeed].Set(220 + (2 * (skillThatChanged.CurrentLevel - 1)));
-                }
-            }
-
-            if (skillThatChanged.Percent != previousPercent || skillThatChanged.Type == SkillType.Experience)
-            {
-                // Send the new percentual value to the player.
-                this.scheduler.ScheduleEvent(new GenericNotification(() => player.YieldSingleItem(), new PlayerStatsPacket(player), new PlayerSkillsPacket(player)));
-
-                // Add the animated text for experience.
-                if (skillThatChanged.Type == SkillType.Experience && countDelta.HasValue && countDelta.Value > 0)
-                {
-                    this.scheduler.ScheduleEvent(new AnimatedTextNotification(() => this.map.FindPlayersThatCanSee(player.Location), player.Location, TextColor.White, countDelta.Value.ToString()));
-                }
-            }
+            return turnToDirOp;
         }
 
         /// <summary>
@@ -804,11 +641,151 @@ namespace Fibula.Mechanics
         }
 
         /// <summary>
+        /// Attempts to add content to the first possible parent container that accepts it, on a chain of parent containers.
+        /// </summary>
+        /// <param name="thingContainer">The first thing container to add to.</param>
+        /// <param name="remainder">The remainder content to add, which overflows to the next container in the chain.</param>
+        /// <param name="addIndex">The index at which to attempt to add, only for the first attempted container.</param>
+        /// <param name="includeTileAsFallback">Optional. A value for whether to include tiles in the fallback chain.</param>
+        /// <param name="requestorCreature">Optional. The creature requesting the addition of content.</param>
+        /// <returns>True if the content was successfully added, false otherwise.</returns>
+        public bool AddContentToContainerOrFallback(IThingContainer thingContainer, ref IThing remainder, byte addIndex = byte.MaxValue, bool includeTileAsFallback = true, ICreature requestorCreature = null)
+        {
+            thingContainer.ThrowIfNull(nameof(thingContainer));
+
+            const byte FallbackIndex = byte.MaxValue;
+
+            bool success = false;
+            bool firstAttempt = true;
+
+            foreach (var targetContainer in thingContainer.GetParentContainerHierarchy(includeTileAsFallback))
+            {
+                IThing lastAddedThing = remainder;
+
+                if (!success)
+                {
+                    (success, remainder) = targetContainer.AddContent(this.itemFactory, remainder, firstAttempt ? addIndex : FallbackIndex);
+                }
+                else if (remainder != null)
+                {
+                    (success, remainder) = targetContainer.AddContent(this.itemFactory, remainder);
+                }
+
+                firstAttempt = false;
+
+                if (success)
+                {
+                    if (targetContainer is ITile targetTile)
+                    {
+                        this.scheduler.ScheduleEvent(
+                            new TileUpdatedNotification(
+                                () => this.map.FindPlayersThatCanSee(targetTile.Location),
+                                targetTile.Location,
+                                this.mapDescriptor.DescribeTile));
+
+                        // this.EventRulesApi.EvaluateRules(this, EventRuleType.Collision, new CollisionEventRuleArguments(targetContainer.Location, lastAddedThing, requestorCreature));
+                    }
+
+                    // this.EventRulesApi.EvaluateRules(this, EventRuleType.Movement, new MovementEventRuleArguments(lastAddedThing, requestorCreature));
+                }
+
+                if (success && remainder == null)
+                {
+                    break;
+                }
+            }
+
+            return success;
+        }
+
+        /// <summary>
+        /// Attempts to add a creature to the game at a given location on the map.
+        /// </summary>
+        /// <param name="targetLocation">The location to place the creature at.</param>
+        /// <param name="creature">The creature to place.</param>
+        /// <returns>True if the creature is successfully placed, false otherwise.</returns>
+        public bool AddCreatureToGame(Location targetLocation, ICreature creature)
+        {
+            creature.ThrowIfNull(nameof(creature));
+
+            if (!this.map.GetTileAt(targetLocation, out ITile targetTile))
+            {
+                return false;
+            }
+
+            var (addSuccessful, _) = targetTile.AddContent(this.itemFactory, creature);
+
+            if (addSuccessful)
+            {
+                this.creatureManager.RegisterCreature(creature);
+
+                if (creature is ICombatant combatant)
+                {
+                    combatant.StatChanged += this.CreatureStatChanged;
+
+                    combatant.Death += this.CombatantDeath;
+                    combatant.AttackTargetChanged += this.CombatantAttackTargetChanged;
+                    combatant.FollowTargetChanged += this.CreatureFollowTargetChanged;
+                    combatant.LocationChanged += this.AfterThingLocationChanged;
+
+                    // As a creature that can sense.
+                    combatant.CreatureSeen += this.CreatureHasSeenCreature;
+                    combatant.CreatureLost += this.CreatureHasLostCreature;
+
+                    // As a skilled creature
+                    combatant.SkillChanged += this.SkilledCreatureSkillChanged;
+
+                    // Find now-spectators of this creature to start tracking that guy.
+                    foreach (var spectator in this.map.FindCreaturesThatCanSee(creature.Location))
+                    {
+                        if (spectator is ICombatant combatantSpectator)
+                        {
+                            combatant.StartSensingCreature(combatantSpectator);
+                            combatantSpectator.StartSensingCreature(combatant);
+                        }
+                    }
+                }
+
+                /*
+                if (creature is IPlayer player)
+                {
+                    player.Inventory.SlotChanged += this.OnPlayerInventoryChanged;
+                }
+                */
+
+                this.logger.LogDebug($"Placed {creature.Name} at {targetTile.Location}.");
+
+                var placedAtStackPos = targetTile.GetStackOrderOfThing(creature);
+
+                this.scheduler.ScheduleEvent(
+                    new CreatureMovedNotification(
+                        () =>
+                        {
+                            if (creature is IPlayer player)
+                            {
+                                return this.map.FindPlayersThatCanSee(creature.Location).Except(player.YieldSingleItem());
+                            }
+
+                            return this.map.FindPlayersThatCanSee(creature.Location);
+                        },
+                        creature.Id,
+                        default,
+                        byte.MaxValue,
+                        creature.Location,
+                        placedAtStackPos,
+                        wasTeleport: true));
+            }
+
+            return addSuccessful;
+        }
+
+        /// <summary>
         /// Places a new monster of the given race, at the given location.
         /// </summary>
         /// <param name="raceId">The id of race of monster to place.</param>
         /// <param name="location">The location at which to place the monster.</param>
-        public void PlaceMonsterAt(string raceId, Location location)
+        /// <returns>The operation that was scheduled as a result, or null if nothing is done.</returns>
+        public IOperation PlaceNewMonsterAtAsync(string raceId, Location location)
         {
             using var uow = this.applicationContext.CreateNewUnitOfWork();
 
@@ -816,45 +793,304 @@ namespace Fibula.Mechanics
 
             if (monsterType is not IMonsterTypeEntity monsterTypeEntity)
             {
-                this.logger.LogWarning($"Unable to place monster. Could not find a monster with the id {raceId} in the repository. ({nameof(this.PlaceMonsterAt)})");
+                this.logger.LogWarning($"Unable to place monster. Could not find a monster with the id {raceId} in the repository. ({nameof(this.PlaceNewMonsterAtAsync)})");
 
-                return;
+                return null;
             }
 
             var newMonster = this.creatureFactory.Create(new CreatureCreationArguments() { Type = CreatureType.Monster, Metadata = monsterTypeEntity }) as IMonster;
 
-            if (this.map.GetTileAt(location, out ITile targetTile) && !targetTile.IsPathBlocking())
+            if (!this.map.GetTileAt(location, out ITile targetTile) || targetTile.IsPathBlocking())
             {
-                this.scheduler.ScheduleEvent(new PlaceCreatureOperation(requestorId: 0, targetTile, newMonster));
+                return null;
             }
+
+            var placeMonsterOp = new PlaceCreatureOperation(requestorId: 0, targetTile, newMonster);
+
+            this.DispatchOperation(placeMonsterOp);
+
+            return placeMonsterOp;
+        }
+
+        /// <summary>
+        /// Attempts to remove a creature from the game.
+        /// </summary>
+        /// <param name="creature">The creature to remove.</param>
+        /// <returns>True if the creature is successfully removed from the game, false otherwise.</returns>
+        public bool RemoveCreatureFromGame(ICreature creature)
+        {
+            if (!this.map.GetTileAt(creature.Location, out ITile fromTile))
+            {
+                return false;
+            }
+
+            var oldStackpos = fromTile.GetStackOrderOfThing(creature);
+
+            IThing creatureAsThing = creature;
+
+            var removedFromTile = fromTile.RemoveContent(this.itemFactory, ref creatureAsThing).result;
+
+            if (removedFromTile)
+            {
+                if (creature is ICombatant combatant)
+                {
+                    combatant.SetAttackTarget(null);
+
+                    foreach (var attacker in combatant.AttackedBy)
+                    {
+                        attacker.StopSensingCreature(combatant);
+                    }
+
+                    foreach (var trackedCreature in combatant.TrackedCreatures)
+                    {
+                        combatant.StopSensingCreature(trackedCreature);
+
+                        if (trackedCreature is ICreatureThatSensesOthers creatureThatSensesOthers)
+                        {
+                            creatureThatSensesOthers.StopSensingCreature(combatant);
+                        }
+                    }
+
+                    combatant.StatChanged -= this.CreatureStatChanged;
+
+                    combatant.Death -= this.CombatantDeath;
+                    combatant.AttackTargetChanged -= this.CombatantAttackTargetChanged;
+                    combatant.FollowTargetChanged -= this.CreatureFollowTargetChanged;
+                    combatant.LocationChanged -= this.AfterThingLocationChanged;
+
+                    // As a creature that can sense.
+                    combatant.CreatureSeen -= this.CreatureHasSeenCreature;
+                    combatant.CreatureLost -= this.CreatureHasLostCreature;
+
+                    // As a skilled creature
+                    combatant.SkillChanged -= this.SkilledCreatureSkillChanged;
+                }
+
+                if (creature is IPlayer player)
+                {
+                    this.scheduler.ScheduleEvent(
+                        new CreatureRemovedNotification(
+                            () => this.map.FindPlayersThatCanSee(creature.Location).Union(player.YieldSingleItem()),
+                            creature,
+                            oldStackpos));
+
+                    // player.Inventory.SlotChanged -= context.GameApi.OnPlayerInventoryChanged;
+                }
+                else
+                {
+                    this.scheduler.ScheduleEvent(new CreatureRemovedNotification(() => this.map.FindPlayersThatCanSee(creature.Location), creature, oldStackpos));
+                }
+
+                this.creatureManager.UnregisterCreature(creature);
+            }
+
+            return removedFromTile;
         }
 
         /// <summary>
         /// Sends a heartbeat to the player's client.
         /// </summary>
         /// <param name="player">The player which to send the heartbeat to.</param>
-        public void SendHeartbeat(IPlayer player)
+        /// <returns>The notification that was scheduled, or null if nothing happened.</returns>
+        public INotification SendHeartbeatAsync(IPlayer player)
         {
             if (player == null)
             {
-                return;
+                return null;
             }
 
-            this.scheduler.ScheduleEvent(new GenericNotification(() => player.YieldSingleItem(), new HeartbeatPacket()));
+            var notification = new GenericNotification(() => player.YieldSingleItem(), new HeartbeatPacket());
+
+            this.scheduler.ScheduleEvent(notification);
+
+            return notification;
         }
 
         /// <summary>
         /// Sends a heartbeat response to the player's client.
         /// </summary>
         /// <param name="player">The player which to send the heartbeat response to.</param>
-        public void SendHeartbeatResponse(IPlayer player)
+        /// <returns>The notification that was scheduled, or null if nothing happened.</returns>
+        public INotification SendHeartbeatResponseAsync(IPlayer player)
         {
             if (player == null)
+            {
+                return null;
+            }
+
+            var notification = new GenericNotification(() => player.YieldSingleItem(), new HeartbeatResponsePacket());
+
+            this.scheduler.ScheduleEvent(notification);
+
+            return notification;
+        }
+
+        /// <summary>
+        /// Handles an attack target change from a combatant.
+        /// </summary>
+        /// <param name="combatant">The combatant that died.</param>
+        /// <param name="oldTarget">The previous attack target, which can be null.</param>
+        private void CombatantAttackTargetChanged(ICombatant combatant, ICombatant oldTarget)
+        {
+            if (combatant == null)
             {
                 return;
             }
 
-            this.scheduler.ScheduleEvent(new GenericNotification(() => player.YieldSingleItem(), new HeartbeatResponsePacket()));
+            this.scheduler.CancelAllFor(combatant.Id, typeof(AttackOrchestratorOperation));
+
+            if (combatant.AutoAttackTarget != null)
+            {
+                var autoAttackOrchestrationOp = new AttackOrchestratorOperation(combatant);
+
+                this.DispatchOperation(autoAttackOrchestrationOp);
+
+                if (combatant is IPlayer attackerPlayer)
+                {
+                    this.AddOrAggregateCondition(
+                        attackerPlayer,
+                        new InFightCondition(attackerPlayer),
+                        duration: TimeSpan.FromMilliseconds(CombatConstants.DefaultInFightTimeInMs));
+                }
+
+                if (combatant.AutoAttackTarget is IPlayer targetPlayer)
+                {
+                    this.AddOrAggregateCondition(
+                        targetPlayer,
+                        new InFightCondition(targetPlayer),
+                        duration: TimeSpan.FromMilliseconds(CombatConstants.DefaultInFightTimeInMs));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Handles a follow target change from a combatant.
+        /// </summary>
+        /// <param name="combatant">The creature that changed follow target.</param>
+        /// <param name="oldTarget">The old follow target, if any.</param>
+        private void CreatureFollowTargetChanged(ICombatant combatant, ICreature oldTarget)
+        {
+            if (combatant == null)
+            {
+                return;
+            }
+
+            if (combatant.ChaseTarget != oldTarget)
+            {
+                this.ResetCreatureWalkPlan(combatant, combatant.ChaseTarget, targetDistance: combatant.AutoAttackRange);
+            }
+        }
+
+        /// <summary>
+        /// Handles the event when a creature has seen another creature.
+        /// </summary>
+        /// <param name="creature">The monster that sees the other.</param>
+        /// <param name="creatureSeen">The creature that was seen.</param>
+        private void CreatureHasSeenCreature(ICreatureThatSensesOthers creature, ICreature creatureSeen)
+        {
+            creature.ThrowIfNull(nameof(creature));
+            creatureSeen.ThrowIfNull(nameof(creatureSeen));
+
+            if (creature is ICombatant combatant && creatureSeen is ICombatant combatantSeen)
+            {
+                combatant.AddToCombatList(combatantSeen);
+            }
+        }
+
+        /// <summary>
+        /// Handles the event when a creature has lost another creature.
+        /// </summary>
+        /// <param name="creature">The monster that sees the other.</param>
+        /// <param name="creatureLost">The creature that was lost.</param>
+        private void CreatureHasLostCreature(ICreatureThatSensesOthers creature, ICreature creatureLost)
+        {
+            creature.ThrowIfNull(nameof(creature));
+            creatureLost.ThrowIfNull(nameof(creatureLost));
+
+            if (creature is ICombatant combatant && creatureLost is ICombatant combatantLost)
+            {
+                combatant.RemoveFromCombatList(combatantLost);
+            }
+        }
+
+        /// <summary>
+        /// Handles a skill level change from a skilled creature.
+        /// </summary>
+        /// <param name="skilledCreature">The skilled creature for which the skill changed.</param>
+        /// <param name="skillThatChanged">The skill that changed.</param>
+        /// <param name="previousLevel">The previous skill level.</param>
+        /// <param name="previousPercent">The previous percent of completion to next level.</param>
+        /// <param name="countDelta">Optional. The delta in the count for this skill. Not always sent.</param>
+        private void SkilledCreatureSkillChanged(ICreatureWithSkills skilledCreature, ISkill skillThatChanged, uint previousLevel, byte previousPercent, long? countDelta = null)
+        {
+            if (skilledCreature == null || skillThatChanged == null)
+            {
+                this.logger.LogWarning($"Null {nameof(skilledCreature)} or {nameof(skillThatChanged)} in {nameof(this.SkilledCreatureSkillChanged)}, ignoring...");
+
+                return;
+            }
+
+            if (skilledCreature is not IPlayer player)
+            {
+                return;
+            }
+
+            // Send the advancement or regression text.
+            if (skillThatChanged.CurrentLevel != previousLevel)
+            {
+                bool isAdvance = skillThatChanged.CurrentLevel > previousLevel;
+
+                var nameToLog = string.IsNullOrWhiteSpace(player.Article) ? player.Name : $"{player.Article} {player.Name}";
+
+                this.logger.LogDebug($"{nameToLog} {(isAdvance ? "advanced" : "regressed")} from {previousLevel} to {skillThatChanged.CurrentLevel} in skill {skillThatChanged.Type}.");
+
+                var skillChangeNotificationMessage = skillThatChanged.Type switch
+                {
+                    SkillType.Experience => $"You {(isAdvance ? "advanced" : "were downgraded")} from level {previousLevel} to level {skillThatChanged.CurrentLevel}.",
+                    SkillType.Magic => $"You advanced to magic level {skillThatChanged.CurrentLevel}.",
+                    _ => isAdvance ? $"You advanced in {skillThatChanged.Type.ToFriendlySkillName()}." : string.Empty,
+                };
+
+                // Send the message only if we actually have text to send.
+                if (!string.IsNullOrWhiteSpace(skillChangeNotificationMessage))
+                {
+                    this.scheduler.ScheduleEvent(new TextMessageNotification(() => player.YieldSingleItem(), MessageType.EventAdvance, skillChangeNotificationMessage));
+                }
+
+                // Increase the creature's stats.
+                if (skillThatChanged.Type == SkillType.Experience)
+                {
+                    var changeFactor = (int)((long)skillThatChanged.CurrentLevel - previousLevel);
+
+                    if (changeFactor > 0)
+                    {
+                        player.Stats[CreatureStat.HitPoints].IncreaseMaximum(15 * changeFactor);
+                        player.Stats[CreatureStat.ManaPoints].IncreaseMaximum(15 * changeFactor);
+                        player.Stats[CreatureStat.CarryStrength].IncreaseMaximum(30 * changeFactor);
+                    }
+                    else
+                    {
+                        player.Stats[CreatureStat.HitPoints].DecreaseMaximum(15 * changeFactor);
+                        player.Stats[CreatureStat.ManaPoints].DecreaseMaximum(15 * changeFactor);
+                        player.Stats[CreatureStat.CarryStrength].DecreaseMaximum(30 * changeFactor);
+                    }
+
+                    // And send the updated speed.
+                    player.Stats[CreatureStat.BaseSpeed].Set(220 + (2 * (skillThatChanged.CurrentLevel - 1)));
+                }
+            }
+
+            if (skillThatChanged.Percent != previousPercent || skillThatChanged.Type == SkillType.Experience)
+            {
+                // Send the new percentual value to the player.
+                this.scheduler.ScheduleEvent(new GenericNotification(() => player.YieldSingleItem(), new PlayerStatsPacket(player), new PlayerSkillsPacket(player)));
+
+                // Add the animated text for experience.
+                if (skillThatChanged.Type == SkillType.Experience && countDelta.HasValue && countDelta.Value > 0)
+                {
+                    this.scheduler.ScheduleEvent(new AnimatedTextNotification(() => this.map.FindPlayersThatCanSee(player.Location), player.Location, TextColor.White, countDelta.Value.ToString()));
+                }
+            }
         }
 
         /// <summary>
@@ -862,7 +1098,7 @@ namespace Fibula.Mechanics
         /// </summary>
         /// <param name="thing">The thing which's location changed.</param>
         /// <param name="previousLocation">The previous location of the thing.</param>
-        public void AfterThingLocationChanged(IThing thing, Location previousLocation)
+        private void AfterThingLocationChanged(IThing thing, Location previousLocation)
         {
             thing.ThrowIfNull(nameof(thing));
 
@@ -949,6 +1185,54 @@ namespace Fibula.Mechanics
         }
 
         /// <summary>
+        /// Handles a stat change event from a creature.
+        /// </summary>
+        /// <param name="creature">The creature for which the stat changed.</param>
+        /// <param name="statThatChanged">The stat that changed.</param>
+        /// <param name="previousValue">The previous stat value.</param>
+        /// <param name="previousPercent">The previous percent for the stat.</param>
+        private void CreatureStatChanged(ICreature creature, IStat statThatChanged, uint previousValue, byte previousPercent)
+        {
+            creature.ThrowIfNull(nameof(creature));
+            statThatChanged.ThrowIfNull(nameof(statThatChanged));
+
+            if (statThatChanged.Type == CreatureStat.HitPoints)
+            {
+                // This updates the health as seen by others.
+                this.scheduler.ScheduleEvent(new GenericNotification(() => this.map.FindPlayersThatCanSee(creature.Location), new CreatureHealthPacket(creature)));
+            }
+
+            if (creature is IPlayer player)
+            {
+                if (statThatChanged.Type == CreatureStat.BaseSpeed)
+                {
+                    this.scheduler.ScheduleEvent(new GenericNotification(() => player.YieldSingleItem(), new CreatureSpeedChangePacket(player)));
+                }
+
+                // And this updates the health of the player.
+                this.scheduler.ScheduleEvent(new GenericNotification(() => player.YieldSingleItem(), new PlayerStatsPacket(player)));
+            }
+        }
+
+        /// <summary>
+        /// Handles the death of a combatant.
+        /// </summary>
+        /// <param name="combatant">The combatant that died.</param>
+        private void CombatantDeath(ICombatant combatant)
+        {
+            if (combatant is IPlayer playerCombatant)
+            {
+                this.CancelPlayerOperationsAsync(playerCombatant, typeof(IOperation));
+            }
+
+            var rng = new Random();
+            var deathDelay = TimeSpan.FromMilliseconds(rng.Next(DefaultDeathDelayMs));
+            var deathOp = new DeathOperation(requestorId: 0, combatant);
+
+            this.DispatchOperation(deathOp, deathDelay);
+        }
+
+        /// <summary>
         /// Dispatches an operation.
         /// </summary>
         /// <param name="operation">The operation to dispatch.</param>
@@ -971,7 +1255,7 @@ namespace Fibula.Mechanics
         }
 
         /// <summary>
-        /// Cleans up players who's connections are ophaned, or (TODO) have been idle for some time.
+        /// Cleans up players who's connections are orphaned, or (TODO) have been idle for some time.
         /// </summary>
         /// <param name="tokenState">The state object which gets casted into a <see cref="CancellationToken"/>.</param>.
         private void IdlePlayerSweep(object tokenState)
@@ -992,7 +1276,7 @@ namespace Fibula.Mechanics
                             player.Client.Information.Type == AgentType.OtClientLinux ||
                             player.Client.Information.Type == AgentType.OtClientWindows)
                         {
-                            this.SendHeartbeat(player);
+                            this.SendHeartbeatAsync(player);
                         }
 
                         continue;
