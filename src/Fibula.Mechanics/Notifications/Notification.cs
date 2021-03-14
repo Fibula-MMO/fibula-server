@@ -67,7 +67,7 @@ namespace Fibula.Mechanics.Notifications
         {
             context.ThrowIfNull(nameof(context));
 
-            if (!typeof(INotificationContext).IsAssignableFrom(context.GetType()) || context is not INotificationContext notificationContext)
+            if (!typeof(INotificationContext).IsAssignableFrom(context.GetType()) || !(context is INotificationContext notificationContext))
             {
                 throw new ArgumentException($"{nameof(context)} must be an {nameof(INotificationContext)}.");
             }

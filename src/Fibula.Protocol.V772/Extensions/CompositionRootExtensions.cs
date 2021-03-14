@@ -128,7 +128,7 @@ namespace Fibula.Protocol.V772.Extensions
 
             services.AddSingleton(s =>
             {
-                var protocol = new GameProtocol_v772(s.GetRequiredService<ILogger>());
+                var protocol = new GameProtocol_v772(s.GetRequiredService<ILogger<GameProtocol_v772>>());
 
                 foreach (var (packetType, type) in packetReadersToAdd)
                 {
@@ -187,7 +187,7 @@ namespace Fibula.Protocol.V772.Extensions
 
             services.AddSingleton(s =>
             {
-                var protocol = new GatewayProtocol_v772(s.GetRequiredService<ILogger>());
+                var protocol = new GatewayProtocol_v772(s.GetRequiredService<ILogger<GatewayProtocol_v772>>());
 
                 protocol.RegisterPacketReader(IncomingPacketType.LogIn, s.GetRequiredService<GatewayLogInPacketReader>());
 

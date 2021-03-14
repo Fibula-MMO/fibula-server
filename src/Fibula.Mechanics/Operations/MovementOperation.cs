@@ -19,7 +19,6 @@ namespace Fibula.Mechanics.Operations
     using Fibula.Communications.Packets.Outgoing;
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Creatures.Contracts.Constants;
-    using Fibula.Data.Entities.Contracts.Extensions;
     using Fibula.Definitions.Flags;
     using Fibula.Items.Contracts.Abstractions;
     using Fibula.Map.Contracts.Abstractions;
@@ -208,7 +207,7 @@ namespace Fibula.Mechanics.Operations
         {
             var thingMoving = sourceContainer?.FindThingAtIndex(this.FromLocation.ContainerIndex);
 
-            if (thingMoving is not IItem item)
+            if (!(thingMoving is IItem item))
             {
                 this.DispatchTextNotification(context, OperationMessage.MayNotMoveThis);
             }
@@ -226,7 +225,7 @@ namespace Fibula.Mechanics.Operations
             // Declare some pre-conditions.
             var creatureHasDestinationContainerOpen = destinationContainer != null;
 
-            if (thingMoving is not IItem item)
+            if (!(thingMoving is IItem item))
             {
                 this.DispatchTextNotification(context, OperationMessage.MayNotMoveThis);
             }
@@ -245,7 +244,7 @@ namespace Fibula.Mechanics.Operations
         {
             var thingMoving = sourceContainer?.FindThingAtIndex(this.FromLocation.ContainerIndex);
 
-            if (thingMoving is not IItem item)
+            if (!(thingMoving is IItem item))
             {
                 this.DispatchTextNotification(context, OperationMessage.MayNotMoveThis);
 
@@ -285,7 +284,7 @@ namespace Fibula.Mechanics.Operations
             // Declare some pre-conditions.
             var creatureHasSourceContainerOpen = destinationContainer != null;
 
-            if (thingMoving is not IItem item)
+            if (!(thingMoving is IItem item))
             {
                 this.DispatchTextNotification(context, OperationMessage.MayNotMoveThis);
             }
@@ -308,7 +307,7 @@ namespace Fibula.Mechanics.Operations
             var creatureHasSourceContainerOpen = sourceContainer != null;
             var creatureHasDestinationContainerOpen = destinationContainer != null;
 
-            if (thingMoving is not IItem item)
+            if (!(thingMoving is IItem item))
             {
                 this.DispatchTextNotification(context, OperationMessage.MayNotMoveThis);
             }
@@ -331,7 +330,7 @@ namespace Fibula.Mechanics.Operations
         {
             var thingMoving = sourceContainer?.FindThingAtIndex(this.FromLocation.ContainerIndex);
 
-            if (thingMoving is not IItem item)
+            if (!(thingMoving is IItem item))
             {
                 this.DispatchTextNotification(context, OperationMessage.MayNotMoveThis);
 
@@ -652,7 +651,7 @@ namespace Fibula.Mechanics.Operations
         /// <remarks>Changes game state, should only be performed after all pertinent validations happen.</remarks>
         private bool PerformCreatureMovement(IOperationContext context, ICreature creature, Location toLocation, bool isTeleport = false, ICreature requestorCreature = null)
         {
-            if (creature == null || creature.ParentContainer is not ITile fromTile || !context.Map.GetTileAt(toLocation, out ITile toTile))
+            if (creature == null || !(creature.ParentContainer is ITile fromTile) || !context.Map.GetTileAt(toLocation, out ITile toTile))
             {
                 return false;
             }

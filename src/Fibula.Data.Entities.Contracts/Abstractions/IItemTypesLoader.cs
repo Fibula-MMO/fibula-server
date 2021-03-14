@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------
-// <copyright file="IItemTypeLoader.cs" company="2Dudes">
+// <copyright file="IItemTypesLoader.cs" company="2Dudes">
 // Copyright (c) | Jose L. Nunez de Caceres et al.
 // https://linkedin.com/in/nunezdecaceres
 //
@@ -14,14 +14,14 @@ namespace Fibula.Data.Entities.Contracts.Abstractions
     using System.Collections.Generic;
 
     /// <summary>
-    /// Interface for an <see cref="IItemTypeEntity"/> loader.
+    /// Interface for an <see cref="ItemTypeEntity"/> loader.
     /// </summary>
-    public interface IItemTypeLoader
+    public interface IItemTypesLoader
     {
         /// <summary>
         /// Attempts to load the item catalog.
         /// </summary>
         /// <returns>The catalog, containing a mapping of loaded id to the item types.</returns>
-        IDictionary<ushort, IItemTypeEntity> LoadTypes();
+        IDictionary<string, ItemTypeEntity> LoadTypes();
     }
 }

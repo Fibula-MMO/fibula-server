@@ -64,14 +64,14 @@ namespace Fibula.Mechanics.Handlers
             incomingPacket.ThrowIfNull(nameof(incomingPacket));
             client.ThrowIfNull(nameof(client));
 
-            if (incomingPacket is not IGameLogInInfo loginInfo)
+            if (!(incomingPacket is IGameLogInInfo loginInfo))
             {
                 this.Logger.LogError($"Expected packet info of type {nameof(IGameLogInInfo)} but got {incomingPacket.GetType().Name}.");
 
                 return null;
             }
 
-            if (client.Connection is not ISocketConnection socketConnection)
+            if (!(client.Connection is ISocketConnection socketConnection))
             {
                 this.Logger.LogError($"Expected a {nameof(ISocketConnection)} got a {client.Connection.GetType().Name}.");
 
@@ -96,13 +96,13 @@ namespace Fibula.Mechanics.Handlers
 
             using var unitOfWork = this.ApplicationContext.CreateNewUnitOfWork();
 
-            if (unitOfWork.Accounts.FindOne(a => a.Number == loginInfo.AccountNumber && a.Password.Equals(loginInfo.Password)) is not AccountEntity account)
+            if (!(unitOfWork.Accounts.FindOne(a => a.Number == loginInfo.AccountNumber && a.Password.Equals(loginInfo.Password)) is AccountEntity account))
             {
                 // TODO: hardcoded messages.
                 return new GameServerDisconnectPacket("The account number and password combination is invalid.").YieldSingleItem();
             }
 
-            if (unitOfWork.Characters.FindOne(c => c.AccountId.Equals(account.Id) && c.Name.Equals(loginInfo.CharacterName)) is not CharacterEntity character)
+            if (!(unitOfWork.Characters.FindOne(c => c.AccountId.Equals(account.Id) && c.Name.Equals(loginInfo.CharacterName)) is CharacterEntity character))
             {
                 // TODO: hardcoded messages.
                 return new GameServerDisconnectPacket("The character selected was not found in this account.").YieldSingleItem();

@@ -12,7 +12,7 @@
 namespace Fibula.Items.Contracts.Abstractions
 {
     using Fibula.Common.Contracts.Abstractions;
-    using Fibula.Data.Entities.Contracts.Abstractions;
+    using Fibula.Data.Entities;
     using Fibula.Items.Contracts.Delegates;
 
     /// <summary>
@@ -33,10 +33,10 @@ namespace Fibula.Items.Contracts.Abstractions
         IItem CreateItem(IThingCreationArguments creationArguments);
 
         /// <summary>
-        /// Looks up an <see cref="IItemTypeEntity"/> given a type id.
+        /// Looks up an <see cref="ItemTypeEntity"/> given a type id.
         /// </summary>
         /// <param name="typeId">The id of the type to look for.</param>
-        /// <returns>A reference to the <see cref="IItemTypeEntity"/> found, and null if not found.</returns>
-        IItemTypeEntity FindTypeById(ushort typeId);
+        /// <returns>A reference to the <see cref="ItemTypeEntity"/> found, and null if not found.</returns>
+        ItemTypeEntity FindTypeById(ushort typeId);
     }
 }

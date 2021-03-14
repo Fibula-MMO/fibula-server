@@ -27,7 +27,7 @@ namespace Fibula.Protocol.V772.PacketWriters
         /// Initializes a new instance of the <see cref="ContainerOpenPacketWriter"/> class.
         /// </summary>
         /// <param name="logger">A reference to the logger in use.</param>
-        public ContainerOpenPacketWriter(ILogger logger)
+        public ContainerOpenPacketWriter(ILogger<ContainerOpenPacketWriter> logger)
             : base(logger)
         {
         }
@@ -39,7 +39,7 @@ namespace Fibula.Protocol.V772.PacketWriters
         /// <param name="message">The message to write into.</param>
         public override void WriteToMessage(IOutboundPacket packet, ref INetworkMessage message)
         {
-            if (packet is not ContainerOpenPacket containerOpenPacket)
+            if (!(packet is ContainerOpenPacket containerOpenPacket))
             {
                 this.Logger.LogWarning($"Invalid packet {packet.GetType().Name} routed to {this.GetType().Name}");
 

@@ -17,7 +17,7 @@ namespace Fibula.Mechanics.Contracts.Abstractions
     using Fibula.Common.Contracts.Enumerations;
     using Fibula.Common.Contracts.Structs;
     using Fibula.Creatures.Contracts.Abstractions;
-    using Fibula.Data.Entities.Contracts.Abstractions;
+    using Fibula.Data.Entities;
     using Fibula.Definitions.Enumerations;
 
     /// <summary>
@@ -120,7 +120,7 @@ namespace Fibula.Mechanics.Contracts.Abstractions
         /// <param name="itemType">The type of item to create.</param>
         /// <param name="additionalAttributes">Optional. Additional item attributes to set on the new item.</param>
         /// <returns>True if the item is created successfully, false otherwise.</returns>
-        bool CreateItemAtLocation(Location location, IItemTypeEntity itemType, params (ItemAttribute, IConvertible)[] additionalAttributes);
+        bool CreateItemAtLocation(Location location, ItemTypeEntity itemType, params (ItemAttribute, IConvertible)[] additionalAttributes);
 
         /// <summary>
         /// Creates item at the specified location.
@@ -129,7 +129,7 @@ namespace Fibula.Mechanics.Contracts.Abstractions
         /// <param name="itemType">The type of item to create.</param>
         /// <param name="additionalAttributes">Optional. Additional item attributes to set on the new item.</param>
         /// <returns>The operation that was scheduled as a result, or null if nothing is done.</returns>
-        IOperation CreateItemAtLocationAsync(Location location, IItemTypeEntity itemType, params (ItemAttribute, IConvertible)[] additionalAttributes);
+        IOperation CreateItemAtLocationAsync(Location location, ItemTypeEntity itemType, params (ItemAttribute, IConvertible)[] additionalAttributes);
 
         /// <summary>
         /// Creates a new item at the specified location.
@@ -174,7 +174,7 @@ namespace Fibula.Mechanics.Contracts.Abstractions
         /// </summary>
         /// <param name="client">The client from which the player is connecting.</param>
         /// <param name="creatureCreationMetadata">The metadata for the player's creation.</param>
-        void LogPlayerIn(IClient client, ICreatureEntity creatureCreationMetadata);
+        void LogPlayerIn(IClient client, CreatureEntity creatureCreationMetadata);
 
         /// <summary>
         /// Logs a player out of the game.

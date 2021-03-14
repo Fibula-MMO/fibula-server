@@ -14,6 +14,7 @@ namespace Fibula.Data.Contracts.Abstractions
     using System;
     using System.Collections.Generic;
     using System.Linq.Expressions;
+    using System.Threading.Tasks;
     using Fibula.Data.Entities.Contracts.Abstractions;
 
     /// <summary>
@@ -21,20 +22,20 @@ namespace Fibula.Data.Contracts.Abstractions
     /// </summary>
     /// <typeparam name="TEntity">The entity type.</typeparam>
     public interface IReadOnlyRepository<TEntity>
-        where TEntity : IIdentifiableEntity
+        where TEntity : IEntity
     {
         /// <summary>
-        /// Gets a single entity matching the id supplied.
+        /// Gets an entity by the primary key, from the context.
         /// </summary>
-        /// <param name="id">The id to search the entity by.</param>
-        /// <returns>The entity that matched the id supplied.</returns>
-        TEntity GetById(string id);
+        /// <param name="keyMembersFunc">A function that returns the keys used to find the entity, in order.</param>
+        /// <returns>The entity found, if any.</returns>
+        TEntity GetByPrimaryKey(Func<object[]> keyMembersFunc);
 
         /// <summary>
-        /// Gets a collection of all entities from a type.
+        /// Gets all the entities from the set in the context.
         /// </summary>
-        /// <returns>The collection of entities.</returns>
-        IEnumerable<TEntity> GetAll();
+        /// <returns>The collection of entities retrieved.</returns>
+        Task<IEnumerable<TEntity>> GetAll();
 
         /// <summary>
         /// Finds all entities that match a predicate.

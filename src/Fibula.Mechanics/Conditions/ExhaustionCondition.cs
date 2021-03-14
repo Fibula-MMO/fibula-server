@@ -55,7 +55,7 @@ namespace Fibula.Mechanics.Conditions
         {
             conditionOfSameType.ThrowIfNull(nameof(conditionOfSameType));
 
-            if (conditionOfSameType is not ExhaustionCondition otherExhaustionCondition)
+            if (!(conditionOfSameType is ExhaustionCondition otherExhaustionCondition))
             {
                 return false;
             }

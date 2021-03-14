@@ -25,7 +25,7 @@ namespace Fibula.Mechanics.Operations
     /// <summary>
     /// Class that represents a logout operation.
     /// </summary>
-    public class LogOutOperation : Operation
+    public class LogOutOperation : ElevatedOperation
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="LogOutOperation"/> class.
@@ -47,7 +47,7 @@ namespace Fibula.Mechanics.Operations
         /// Executes the operation's logic.
         /// </summary>
         /// <param name="context">A reference to the operation context.</param>
-        protected override void Execute(IOperationContext context)
+        protected override void Execute(IElevatedOperationContext context)
         {
             if (!this.Player.IsDead && this.Player.HasCondition(ConditionType.InFight))
             {
@@ -74,15 +74,17 @@ namespace Fibula.Mechanics.Operations
 
             if (removedFromMap || this.Player.IsDead)
             {
-                if (this.Player.Client.Connection != null)
-                {
-                    this.Player.Client.Connection.Close();
-                }
-
                 if (!this.Player.IsDead)
                 {
                     this.SendNotification(context, new GenericNotification(() => context.Map.FindPlayersThatCanSee(playerLocation), new MagicEffectPacket(playerLocation, AnimatedEffect.Puff)));
                 }
+
+                if (this.Player.Client.Connection != null && !this.Player.Client.Connection.IsOrphaned)
+                {
+                    this.Player.Client.Connection.Close();
+                }
+
+                context.CreatureManager.UnregisterCreature(this.Player);
             }
         }
     }

@@ -15,6 +15,7 @@ namespace Fibula.Data.Repositories
     using System.Collections.Generic;
     using System.Linq;
     using System.Linq.Expressions;
+    using System.Threading.Tasks;
     using Fibula.Data.Contracts.Abstractions;
     using Fibula.Data.Entities;
     using Fibula.Utilities.Validation;
@@ -44,26 +45,22 @@ namespace Fibula.Data.Repositories
         protected DbContext Context { get; }
 
         /// <summary>
-        /// Gets an entity that matches an id, from the context.
+        /// Gets an entity by the primary key, from the context.
         /// </summary>
-        /// <param name="id">The id to match.</param>
+        /// <param name="keyMembersFunc">A function that returns the keys used to find the entity, in order.</param>
         /// <returns>The entity found, if any.</returns>
-        public TEntity GetById(string id)
+        public TEntity GetByPrimaryKey(Func<object[]> keyMembersFunc)
         {
-            return this.Context.Set<TEntity>().Find(id);
+            return this.Context.Set<TEntity>().Find(keyMembersFunc());
         }
 
         /// <summary>
         /// Gets all the entities from the set in the context.
         /// </summary>
         /// <returns>The collection of entities retrieved.</returns>
-        public IEnumerable<TEntity> GetAll()
+        public async Task<IEnumerable<TEntity>> GetAll()
         {
-            var retrievalTask = this.Context.Set<TEntity>().ToListAsync();
-
-            retrievalTask.Wait();
-
-            return retrievalTask.Result;
+            return await this.Context.Set<TEntity>().ToListAsync();
         }
 
         /// <summary>

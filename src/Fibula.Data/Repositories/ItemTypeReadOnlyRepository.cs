@@ -15,14 +15,16 @@ namespace Fibula.Data.Repositories
     using System.Collections.Generic;
     using System.Linq;
     using System.Linq.Expressions;
+    using System.Threading.Tasks;
     using Fibula.Data.Contracts.Abstractions;
+    using Fibula.Data.Entities;
     using Fibula.Data.Entities.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Class that represents a read-only repository for item types.
     /// </summary>
-    public class ItemTypeReadOnlyRepository : IReadOnlyRepository<IItemTypeEntity>
+    public class ItemTypeReadOnlyRepository : IReadOnlyRepository<ItemTypeEntity>
     {
         /// <summary>
         /// A locking object to prevent double initialization of the catalog.
@@ -32,13 +34,13 @@ namespace Fibula.Data.Repositories
         /// <summary>
         /// Stores the map between the item type ids and the actual item types.
         /// </summary>
-        private static IDictionary<ushort, IItemTypeEntity> itemTypeCatalog;
+        private static IDictionary<string, ItemTypeEntity> itemTypeCatalog;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ItemTypeReadOnlyRepository"/> class.
         /// </summary>
         /// <param name="itemTypeLoader">A reference to the item type loader in use.</param>
-        public ItemTypeReadOnlyRepository(IItemTypeLoader itemTypeLoader)
+        public ItemTypeReadOnlyRepository(IItemTypesLoader itemTypeLoader)
         {
             itemTypeLoader.ThrowIfNull(nameof(itemTypeLoader));
 
@@ -59,7 +61,7 @@ namespace Fibula.Data.Repositories
         /// </summary>
         /// <param name="predicate">The expression to satisfy.</param>
         /// <returns>The collection of entities retrieved.</returns>
-        public IEnumerable<IItemTypeEntity> FindMany(Expression<Func<IItemTypeEntity, bool>> predicate)
+        public IEnumerable<ItemTypeEntity> FindMany(Expression<Func<ItemTypeEntity, bool>> predicate)
         {
             return itemTypeCatalog.Values.AsQueryable().Where(predicate);
         }
@@ -70,7 +72,7 @@ namespace Fibula.Data.Repositories
         /// </summary>
         /// <param name="predicate">The expression to satisfy.</param>
         /// <returns>The entity found.</returns>
-        public IItemTypeEntity FindOne(Expression<Func<IItemTypeEntity, bool>> predicate)
+        public ItemTypeEntity FindOne(Expression<Func<ItemTypeEntity, bool>> predicate)
         {
             return itemTypeCatalog.Values.AsQueryable().FirstOrDefault(predicate);
         }
@@ -79,21 +81,38 @@ namespace Fibula.Data.Repositories
         /// Gets all the entities from the set in the context.
         /// </summary>
         /// <returns>The collection of entities retrieved.</returns>
-        public IEnumerable<IItemTypeEntity> GetAll()
+        public Task<IEnumerable<ItemTypeEntity>> GetAll()
         {
-            return itemTypeCatalog.Values;
+            return Task.FromResult(itemTypeCatalog.Values.AsEnumerable());
         }
 
         /// <summary>
-        /// Gets an entity that matches an id, from the context.
+        /// Gets an entity by the primary key, from the context.
         /// </summary>
-        /// <param name="id">The id to match.</param>
+        /// <param name="keyMembersFunc">A function that returns the keys used to find the entity, in order.</param>
         /// <returns>The entity found, if any.</returns>
-        public IItemTypeEntity GetById(string id)
+        public ItemTypeEntity GetByPrimaryKey(Func<object[]> keyMembersFunc)
         {
-            if (ushort.TryParse(id, out ushort raceId) && itemTypeCatalog.ContainsKey(raceId))
+            keyMembersFunc.ThrowIfNull(nameof(keyMembersFunc));
+
+            var key = keyMembersFunc();
+            var typeId = key.FirstOrDefault()?.ToString();
+
+            return this.GetByTypeId(typeId);
+        }
+
+        /// <summary>
+        /// Gets a monster type from the context.
+        /// </summary>
+        /// <param name="typeId">The id of the monster type to get.</param>
+        /// <returns>The monster type found, if any.</returns>
+        public ItemTypeEntity GetByTypeId(string typeId)
+        {
+            typeId.ThrowIfNullOrWhiteSpace(nameof(typeId));
+
+            if (itemTypeCatalog.ContainsKey(typeId))
             {
-                return itemTypeCatalog[raceId];
+                return itemTypeCatalog[typeId];
             }
 
             return null;

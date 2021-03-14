@@ -19,8 +19,7 @@ namespace Fibula.Creatures
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Creatures.Contracts.Constants;
     using Fibula.Creatures.Contracts.Enumerations;
-    using Fibula.Data.Entities.Contracts.Abstractions;
-    using Fibula.Data.Entities.Contracts.Extensions;
+    using Fibula.Data.Entities;
     using Fibula.Definitions.Enumerations;
     using Fibula.Definitions.Flags;
     using Fibula.Items.Contracts.Abstractions;
@@ -47,7 +46,7 @@ namespace Fibula.Creatures
         /// </summary>
         /// <param name="monsterType">The type of this monster.</param>
         /// <param name="itemFactory">A reference to the item factory in use, for inventory generation.</param>
-        public Monster(IMonsterTypeEntity monsterType, IItemFactory itemFactory)
+        public Monster(MonsterTypeEntity monsterType, IItemFactory itemFactory)
             : base(monsterType)
         {
             this.Type = monsterType;
@@ -70,7 +69,7 @@ namespace Fibula.Creatures
         /// <summary>
         /// Gets the type of this monster.
         /// </summary>
-        public IMonsterTypeEntity Type { get; }
+        public MonsterTypeEntity Type { get; }
 
         /// <summary>
         /// Gets the experience yielded when this monster dies.

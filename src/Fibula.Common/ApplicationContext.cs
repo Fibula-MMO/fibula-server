@@ -22,10 +22,10 @@ namespace Fibula.Common
     using Microsoft.Extensions.Options;
 
     using IUnitOfWork = Fibula.Data.Contracts.Abstractions.IUnitOfWork<
-        Fibula.Data.Contracts.Abstractions.IRepository<Fibula.Data.Entities.Contracts.Abstractions.IAccountEntity>,
-        Fibula.Data.Contracts.Abstractions.IRepository<Fibula.Data.Entities.Contracts.Abstractions.ICharacterEntity>,
-        Fibula.Data.Contracts.Abstractions.IReadOnlyRepository<Fibula.Data.Entities.Contracts.Abstractions.IMonsterTypeEntity>,
-        Fibula.Data.Contracts.Abstractions.IReadOnlyRepository<Fibula.Data.Entities.Contracts.Abstractions.IItemTypeEntity>>;
+        Fibula.Data.Contracts.Abstractions.IRepository<Fibula.Data.Entities.AccountEntity>,
+        Fibula.Data.Contracts.Abstractions.IRepository<Fibula.Data.Entities.CharacterEntity>,
+        Fibula.Data.Contracts.Abstractions.IReadOnlyRepository<Fibula.Data.Entities.MonsterTypeEntity>,
+        Fibula.Data.Contracts.Abstractions.IReadOnlyRepository<Fibula.Data.Entities.ItemTypeEntity>>;
 
     /// <summary>
     /// Class that represents the common context of the entire application.
@@ -40,12 +40,12 @@ namespace Fibula.Common
         /// <summary>
         /// Stores the reference to the monster types loader in use.
         /// </summary>
-        private readonly IMonsterTypeLoader monsterTypeLoader;
+        private readonly IMonsterTypesLoader monsterTypeLoader;
 
         /// <summary>
         /// Stores the reference to the item types loader in use.
         /// </summary>
-        private readonly IItemTypeLoader itemTypeLoader;
+        private readonly IItemTypesLoader itemTypeLoader;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ApplicationContext"/> class.
@@ -58,8 +58,8 @@ namespace Fibula.Common
         /// <param name="dbContextGenerationFunc">A reference to a function to generate the database context.</param>
         public ApplicationContext(
             IOptions<ApplicationContextOptions> options,
-            IItemTypeLoader itemTypeLoader,
-            IMonsterTypeLoader monsterTypeLoader,
+            IItemTypesLoader itemTypeLoader,
+            IMonsterTypesLoader monsterTypeLoader,
             TelemetryClient telemetryClient,
             CancellationTokenSource cancellationTokenSource,
             Func<IFibulaDbContext> dbContextGenerationFunc)

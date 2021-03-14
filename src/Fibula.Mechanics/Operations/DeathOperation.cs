@@ -93,12 +93,12 @@ namespace Fibula.Mechanics.Operations
                     TypeId = this.Creature.CorpseTypeId,
                 };
 
+                context.GameApi.RemoveCreatureFromGame(this.Creature);
+
                 if (context.ItemFactory.Create(corpseCreationArguments) is IThing corpseCreated && context.GameApi.AddContentToContainerOrFallback(creatureTile, ref corpseCreated))
                 {
                     context.GameApi.CreateItemAtLocation(creatureTile.Location, context.PredefinedItemSet.FindPoolForBloodType(this.Creature.BloodType));
                 }
-
-                context.GameApi.RemoveCreatureFromGame(this.Creature);
             }
         }
     }

@@ -84,7 +84,7 @@ namespace Fibula.Security.Encryption
         {
             using StreamReader reader = File.OpenText(this.Options.FilePath);
 
-            if (new PemReader(reader).ReadObject() is not AsymmetricCipherKeyPair cipherKeyPair)
+            if (!(new PemReader(reader).ReadObject() is AsymmetricCipherKeyPair cipherKeyPair))
             {
                 throw new InvalidOperationException($"Failed to create an {nameof(AsymmetricCipherKeyPair)} from the contents of the specified PEM file.");
             }

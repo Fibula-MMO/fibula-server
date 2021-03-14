@@ -43,7 +43,7 @@ namespace Fibula.Mechanics.Handlers
             incomingPacket.ThrowIfNull(nameof(incomingPacket));
             client.ThrowIfNull(nameof(client));
 
-            if (incomingPacket is not IBytesInfo debugInfo)
+            if (!(incomingPacket is IBytesInfo debugInfo))
             {
                 this.Logger.LogError($"Expected packet info of type {nameof(IBytesInfo)} but got {incomingPacket.GetType().Name}.");
 

@@ -17,7 +17,7 @@ namespace Fibula.Creatures
     using Fibula.Common.Contracts.Constants;
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Creatures.Contracts.Enumerations;
-    using Fibula.Data.Entities.Contracts.Abstractions;
+    using Fibula.Data.Entities;
     using Fibula.Definitions.Enumerations;
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Structs;
@@ -36,7 +36,7 @@ namespace Fibula.Creatures
         /// <param name="characterEntity">The player's corresponding character entity lodaded from storage.</param>
         public Player(
             IClient client,
-            ICharacterEntity characterEntity)
+            CharacterEntity characterEntity)
             : base(characterEntity)
         {
             client.ThrowIfNull(nameof(client));

@@ -21,7 +21,7 @@ namespace Fibula.Creatures
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Creatures.Contracts.Constants;
     using Fibula.Creatures.Contracts.Enumerations;
-    using Fibula.Data.Entities.Contracts.Abstractions;
+    using Fibula.Data.Entities;
     using Fibula.Data.Entities.Contracts.Structs;
     using Fibula.Definitions.Enumerations;
     using Fibula.Items.Contracts.Abstractions;
@@ -58,7 +58,7 @@ namespace Fibula.Creatures
         /// Initializes a new instance of the <see cref="Creature"/> class.
         /// </summary>
         /// <param name="creationMetadata">The metadata for this player.</param>
-        protected Creature(ICreatureEntity creationMetadata)
+        protected Creature(CreatureEntity creationMetadata)
         {
             creationMetadata.ThrowIfNull(nameof(creationMetadata));
             creationMetadata.Name.ThrowIfNullOrWhiteSpace(nameof(creationMetadata.Name));

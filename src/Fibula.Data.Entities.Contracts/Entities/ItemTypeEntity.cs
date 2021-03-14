@@ -13,15 +13,13 @@ namespace Fibula.Data.Entities
 {
     using System;
     using System.Collections.Generic;
-    using Fibula.Data.Entities.Contracts.Abstractions;
-    using Fibula.Data.Entities.Contracts.Extensions;
     using Fibula.Definitions.Enumerations;
     using Fibula.Definitions.Flags;
 
     /// <summary>
     /// Class that represents an item type entity.
     /// </summary>
-    public class ItemTypeEntity : BaseEntity, IItemTypeEntity
+    public class ItemTypeEntity : BaseEntity, ICloneable
     {
         /// <summary>
         /// The id of the type of this item.
@@ -158,7 +156,7 @@ namespace Fibula.Data.Entities
         /// Clones the <see cref="ItemTypeEntity"/> into a new instance without locking the clone.
         /// </summary>
         /// <returns>The cloned <see cref="ItemTypeEntity"/>.</returns>
-        object ICloneable.Clone()
+        public object Clone()
         {
             var newInstance = new ItemTypeEntity()
             {
@@ -175,6 +173,16 @@ namespace Fibula.Data.Entities
             }
 
             return newInstance;
+        }
+
+        /// <summary>
+        /// Checks if the item type has the given item flag set.
+        /// </summary>
+        /// <param name="itemFlag">The item flag to check for.</param>
+        /// <returns>True if the item type has the item flag set, and false otherwise.</returns>
+        public bool HasItemFlag(ItemFlag itemFlag)
+        {
+            return (this.Flags & (ulong)itemFlag) == (ulong)itemFlag;
         }
     }
 }

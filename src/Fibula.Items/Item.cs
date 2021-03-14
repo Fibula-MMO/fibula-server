@@ -19,8 +19,7 @@ namespace Fibula.Items
     using Fibula.Common.Contracts.Abstractions;
     using Fibula.Common.Contracts.Enumerations;
     using Fibula.Common.Contracts.Structs;
-    using Fibula.Data.Entities.Contracts.Abstractions;
-    using Fibula.Data.Entities.Contracts.Extensions;
+    using Fibula.Data.Entities;
     using Fibula.Definitions.Enumerations;
     using Fibula.Definitions.Flags;
     using Fibula.Items.Contracts.Abstractions;
@@ -41,8 +40,10 @@ namespace Fibula.Items
         /// Initializes a new instance of the <see cref="Item"/> class.
         /// </summary>
         /// <param name="type">The type of this item.</param>
-        public Item(IItemTypeEntity type)
+        public Item(ItemTypeEntity type)
         {
+            type.ThrowIfNull(nameof(type));
+
             this.Type = type;
 
             // make a copy of the type we are based on...
@@ -52,9 +53,9 @@ namespace Fibula.Items
         }
 
         /// <summary>
-        /// Gets a reference to this item's <see cref="IItemTypeEntity"/>.
+        /// Gets a reference to this item's <see cref="ItemTypeEntity"/>.
         /// </summary>
-        public IItemTypeEntity Type { get; }
+        public ItemTypeEntity Type { get; }
 
         /// <summary>
         /// Gets the attributes of this item.

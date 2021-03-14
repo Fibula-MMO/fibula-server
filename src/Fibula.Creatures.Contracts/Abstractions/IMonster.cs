@@ -11,7 +11,7 @@
 
 namespace Fibula.Creatures.Contracts.Abstractions
 {
-    using Fibula.Data.Entities.Contracts.Abstractions;
+    using Fibula.Data.Entities;
 
     /// <summary>
     /// Interface for all monsters.
@@ -21,7 +21,7 @@ namespace Fibula.Creatures.Contracts.Abstractions
         /// <summary>
         /// Gets the type of this monster.
         /// </summary>
-        IMonsterTypeEntity Type { get; }
+        MonsterTypeEntity Type { get; }
 
         /// <summary>
         /// Gets the experience yielded when this monster dies.

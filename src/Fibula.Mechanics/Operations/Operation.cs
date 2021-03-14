@@ -124,7 +124,7 @@ namespace Fibula.Mechanics.Operations
         /// <param name="message">Optional. The message to send. Defaults to <see cref="OperationMessage.NotPossible"/>.</param>
         protected void DispatchTextNotification(IOperationContext context, string message = OperationMessage.NotPossible)
         {
-            if (this.RequestorId == 0 || context.CreatureFinder.FindCreatureById(this.RequestorId) is not IPlayer player)
+            if (this.RequestorId == 0 || !(context.CreatureFinder.FindCreatureById(this.RequestorId) is IPlayer player))
             {
                 return;
             }

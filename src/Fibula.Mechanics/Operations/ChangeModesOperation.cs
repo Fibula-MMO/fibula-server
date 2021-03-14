@@ -59,7 +59,7 @@ namespace Fibula.Mechanics.Operations
         {
             var onCreature = this.GetRequestor(context.CreatureFinder);
 
-            if (onCreature == null || onCreature is not ICombatant combatantCreature)
+            if (onCreature == null || !(onCreature is ICombatant combatantCreature))
             {
                 return;
             }

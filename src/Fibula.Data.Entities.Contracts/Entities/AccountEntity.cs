@@ -12,12 +12,12 @@
 namespace Fibula.Data.Entities
 {
     using System;
-    using Fibula.Data.Entities.Contracts.Abstractions;
+    using System.Collections.Generic;
 
     /// <summary>
-    /// Class that represents a character entity.
+    /// Class that represents an account entity.
     /// </summary>
-    public class AccountEntity : BaseEntity, IAccountEntity
+    public class AccountEntity : BaseEntity
     {
         /// <summary>
         /// Gets or sets the number for this account.
@@ -52,7 +52,7 @@ namespace Fibula.Data.Entities
         /// <summary>
         /// Gets or sets the account's last successfully login date and time.
         /// </summary>
-        public DateTimeOffset LastLogin { get; set; }
+        public DateTimeOffset? LastLogin { get; set; }
 
         /// <summary>
         /// Gets or sets the current IP address in use for this account, if any.
@@ -95,13 +95,23 @@ namespace Fibula.Data.Entities
         public bool Banished { get; set; }
 
         /// <summary>
-        /// Gets or sets the date and time that the banishment on this accont lasts until.
+        /// Gets or sets the date and time that the banishment on this account lasts until.
         /// </summary>
-        public DateTimeOffset BanishedUntil { get; set; }
+        public DateTimeOffset? BanishedUntil { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether this account was deleted.
         /// </summary>
         public bool Deleted { get; set; }
+
+        /// <summary>
+        /// Gets or sets the date and time that this account was deleted.
+        /// </summary>
+        public DateTimeOffset? DeletedOn { get; set; }
+
+        /// <summary>
+        /// Gets or sets the characters linked to this account.
+        /// </summary>
+        public List<CharacterEntity> Characters { get; set; }
     }
 }

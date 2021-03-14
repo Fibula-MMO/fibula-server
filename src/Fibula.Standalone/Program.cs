@@ -26,7 +26,6 @@ namespace Fibula.Standalone
     using Fibula.Creatures;
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Data.Contracts.Abstractions;
-    using Fibula.Data.InMemoryDatabase;
     using Fibula.Items;
     using Fibula.Items.Contracts.Abstractions;
     using Fibula.Map;
@@ -36,11 +35,13 @@ namespace Fibula.Standalone
     using Fibula.Mechanics.Handlers;
     using Fibula.Mechanics.Operations;
     using Fibula.PathFinding.AStar;
+    using Fibula.Plugins.Database.SqlServer;
     using Fibula.Plugins.ItemLoaders.CipObjectsFile;
     using Fibula.Plugins.MapLoaders.CipSectorFiles;
     using Fibula.Plugins.MonsterLoaders.CipMonFiles;
     using Fibula.Plugins.SpawnLoaders.CipMonstersDbFile;
     using Fibula.Protocol.V772.Extensions;
+    using Fibula.Providers.Azure;
     using Fibula.Scheduling;
     using Fibula.Scheduling.Contracts.Abstractions;
     using Fibula.Security;
@@ -149,9 +150,9 @@ namespace Fibula.Standalone
                     return;
                 }
 
-                var clientLogger = host.Services.GetRequiredService<Microsoft.Extensions.Logging.ILogger<Client>>();
+                var clientLogger = host.Services.GetRequiredService<Microsoft.Extensions.Logging.ILogger<ConnectedClient>>();
 
-                clientMap.Add(connection, new Client(clientLogger, connection));
+                clientMap.Add(connection, new ConnectedClient(clientLogger, connection));
 
                 connection.PacketReady += OnPacketReady;
 
@@ -284,7 +285,8 @@ namespace Fibula.Standalone
         {
             // Chose a type of Database context:
             // services.AddCosmosDBDatabaseContext(hostingContext.Configuration);
-            services.AddInMemoryDatabaseContext(hostingContext.Configuration);
+            // services.AddInMemoryDatabaseContext(hostingContext.Configuration);
+            services.AddSqlServerDatabaseContext(hostingContext.Configuration);
 
             // IFibulaDbContext itself is added by the Add<DatabaseProvider>() call above.
             // We add Func<IFibulaDbContext> to let callers retrieve a transient instance of this from the Application context,
@@ -337,10 +339,8 @@ namespace Fibula.Standalone
 
         private static void ConfigureExtraServices(HostBuilderContext hostingContext, IServiceCollection services)
         {
-            /*
             // Azure providers for Azure VM hosting and storing secrets in KeyVault.
             services.AddAzureProviders(hostingContext.Configuration);
-            */
 
             services.Configure<TelemetryConfiguration>(hostingContext.Configuration.GetSection(nameof(TelemetryConfiguration)));
         }

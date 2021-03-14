@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------
-// <copyright file="BaseEntity.cs" company="2Dudes">
+// <copyright file="IMonsterTypesLoader.cs" company="2Dudes">
 // Copyright (c) | Jose L. Nunez de Caceres et al.
 // https://linkedin.com/in/nunezdecaceres
 //
@@ -9,18 +9,19 @@
 // </copyright>
 // -----------------------------------------------------------------
 
-namespace Fibula.Data.Entities
+namespace Fibula.Data.Entities.Contracts.Abstractions
 {
-    using Fibula.Data.Entities.Contracts.Abstractions;
+    using System.Collections.Generic;
 
     /// <summary>
-    /// Abstract class that represents the base of all entities.
+    /// Interface for an <see cref="IMonsterTypesLoader"/> loader.
     /// </summary>
-    public abstract class BaseEntity : IIdentifiableEntity
+    public interface IMonsterTypesLoader
     {
         /// <summary>
-        /// Gets or sets the id of this entity.
+        /// Attempts to load the monster catalog.
         /// </summary>
-        public string Id { get; set; }
+        /// <returns>The catalog, containing a mapping of loaded id to the monster types.</returns>
+        IDictionary<string, MonsterTypeEntity> LoadTypes();
     }
 }

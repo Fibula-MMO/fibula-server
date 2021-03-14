@@ -18,7 +18,7 @@ namespace Fibula.Mechanics.Operations
     using Fibula.Creatures;
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Creatures.Contracts.Enumerations;
-    using Fibula.Data.Entities.Contracts.Abstractions;
+    using Fibula.Data.Entities;
     using Fibula.Definitions.Enumerations;
     using Fibula.Map.Contracts.Abstractions;
     using Fibula.Map.Contracts.Constants;
@@ -40,7 +40,7 @@ namespace Fibula.Mechanics.Operations
         /// <param name="playerMetadata">The creation metadata of the player that is logging in.</param>
         /// <param name="worldLightLevel">The level of the world light to send to the player.</param>
         /// <param name="worldLightColor">The color of the world light to send to the player.</param>
-        public LogInOperation(uint requestorId, IClient client, ICreatureEntity playerMetadata, byte worldLightLevel, byte worldLightColor)
+        public LogInOperation(uint requestorId, IClient client, CreatureEntity playerMetadata, byte worldLightLevel, byte worldLightColor)
             : base(requestorId)
         {
             this.Client = client;
@@ -68,7 +68,7 @@ namespace Fibula.Mechanics.Operations
         /// <summary>
         /// Gets the player metadata.
         /// </summary>
-        public ICreatureEntity PlayerMetadata { get; }
+        public CreatureEntity PlayerMetadata { get; }
 
         /// <summary>
         /// Executes the operation's logic.
@@ -86,7 +86,7 @@ namespace Fibula.Mechanics.Operations
                 Metadata = this.PlayerMetadata,
             };
 
-            if (context.CreatureFactory.CreateCreature(creationArguments) is not IPlayer player)
+            if (!(context.CreatureFactory.CreateCreature(creationArguments) is IPlayer player))
             {
                 context.Logger.LogWarning($"Unable to create player instance for {this.PlayerMetadata.Name}, aborting log in.");
 

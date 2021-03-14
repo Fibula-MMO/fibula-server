@@ -28,7 +28,7 @@ namespace Fibula.Protocol.V772.PacketReaders
         /// Initializes a new instance of the <see cref="ChangeModesPacketReader"/> class.
         /// </summary>
         /// <param name="logger">A reference to the logger in use.</param>
-        public ChangeModesPacketReader(ILogger logger)
+        public ChangeModesPacketReader(ILogger<ChangeModesPacketReader> logger)
             : base(logger)
         {
         }

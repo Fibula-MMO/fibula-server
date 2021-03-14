@@ -28,7 +28,7 @@ namespace Fibula.Mechanics
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Creatures.Contracts.Enumerations;
     using Fibula.Creatures.Contracts.Structs;
-    using Fibula.Data.Entities.Contracts.Abstractions;
+    using Fibula.Data.Entities;
     using Fibula.Definitions.Enumerations;
     using Fibula.Definitions.Flags;
     using Fibula.Items.Contracts.Abstractions;
@@ -251,7 +251,7 @@ namespace Fibula.Mechanics
         /// <param name="itemType">The type of item to create.</param>
         /// <param name="additionalAttributes">Optional. Additional item attributes to set on the new item.</param>
         /// <returns>True if the item is created successfully, false otherwise.</returns>
-        public bool CreateItemAtLocation(Location location, IItemTypeEntity itemType, params (ItemAttribute, IConvertible)[] additionalAttributes)
+        public bool CreateItemAtLocation(Location location, ItemTypeEntity itemType, params (ItemAttribute, IConvertible)[] additionalAttributes)
         {
             if (itemType == null)
             {
@@ -279,7 +279,7 @@ namespace Fibula.Mechanics
         /// <param name="itemType">The type of item to create.</param>
         /// <param name="additionalAttributes">Optional. Additional item attributes to set on the new item.</param>
         /// <returns>The operation that was scheduled as a result, or null if nothing is done.</returns>
-        public IOperation CreateItemAtLocationAsync(Location location, IItemTypeEntity itemType, params (ItemAttribute, IConvertible)[] additionalAttributes)
+        public IOperation CreateItemAtLocationAsync(Location location, ItemTypeEntity itemType, params (ItemAttribute, IConvertible)[] additionalAttributes)
         {
             if (itemType == null)
             {
@@ -586,7 +586,7 @@ namespace Fibula.Mechanics
         /// </summary>
         /// <param name="client">The client from which the player is connecting.</param>
         /// <param name="creatureCreationMetadata">The metadata for the player's creation.</param>
-        public void LogPlayerIn(IClient client, ICreatureEntity creatureCreationMetadata)
+        public void LogPlayerIn(IClient client, CreatureEntity creatureCreationMetadata)
         {
             client.ThrowIfNull(nameof(client));
             creatureCreationMetadata.ThrowIfNull(nameof(creatureCreationMetadata));
@@ -789,16 +789,16 @@ namespace Fibula.Mechanics
         {
             using var uow = this.applicationContext.CreateNewUnitOfWork();
 
-            var monsterType = uow.MonsterTypes.GetById(raceId);
+            var monsterType = uow.MonsterTypes.GetByPrimaryKey(() => new[] { raceId });
 
-            if (monsterType is not IMonsterTypeEntity monsterTypeEntity)
+            if (monsterType == null)
             {
                 this.logger.LogWarning($"Unable to place monster. Could not find a monster with the id {raceId} in the repository. ({nameof(this.PlaceNewMonsterAtAsync)})");
 
                 return null;
             }
 
-            var newMonster = this.creatureFactory.Create(new CreatureCreationArguments() { Type = CreatureType.Monster, Metadata = monsterTypeEntity }) as IMonster;
+            var newMonster = this.creatureFactory.Create(new CreatureCreationArguments() { Type = CreatureType.Monster, Metadata = monsterType }) as IMonster;
 
             if (!this.map.GetTileAt(location, out ITile targetTile) || targetTile.IsPathBlocking())
             {
@@ -880,8 +880,6 @@ namespace Fibula.Mechanics
                 {
                     this.scheduler.ScheduleEvent(new CreatureRemovedNotification(() => this.map.FindPlayersThatCanSee(creature.Location), creature, oldStackpos));
                 }
-
-                this.creatureManager.UnregisterCreature(creature);
             }
 
             return removedFromTile;
@@ -1030,7 +1028,7 @@ namespace Fibula.Mechanics
                 return;
             }
 
-            if (skilledCreature is not IPlayer player)
+            if (!(skilledCreature is IPlayer player))
             {
                 return;
             }
@@ -1132,7 +1130,7 @@ namespace Fibula.Mechanics
                 // Do the same for the creatures attacking it, in case the movement caused it to walk into the range of them.
                 foreach (var combatant in movingCombatant.YieldSingleItem().Union(movingCombatant.AttackedBy))
                 {
-                    if (!combatant.TryRetrieveTrackedOperation(nameof(BasicAttackOperation), out IOperation operation) || operation is not BasicAttackOperation basicAttackOp)
+                    if (!combatant.TryRetrieveTrackedOperation(nameof(BasicAttackOperation), out IOperation operation) || !(operation is BasicAttackOperation basicAttackOp))
                     {
                         continue;
                     }

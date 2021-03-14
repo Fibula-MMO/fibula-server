@@ -70,7 +70,7 @@ namespace Fibula.Mechanics.Operations
                 Attributes = this.WithAttributes,
             };
 
-            if (inThingContainer == null || context.ItemFactory.Create(creationArguments) is not IThing thingCreated)
+            if (inThingContainer == null || !(context.ItemFactory.Create(creationArguments) is IThing thingCreated))
             {
                 return;
             }

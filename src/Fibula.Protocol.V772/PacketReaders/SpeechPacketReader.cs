@@ -27,7 +27,7 @@ namespace Fibula.Protocol.V772.PacketReaders
         /// Initializes a new instance of the <see cref="SpeechPacketReader"/> class.
         /// </summary>
         /// <param name="logger">A reference to the logger in use.</param>
-        public SpeechPacketReader(ILogger logger)
+        public SpeechPacketReader(ILogger<SpeechPacketReader> logger)
             : base(logger)
         {
         }

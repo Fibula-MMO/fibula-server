@@ -36,7 +36,7 @@ namespace Fibula.PathFinding.AStar
             searchContext.ThrowIfNull(nameof(searchContext));
             tile.ThrowIfNull(nameof(tile));
 
-            if (searchContext is not AStarSearchContext aStarSearchContext)
+            if (!(searchContext is AStarSearchContext aStarSearchContext))
             {
                 throw new ArgumentException($"{nameof(searchContext)} must be of type {nameof(AStarSearchContext)} for this node type.");
             }

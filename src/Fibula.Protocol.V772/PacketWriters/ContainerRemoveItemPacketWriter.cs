@@ -26,7 +26,7 @@ namespace Fibula.Protocol.V772.PacketWriters
         /// Initializes a new instance of the <see cref="ContainerRemoveItemPacketWriter"/> class.
         /// </summary>
         /// <param name="logger">A reference to the logger in use.</param>
-        public ContainerRemoveItemPacketWriter(ILogger logger)
+        public ContainerRemoveItemPacketWriter(ILogger<ContainerRemoveItemPacketWriter> logger)
             : base(logger)
         {
         }
@@ -38,7 +38,7 @@ namespace Fibula.Protocol.V772.PacketWriters
         /// <param name="message">The message to write into.</param>
         public override void WriteToMessage(IOutboundPacket packet, ref INetworkMessage message)
         {
-            if (packet is not ContainerRemoveItemPacket containerRemoveItemPacket)
+            if (!(packet is ContainerRemoveItemPacket containerRemoveItemPacket))
             {
                 this.Logger.LogWarning($"Invalid packet {packet.GetType().Name} routed to {this.GetType().Name}");
 

@@ -414,7 +414,7 @@ namespace Fibula.Plugins.MapLoaders.CipSectorFiles
             {
                 if ("Content".Equals(attribute.Name) && item is IContainerItem containerItem)
                 {
-                    if (attribute.Value is not IEnumerable<IParsedElement> contentElements || !contentElements.Any())
+                    if (!(attribute.Value is IEnumerable<IParsedElement> contentElements) || !contentElements.Any())
                     {
                         continue;
                     }
@@ -440,7 +440,7 @@ namespace Fibula.Plugins.MapLoaders.CipSectorFiles
                 }
 
                 // These are safe to add as Attributes of the item.
-                if (!Enum.TryParse(attribute.Name, out CipItemAttribute cipAttr) || cipAttr.ToItemAttribute() is not ItemAttribute itemAttribute)
+                if (!Enum.TryParse(attribute.Name, out CipItemAttribute cipAttr) || !(cipAttr.ToItemAttribute() is ItemAttribute itemAttribute))
                 {
                     this.Logger.LogWarning($"Unsupported attribute {attribute.Name} on {item.Type.Name}, ignoring.");
 

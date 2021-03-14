@@ -14,7 +14,6 @@ namespace Fibula.Data.Entities
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Fibula.Data.Entities.Contracts.Abstractions;
     using Fibula.Data.Entities.Contracts.Structs;
     using Fibula.Definitions.Enumerations;
     using Fibula.Definitions.Flags;
@@ -23,7 +22,7 @@ namespace Fibula.Data.Entities
     /// <summary>
     /// Class that represents a monster type entity.
     /// </summary>
-    public class MonsterTypeEntity : BaseEntity, IMonsterTypeEntity
+    public class MonsterTypeEntity : CreatureEntity
     {
         private string name;
         private string article;
@@ -88,14 +87,14 @@ namespace Fibula.Data.Entities
                     throw new InvalidOperationException($"Unable to set {nameof(this.RaceId)}. The {nameof(MonsterTypeEntity)} is locked and cannot be altered.");
                 }
 
-                this.Id = value.ToString();
+                this.Id = value;
             }
         }
 
         /// <summary>
         /// Gets or sets the name of the monster type.
         /// </summary>
-        public string Name
+        public override string Name
         {
             get => this.name;
 
@@ -113,7 +112,7 @@ namespace Fibula.Data.Entities
         /// <summary>
         /// Gets or sets the article to use with the name.
         /// </summary>
-        public string Article
+        public override string Article
         {
             get => this.article;
 
@@ -235,7 +234,7 @@ namespace Fibula.Data.Entities
         /// <summary>
         /// Gets or sets this type of monster outfit.
         /// </summary>
-        public Outfit Outfit
+        public override Outfit Outfit
         {
             get => this.outfit;
 
@@ -253,7 +252,7 @@ namespace Fibula.Data.Entities
         /// <summary>
         /// Gets or sets this type of monster's corpse item type id.
         /// </summary>
-        public ushort Corpse
+        public override ushort Corpse
         {
             get => this.corpse;
 
@@ -271,12 +270,12 @@ namespace Fibula.Data.Entities
         /// <summary>
         /// Gets the current hitpoints of the monster type.
         /// </summary>
-        public ushort CurrentHitpoints => this.MaxHitpoints;
+        public override ushort CurrentHitpoints => this.MaxHitpoints;
 
         /// <summary>
         /// Gets or sets the maximum hitpoints that this monster type starts with.
         /// </summary>
-        public ushort MaxHitpoints
+        public override ushort MaxHitpoints
         {
             get => this.maxHitPoints;
 
@@ -294,12 +293,12 @@ namespace Fibula.Data.Entities
         /// <summary>
         /// Gets the current manapoints of the monster type.
         /// </summary>
-        public ushort CurrentManapoints => this.MaxManapoints;
+        public override ushort CurrentManapoints => this.MaxManapoints;
 
         /// <summary>
-        /// Gets the maximum manapoints that this monster type starts with.
+        /// Gets or sets the maximum manapoints that this monster type starts with.
         /// </summary>
-        public ushort MaxManapoints { get; private set; }
+        public override ushort MaxManapoints { get; set; }
 
         /// <summary>
         /// Gets or sets the type of blood of this monster type.
@@ -543,6 +542,16 @@ namespace Fibula.Data.Entities
 
                 this.Phrases.Add(phrase);
             }
+        }
+
+        /// <summary>
+        /// Checks if the monster type has the given creature flag set.
+        /// </summary>
+        /// <param name="creatureFlag">The creature flag to check for.</param>
+        /// <returns>True if the monster type has the creature flag set, and false otherwise.</returns>
+        public bool HasCreatureFlag(CreatureFlag creatureFlag)
+        {
+            return (this.Flags & (ulong)creatureFlag) == (ulong)creatureFlag;
         }
     }
 }

@@ -12,24 +12,27 @@
 namespace Fibula.Data.Entities
 {
     using System;
-    using Fibula.Data.Entities.Contracts.Abstractions;
     using Fibula.Data.Entities.Contracts.Structs;
     using Fibula.Definitions.Enumerations;
 
     /// <summary>
     /// Class that represents a character entity.
     /// </summary>
-    public class CharacterEntity : BaseEntity, ICharacterEntity
+    public class CharacterEntity : CreatureEntity
     {
         /// <summary>
         /// Gets or sets the character's name.
         /// </summary>
-        public string Name { get; set; }
+        public override string Name { get; set; }
 
         /// <summary>
-        /// Gets the article to use with the character's name.
+        /// Gets or sets the article to use with the character's name.
         /// </summary>
-        public string Article => string.Empty;
+        public override string Article
+        {
+            get { return string.Empty; }
+            set { return; }
+        }
 
         /// <summary>
         /// Gets or sets the id of the account which this character belongs to.
@@ -69,31 +72,43 @@ namespace Fibula.Data.Entities
         /// <summary>
         /// Gets the current hitpoints of the character.
         /// </summary>
-        public ushort CurrentHitpoints => this.MaxHitpoints;
+        public override ushort CurrentHitpoints => this.MaxHitpoints;
 
         /// <summary>
-        /// Gets the max hitpoints of the character.
+        /// Gets or sets the max hitpoints of the character.
         /// </summary>
-        public ushort MaxHitpoints => 500;
+        public override ushort MaxHitpoints
+        {
+            get { return 500; }
+            set { return; }
+        }
 
         /// <summary>
         /// Gets the current manapoints of the character.
         /// </summary>
-        public ushort CurrentManapoints => this.MaxManapoints;
+        public override ushort CurrentManapoints => this.MaxManapoints;
 
         /// <summary>
-        /// Gets the max manapoints to create the creature with.
+        /// Gets or sets the max manapoints to create the creature with.
         /// </summary>
-        public ushort MaxManapoints => 0;
+        public override ushort MaxManapoints
+        {
+            get { return 0; }
+            set { return; }
+        }
 
         /// <summary>
-        /// Gets the corpse id to give to the creature.
+        /// Gets or sets the corpse id to give to the creature.
         /// </summary>
-        public ushort Corpse => 4240;
+        public override ushort Corpse
+        {
+            get { return 4240; }
+            set { return; }
+        }
 
         /// <summary>
         /// Gets or sets the outfit look for the creature.
         /// </summary>
-        public Outfit Outfit { get; set; }
+        public override Outfit Outfit { get; set; }
     }
 }

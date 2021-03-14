@@ -26,7 +26,7 @@ namespace Fibula.Protocol.V772.PacketWriters
         /// Initializes a new instance of the <see cref="PlayerCancelAttackPacketWriter"/> class.
         /// </summary>
         /// <param name="logger">A reference to the logger in use.</param>
-        public PlayerCancelAttackPacketWriter(ILogger logger)
+        public PlayerCancelAttackPacketWriter(ILogger<PlayerCancelAttackPacketWriter> logger)
             : base(logger)
         {
         }
@@ -38,7 +38,7 @@ namespace Fibula.Protocol.V772.PacketWriters
         /// <param name="message">The message to write into.</param>
         public override void WriteToMessage(IOutboundPacket packet, ref INetworkMessage message)
         {
-            if (packet is not PlayerCancelAttackPacket playerCancelAttackPacket)
+            if (!(packet is PlayerCancelAttackPacket playerCancelAttackPacket))
             {
                 this.Logger.LogWarning($"Invalid packet {packet.GetType().Name} routed to {this.GetType().Name}");
 

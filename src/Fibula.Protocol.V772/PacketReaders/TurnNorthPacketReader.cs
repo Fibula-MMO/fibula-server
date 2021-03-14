@@ -27,7 +27,7 @@ namespace Fibula.Protocol.V772.PacketReaders
         /// Initializes a new instance of the <see cref="TurnNorthPacketReader"/> class.
         /// </summary>
         /// <param name="logger">A reference to the logger in use.</param>
-        public TurnNorthPacketReader(ILogger logger)
+        public TurnNorthPacketReader(ILogger<TurnNorthPacketReader> logger)
             : base(logger)
         {
         }

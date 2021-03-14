@@ -31,7 +31,7 @@ namespace Fibula.Protocol.V772.PacketReaders
         /// <param name="applicationContext">A reference to the application context.</param>
         /// <param name="rsaDecryptor">A reference to the RSA decryptor in use.</param>
         public GatewayLogInPacketReader(
-            ILogger logger,
+            ILogger<GatewayLogInPacketReader> logger,
             IApplicationContext applicationContext,
             IRsaDecryptor rsaDecryptor)
             : base(logger)

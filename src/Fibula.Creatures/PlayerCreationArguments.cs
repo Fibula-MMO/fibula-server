@@ -12,7 +12,7 @@
 namespace Fibula.Creatures
 {
     using Fibula.Client.Contracts.Abstractions;
-    using Fibula.Data.Entities.Contracts.Abstractions;
+    using Fibula.Data.Entities;
 
     /// <summary>
     /// Class that represents creation arguments for players.
@@ -27,6 +27,6 @@ namespace Fibula.Creatures
         /// <summary>
         /// Gets the character's metadata.
         /// </summary>
-        public ICharacterEntity CharacterMetadata => this.Metadata as ICharacterEntity;
+        public CharacterEntity CharacterMetadata => this.Metadata as CharacterEntity;
     }
 }

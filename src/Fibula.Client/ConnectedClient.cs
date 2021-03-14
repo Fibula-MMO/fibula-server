@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------
-// <copyright file="Client.cs" company="2Dudes">
+// <copyright file="ConnectedClient.cs" company="2Dudes">
 // Copyright (c) | Jose L. Nunez de Caceres et al.
 // https://linkedin.com/in/nunezdecaceres
 //
@@ -24,7 +24,7 @@ namespace Fibula.Client
     /// <summary>
     /// Class that implements an <see cref="IClient"/> for any sort of connection.
     /// </summary>
-    public class Client : IClient
+    public class ConnectedClient : IClient
     {
         /// <summary>
         /// Stores the set of creatures that are known to this client.
@@ -47,11 +47,11 @@ namespace Fibula.Client
         private uint playerId;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Client"/> class.
+        /// Initializes a new instance of the <see cref="ConnectedClient"/> class.
         /// </summary>
         /// <param name="logger">A reference to the logger to use.</param>
         /// <param name="connection">The connection that this client uses.</param>
-        public Client(ILogger<Client> logger, IConnection connection)
+        public ConnectedClient(ILogger<ConnectedClient> logger, IConnection connection)
         {
             logger.ThrowIfNull(nameof(logger));
             connection.ThrowIfNull(nameof(connection));

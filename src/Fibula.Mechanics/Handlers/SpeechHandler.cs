@@ -45,7 +45,7 @@ namespace Fibula.Mechanics.Handlers
             incomingPacket.ThrowIfNull(nameof(incomingPacket));
             client.ThrowIfNull(nameof(client));
 
-            if (incomingPacket is not ISpeechInfo speechInfo)
+            if (!(incomingPacket is ISpeechInfo speechInfo))
             {
                 this.Logger.LogError($"Expected packet info of type {nameof(ISpeechInfo)} but got {incomingPacket.GetType().Name}.");
 

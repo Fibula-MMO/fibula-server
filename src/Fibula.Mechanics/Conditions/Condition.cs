@@ -59,7 +59,7 @@ namespace Fibula.Mechanics.Conditions
         {
             context.ThrowIfNull(nameof(context));
 
-            if (!typeof(IConditionContext).IsAssignableFrom(context.GetType()) || context is not IConditionContext conditionContext)
+            if (!typeof(IConditionContext).IsAssignableFrom(context.GetType()) || !(context is IConditionContext conditionContext))
             {
                 throw new ArgumentException($"{nameof(context)} must be an {nameof(IConditionContext)}.");
             }

@@ -61,7 +61,7 @@ namespace Fibula.PathFinding.AStar
             searchContext.ThrowIfNull(nameof(searchContext));
             nodeCreationData.ThrowIfNull(nameof(nodeCreationData));
 
-            if (nodeCreationData is not TileNodeCreationArguments tileNodeArguments)
+            if (!(nodeCreationData is TileNodeCreationArguments tileNodeArguments))
             {
                 throw new ArgumentException($"{nameof(nodeCreationData)} must be of type {nameof(TileNodeCreationArguments)}.", nameof(nodeCreationData));
             }

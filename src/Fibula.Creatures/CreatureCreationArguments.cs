@@ -13,7 +13,7 @@ namespace Fibula.Creatures
 {
     using Fibula.Common.Contracts.Abstractions;
     using Fibula.Creatures.Contracts.Enumerations;
-    using Fibula.Data.Entities.Contracts.Abstractions;
+    using Fibula.Data.Entities;
 
     /// <summary>
     /// Class that represents creation arguments for creatures.
@@ -28,6 +28,6 @@ namespace Fibula.Creatures
         /// <summary>
         /// Gets or sets the metadata for the creature being created.
         /// </summary>
-        public ICreatureEntity Metadata { get; set; }
+        public CreatureEntity Metadata { get; set; }
     }
 }

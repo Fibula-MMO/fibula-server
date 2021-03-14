@@ -15,7 +15,7 @@ namespace Fibula.Items
     using System.Collections.Generic;
     using System.Linq;
     using Fibula.Common.Contracts.Abstractions;
-    using Fibula.Data.Entities.Contracts.Abstractions;
+    using Fibula.Data.Entities;
     using Fibula.Definitions.Enumerations;
     using Fibula.Items.Contracts.Abstractions;
     using Fibula.Items.Contracts.Constants;
@@ -31,7 +31,7 @@ namespace Fibula.Items
         /// Initializes a new instance of the <see cref="ContainerItem"/> class.
         /// </summary>
         /// <param name="type">The type of this item.</param>
-        public ContainerItem(IItemTypeEntity type)
+        public ContainerItem(ItemTypeEntity type)
             : base(type)
         {
             this.Content = new List<IItem>();
@@ -92,12 +92,12 @@ namespace Fibula.Items
             thingFactory.ThrowIfNull(nameof(thingFactory));
             thing.ThrowIfNull(nameof(thing));
 
-            if (thingFactory is not IItemFactory itemFactory)
+            if (!(thingFactory is IItemFactory itemFactory))
             {
                 throw new ArgumentException($"The {nameof(thingFactory)} must be derived of type {nameof(IItemFactory)}.");
             }
 
-            if (thing is not IItem item)
+            if (!(thing is IItem item))
             {
                 // Containers like this can only add items.
                 return (false, null);
@@ -178,7 +178,7 @@ namespace Fibula.Items
             thingFactory.ThrowIfNull(nameof(thingFactory));
             thing.ThrowIfNull(nameof(thing));
 
-            if (thingFactory is not IItemFactory itemFactory)
+            if (!(thingFactory is IItemFactory itemFactory))
             {
                 throw new ArgumentException($"The {nameof(thingFactory)} must be derived of type {nameof(IItemFactory)}.");
             }
@@ -241,7 +241,7 @@ namespace Fibula.Items
             fromThing.ThrowIfNull(nameof(fromThing));
             toThing.ThrowIfNull(nameof(toThing));
 
-            if (thingFactory is not IItemFactory itemFactory)
+            if (!(thingFactory is IItemFactory itemFactory))
             {
                 throw new ArgumentException($"The {nameof(thingFactory)} must be derived of type {nameof(IItemFactory)}.");
             }

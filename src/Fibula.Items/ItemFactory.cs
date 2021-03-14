@@ -13,8 +13,7 @@ namespace Fibula.Items
 {
     using System;
     using Fibula.Common.Contracts.Abstractions;
-    using Fibula.Data.Entities.Contracts.Abstractions;
-    using Fibula.Data.Entities.Contracts.Extensions;
+    using Fibula.Data.Entities;
     using Fibula.Definitions.Flags;
     using Fibula.Items.Contracts;
     using Fibula.Items.Contracts.Abstractions;
@@ -64,7 +63,7 @@ namespace Fibula.Items
         /// <returns>The new <see cref="IItem"/> instance.</returns>
         public IItem CreateItem(IThingCreationArguments creationArguments)
         {
-            if (creationArguments is not ItemCreationArguments itemCreationArguments)
+            if (!(creationArguments is ItemCreationArguments itemCreationArguments))
             {
                 throw new ArgumentException($"Invalid type of arguments '{creationArguments.GetType().Name}' supplied, expected {nameof(ItemCreationArguments)}", nameof(creationArguments));
             }
@@ -77,7 +76,9 @@ namespace Fibula.Items
 
             using var unitOfWork = this.ApplicationContext.CreateNewUnitOfWork();
 
-            if (unitOfWork.ItemTypes.GetById(itemCreationArguments.TypeId.ToString()) is not IItemTypeEntity itemType)
+            var itemType = unitOfWork.ItemTypes.GetByPrimaryKey(() => new[] { itemCreationArguments.TypeId.ToString() });
+
+            if (itemType == null)
             {
                 throw new ArgumentException($"Unknown item type with Id {itemCreationArguments.TypeId} in creation arguments for an item.", nameof(creationArguments));
             }
@@ -108,15 +109,15 @@ namespace Fibula.Items
         }
 
         /// <summary>
-        /// Looks up an <see cref="IItemTypeEntity"/> given a type id.
+        /// Looks up an <see cref="ItemTypeEntity"/> given a type id.
         /// </summary>
         /// <param name="typeId">The id of the type to look for.</param>
-        /// <returns>A reference to the <see cref="IItemTypeEntity"/> found, and null if not found.</returns>
-        public IItemTypeEntity FindTypeById(ushort typeId)
+        /// <returns>A reference to the <see cref="ItemTypeEntity"/> found, and null if not found.</returns>
+        public ItemTypeEntity FindTypeById(ushort typeId)
         {
             using var unitOfWork = this.ApplicationContext.CreateNewUnitOfWork();
 
-            return unitOfWork.ItemTypes.GetById(typeId.ToString());
+            return unitOfWork.ItemTypes.GetByPrimaryKey(() => new[] { typeId.ToString() });
         }
     }
 }

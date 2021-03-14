@@ -35,7 +35,7 @@ namespace Fibula.Plugins.MonsterLoaders.CipMonFiles
             // configure options
             services.Configure<MonFilesMonsterTypeLoaderOptions>(configuration.GetSection(nameof(MonFilesMonsterTypeLoaderOptions)));
 
-            services.AddSingleton<IMonsterTypeLoader, MonFilesMonsterTypeLoader>();
+            services.AddSingleton<IMonsterTypesLoader, MonFilesMonsterTypeLoader>();
         }
     }
 }

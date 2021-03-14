@@ -26,7 +26,7 @@ namespace Fibula.Protocol.V772.PacketReaders
         /// Initializes a new instance of the <see cref="GameLogOutPacketReader"/> class.
         /// </summary>
         /// <param name="logger">A reference to the logger in use.</param>
-        public GameLogOutPacketReader(ILogger logger)
+        public GameLogOutPacketReader(ILogger<GameLogOutPacketReader> logger)
             : base(logger)
         {
         }

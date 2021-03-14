@@ -35,7 +35,7 @@ namespace Fibula.Plugins.ItemLoaders.CipObjectsFile
             // configure options
             services.Configure<ObjectsFileItemTypeLoaderOptions>(configuration.GetSection(nameof(ObjectsFileItemTypeLoaderOptions)));
 
-            services.AddSingleton<IItemTypeLoader, ObjectsFileItemTypeLoader>();
+            services.AddSingleton<IItemTypesLoader, ObjectsFileItemTypeLoader>();
         }
     }
 }

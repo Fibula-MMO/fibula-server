@@ -15,7 +15,6 @@ namespace Fibula.Creatures
     using Fibula.Common.Contracts.Abstractions;
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Creatures.Contracts.Enumerations;
-    using Fibula.Data.Entities.Contracts.Abstractions;
     using Fibula.Items.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
 
@@ -65,7 +64,7 @@ namespace Fibula.Creatures
         /// <returns>A new instance of the chosen <see cref="ICreature"/> implementation.</returns>
         public ICreature CreateCreature(IThingCreationArguments creationArguments)
         {
-            if (creationArguments is not CreatureCreationArguments creatureCreationArguments)
+            if (!(creationArguments is CreatureCreationArguments creatureCreationArguments))
             {
                 throw new ArgumentException($"Invalid type of arguments '{creationArguments.GetType().Name}' supplied, expected {nameof(CreatureCreationArguments)}", nameof(creationArguments));
             }
@@ -82,7 +81,9 @@ namespace Fibula.Creatures
 
                     using (var unitOfWork = this.ApplicationContext.CreateNewUnitOfWork())
                     {
-                        if (unitOfWork.MonsterTypes.GetById(creatureCreationArguments.Metadata.Id) is not IMonsterTypeEntity monsterType)
+                        var monsterType = unitOfWork.MonsterTypes.GetByPrimaryKey(() => new[] { creatureCreationArguments.Metadata.Id });
+
+                        if (monsterType == null)
                         {
                             throw new ArgumentException($"Unknown monster with Id {creatureCreationArguments.Metadata.Id} in creation arguments for a monster.", nameof(creatureCreationArguments));
                         }
@@ -97,7 +98,7 @@ namespace Fibula.Creatures
 
                     if (creatureCreationArguments == null ||
                         creatureCreationArguments.Metadata == null ||
-                        creatureCreationArguments is not PlayerCreationArguments playerCreationArguments)
+                        !(creatureCreationArguments is PlayerCreationArguments playerCreationArguments))
                     {
                         throw new ArgumentException("Invalid creation arguments for a player.", nameof(creatureCreationArguments));
                     }

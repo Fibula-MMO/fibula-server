@@ -18,7 +18,7 @@ namespace Fibula.Creatures
     using Fibula.Common.Contracts.Enumerations;
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Creatures.Contracts.Enumerations;
-    using Fibula.Data.Entities.Contracts.Abstractions;
+    using Fibula.Data.Entities;
     using Fibula.Definitions.Enumerations;
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Constants;
@@ -75,7 +75,7 @@ namespace Fibula.Creatures
         /// Defaults to <see cref="CombatConstants.DefaultDefenseSpeed"/>.
         /// </param>
         protected CombatantCreature(
-            ICreatureEntity creationMetadata,
+            CreatureEntity creationMetadata,
             decimal baseAttackSpeed = CombatConstants.DefaultAttackSpeed,
             decimal baseDefenseSpeed = CombatConstants.DefaultDefenseSpeed)
             : base(creationMetadata)

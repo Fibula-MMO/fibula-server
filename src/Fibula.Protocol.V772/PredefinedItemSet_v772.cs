@@ -13,7 +13,7 @@ namespace Fibula.Protocol.V772
 {
     using System.Collections.Generic;
     using Fibula.Common.Contracts.Enumerations;
-    using Fibula.Data.Entities.Contracts.Abstractions;
+    using Fibula.Data.Entities;
     using Fibula.Definitions.Enumerations;
     using Fibula.Items.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
@@ -51,12 +51,12 @@ namespace Fibula.Protocol.V772
         /// <summary>
         /// Gets the item types for liquid splatter per blood type.
         /// </summary>
-        private IDictionary<BloodType, IItemTypeEntity> liquidSplatterPerBloodType;
+        private IDictionary<BloodType, ItemTypeEntity> liquidSplatterPerBloodType;
 
         /// <summary>
         /// Gets the item types for liquid pool per blood type.
         /// </summary>
-        private IDictionary<BloodType, IItemTypeEntity> liquidPoolPerBloodType;
+        private IDictionary<BloodType, ItemTypeEntity> liquidPoolPerBloodType;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PredefinedItemSet_v772"/> class.
@@ -72,13 +72,13 @@ namespace Fibula.Protocol.V772
         }
 
         /// <summary>
-        /// Finds the splatter <see cref="IItemTypeEntity"/> for a given blood type.
+        /// Finds the splatter <see cref="ItemTypeEntity"/> for a given blood type.
         /// </summary>
         /// <param name="bloodType">The type of blood to look the item type for.</param>
-        /// <returns>The <see cref="IItemTypeEntity"/> that's predefined for that blood type, or null if none is.</returns>
-        public IItemTypeEntity FindSplatterForBloodType(BloodType bloodType)
+        /// <returns>The <see cref="ItemTypeEntity"/> that's predefined for that blood type, or null if none is.</returns>
+        public ItemTypeEntity FindSplatterForBloodType(BloodType bloodType)
         {
-            if (this.liquidSplatterPerBloodType != null && this.liquidSplatterPerBloodType.TryGetValue(bloodType, out IItemTypeEntity splatterItemType))
+            if (this.liquidSplatterPerBloodType != null && this.liquidSplatterPerBloodType.TryGetValue(bloodType, out ItemTypeEntity splatterItemType))
             {
                 return splatterItemType;
             }
@@ -87,13 +87,13 @@ namespace Fibula.Protocol.V772
         }
 
         /// <summary>
-        /// Finds the splatter <see cref="IItemTypeEntity"/> for a given blood type.
+        /// Finds the splatter <see cref="ItemTypeEntity"/> for a given blood type.
         /// </summary>
         /// <param name="bloodType">The type of blood to look the item type for.</param>
-        /// <returns>The <see cref="IItemTypeEntity"/> that's predefined for that blood type, or null if none is.</returns>
-        public IItemTypeEntity FindPoolForBloodType(BloodType bloodType)
+        /// <returns>The <see cref="ItemTypeEntity"/> that's predefined for that blood type, or null if none is.</returns>
+        public ItemTypeEntity FindPoolForBloodType(BloodType bloodType)
         {
-            if (this.liquidPoolPerBloodType != null && this.liquidPoolPerBloodType.TryGetValue(bloodType, out IItemTypeEntity splatterItemType))
+            if (this.liquidPoolPerBloodType != null && this.liquidPoolPerBloodType.TryGetValue(bloodType, out ItemTypeEntity splatterItemType))
             {
                 return splatterItemType;
             }
@@ -107,22 +107,22 @@ namespace Fibula.Protocol.V772
         private void InitializeItemSet()
         {
             // Add blood splatters:
-            this.liquidSplatterPerBloodType = new Dictionary<BloodType, IItemTypeEntity>
+            this.liquidSplatterPerBloodType = new Dictionary<BloodType, ItemTypeEntity>
             {
-                { BloodType.Blood, this.itemFactory.FindTypeById(BloodSplatterTypeId).Clone() as IItemTypeEntity },
-                { BloodType.Slime, this.itemFactory.FindTypeById(BloodSplatterTypeId).Clone() as IItemTypeEntity },
-                { BloodType.Fire, this.itemFactory.FindTypeById(SmallFireTypeId).Clone() as IItemTypeEntity },
-                { BloodType.Bones, this.itemFactory.FindTypeById(SmallBoneTypeId).Clone() as IItemTypeEntity },
+                { BloodType.Blood, this.itemFactory.FindTypeById(BloodSplatterTypeId).Clone() as ItemTypeEntity },
+                { BloodType.Slime, this.itemFactory.FindTypeById(BloodSplatterTypeId).Clone() as ItemTypeEntity },
+                { BloodType.Fire, this.itemFactory.FindTypeById(SmallFireTypeId).Clone() as ItemTypeEntity },
+                { BloodType.Bones, this.itemFactory.FindTypeById(SmallBoneTypeId).Clone() as ItemTypeEntity },
             };
 
             this.liquidSplatterPerBloodType[BloodType.Blood].DefaultAttributes.Add((byte)ItemAttribute.LiquidType, LiquidType.Blood);
             this.liquidSplatterPerBloodType[BloodType.Slime].DefaultAttributes.Add((byte)ItemAttribute.LiquidType, LiquidType.Slime);
 
             // Add blood pools:
-            this.liquidPoolPerBloodType = new Dictionary<BloodType, IItemTypeEntity>
+            this.liquidPoolPerBloodType = new Dictionary<BloodType, ItemTypeEntity>
             {
-                { BloodType.Blood, this.itemFactory.FindTypeById(BloodPoolTypeId).Clone() as IItemTypeEntity },
-                { BloodType.Slime, this.itemFactory.FindTypeById(BloodPoolTypeId).Clone() as IItemTypeEntity },
+                { BloodType.Blood, this.itemFactory.FindTypeById(BloodPoolTypeId).Clone() as ItemTypeEntity },
+                { BloodType.Slime, this.itemFactory.FindTypeById(BloodPoolTypeId).Clone() as ItemTypeEntity },
             };
 
             this.liquidPoolPerBloodType[BloodType.Blood].DefaultAttributes.Add((byte)ItemAttribute.LiquidType, LiquidType.Blood);

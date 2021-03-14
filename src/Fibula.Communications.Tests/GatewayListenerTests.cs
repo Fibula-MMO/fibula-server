@@ -37,7 +37,7 @@ namespace Fibula.Communications.Listeners.Tests
         [TestMethod]
         public void GatewayListener_Initialization()
         {
-            Mock<ILogger> loggerMock = new Mock<ILogger>();
+            Mock<ILogger<GatewayListener<ISocketConnectionFactory>>> loggerMock = new Mock<ILogger<GatewayListener<ISocketConnectionFactory>>>();
             Mock<ISocketConnectionFactory> connectionFactoryMock = new Mock<ISocketConnectionFactory>();
             Mock<IDoSDefender> defenderMock = new Mock<IDoSDefender>();
 
@@ -66,7 +66,7 @@ namespace Fibula.Communications.Listeners.Tests
         {
             const ushort AnyEphemerealPort = 4323;
 
-            Mock<ILogger> loggerMock = new Mock<ILogger>();
+            Mock<ILogger<GatewayListener<ISocketConnectionFactory>>> loggerMock = new Mock<ILogger<GatewayListener<ISocketConnectionFactory>>>();
             Mock<ISocketConnectionFactory> connectionFactoryMock = new Mock<ISocketConnectionFactory>();
             Mock<IDoSDefender> defenderMock = new Mock<IDoSDefender>();
 
@@ -100,7 +100,7 @@ namespace Fibula.Communications.Listeners.Tests
 
             TimeSpan waitForConnectionDelay = TimeSpan.FromSeconds(2);
 
-            Mock<ILogger> loggerMock = new Mock<ILogger>();
+            Mock<ILogger<GatewayListener<ISocketConnectionFactory>>> loggerMock = new Mock<ILogger<GatewayListener<ISocketConnectionFactory>>>();
             Mock<IDoSDefender> defenderMock = new Mock<IDoSDefender>();
             Mock<ITcpListener> tcpListenerMock = this.SetupTcpListenerMock(NewConnectionsToEmulate);
 

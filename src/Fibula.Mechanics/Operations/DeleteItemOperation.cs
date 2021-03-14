@@ -48,7 +48,7 @@ namespace Fibula.Mechanics.Operations
             var requestor = this.GetRequestor(context.CreatureFinder);
             var inThingContainer = this.Item.ParentContainer;
 
-            if (inThingContainer == null || this.Item is not IThing existingThing)
+            if (inThingContainer == null || !(this.Item is IThing existingThing))
             {
                 return;
             }

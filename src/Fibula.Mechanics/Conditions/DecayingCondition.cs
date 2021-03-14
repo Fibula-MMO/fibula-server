@@ -52,7 +52,7 @@ namespace Fibula.Mechanics.Conditions
         {
             conditionOfSameType.ThrowIfNull(nameof(conditionOfSameType));
 
-            if (conditionOfSameType is not DecayingCondition otherDecayCondition || otherDecayCondition.Item.TypeId != this.Item.TypeId)
+            if (!(conditionOfSameType is DecayingCondition otherDecayCondition) || otherDecayCondition.Item.TypeId != this.Item.TypeId)
             {
                 return false;
             }
@@ -70,7 +70,7 @@ namespace Fibula.Mechanics.Conditions
         {
             var inThingContainer = this.Item.ParentContainer;
 
-            if (this.Item is not IThing existingThing || !this.Item.HasExpiration || inThingContainer == null)
+            if (!(this.Item is IThing existingThing) || !this.Item.HasExpiration || inThingContainer == null)
             {
                 // Silent fail.
                 return;

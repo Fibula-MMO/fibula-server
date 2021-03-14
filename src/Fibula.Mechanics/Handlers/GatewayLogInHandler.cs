@@ -58,14 +58,14 @@ namespace Fibula.Mechanics.Handlers
             incomingPacket.ThrowIfNull(nameof(incomingPacket));
             client.ThrowIfNull(nameof(client));
 
-            if (incomingPacket is not IGatewayLoginInfo accountLoginInfo)
+            if (!(incomingPacket is IGatewayLoginInfo accountLoginInfo))
             {
                 this.Logger.LogError($"Expected packet info of type {nameof(IGatewayLoginInfo)} but got {incomingPacket.GetType().Name}.");
 
                 return null;
             }
 
-            if (client.Connection is not ISocketConnection socketConnection)
+            if (!(client.Connection is ISocketConnection socketConnection))
             {
                 this.Logger.LogError($"Expected a {nameof(ISocketConnection)} got a {client.Connection.GetType().Name}.");
 
@@ -86,7 +86,7 @@ namespace Fibula.Mechanics.Handlers
             using var unitOfWork = this.ApplicationContext.CreateNewUnitOfWork();
 
             // validate credentials.
-            if (!uint.TryParse(accountLoginInfo.AccountName, out uint accountNumber) || unitOfWork.Accounts.FindOne(a => a.Number == accountNumber && a.Password.Equals(accountLoginInfo.Password)) is not AccountEntity account)
+            if (!uint.TryParse(accountLoginInfo.AccountName, out uint accountNumber) || !(unitOfWork.Accounts.FindOne(a => a.Number == accountNumber && a.Password.Equals(accountLoginInfo.Password)) is AccountEntity account))
             {
                 // TODO: hardcoded messages.
                 return new GatewayServerDisconnectPacket("Please enter a valid account number and password.").YieldSingleItem();

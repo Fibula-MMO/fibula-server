@@ -19,7 +19,7 @@ namespace Fibula.Data.Contracts.Abstractions
     /// </summary>
     /// <typeparam name="TEntity">The entity type.</typeparam>
     public interface IRepository<TEntity> : IReadOnlyRepository<TEntity>
-        where TEntity : IIdentifiableEntity
+        where TEntity : IEntity
     {
         /// <summary>
         /// Adds an entity to the repository.

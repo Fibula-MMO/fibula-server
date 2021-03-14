@@ -62,7 +62,7 @@ namespace Fibula.Common
         /// <param name="applicationContext">The application context to work in.</param>
         /// <param name="itemTypeLoader">A reference to the item type loader in use.</param>
         /// <param name="monsterTypeLoader">A reference to the monster type loader in use.</param>
-        public UnitOfWork(IApplicationContext applicationContext, IItemTypeLoader itemTypeLoader, IMonsterTypeLoader monsterTypeLoader)
+        public UnitOfWork(IApplicationContext applicationContext, IItemTypesLoader itemTypeLoader, IMonsterTypesLoader monsterTypeLoader)
         {
             applicationContext.ThrowIfNull(nameof(applicationContext));
 

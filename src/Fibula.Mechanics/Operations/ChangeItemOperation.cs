@@ -83,7 +83,7 @@ namespace Fibula.Mechanics.Operations
             // Adjust index if this a map location.
             var existingThing = (this.FromLocation.Type == LocationType.Map && (inThingContainer is ITile fromTile)) ? fromTile.FindItemWithTypeId(this.FromTypeId) : inThingContainer?.FindThingAtIndex(index);
 
-            if (existingThing == null || existingThing is not IItem existingItem)
+            if (existingThing == null || !(existingThing is IItem existingItem))
             {
                 // Silent fail.
                 return;

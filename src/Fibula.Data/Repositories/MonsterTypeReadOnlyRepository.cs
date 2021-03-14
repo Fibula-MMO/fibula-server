@@ -15,14 +15,16 @@ namespace Fibula.Data.Repositories
     using System.Collections.Generic;
     using System.Linq;
     using System.Linq.Expressions;
+    using System.Threading.Tasks;
     using Fibula.Data.Contracts.Abstractions;
+    using Fibula.Data.Entities;
     using Fibula.Data.Entities.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Class that represents a read-only repository for monster types.
     /// </summary>
-    public class MonsterTypeReadOnlyRepository : IReadOnlyRepository<IMonsterTypeEntity>
+    public class MonsterTypeReadOnlyRepository : IReadOnlyRepository<MonsterTypeEntity>
     {
         /// <summary>
         /// A locking object to prevent double initialization of the catalog.
@@ -32,13 +34,13 @@ namespace Fibula.Data.Repositories
         /// <summary>
         /// Stores the map between the monster race ids and the actual monster types.
         /// </summary>
-        private static IDictionary<string, IMonsterTypeEntity> monsterTypeCatalog;
+        private static IDictionary<string, MonsterTypeEntity> monsterTypeCatalog;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MonsterTypeReadOnlyRepository"/> class.
         /// </summary>
         /// <param name="monsterTypeLoader">A reference to the monster type loader in use.</param>
-        public MonsterTypeReadOnlyRepository(IMonsterTypeLoader monsterTypeLoader)
+        public MonsterTypeReadOnlyRepository(IMonsterTypesLoader monsterTypeLoader)
         {
             monsterTypeLoader.ThrowIfNull(nameof(monsterTypeLoader));
 
@@ -59,7 +61,7 @@ namespace Fibula.Data.Repositories
         /// </summary>
         /// <param name="predicate">The expression to satisfy.</param>
         /// <returns>The collection of entities retrieved.</returns>
-        public IEnumerable<IMonsterTypeEntity> FindMany(Expression<Func<IMonsterTypeEntity, bool>> predicate)
+        public IEnumerable<MonsterTypeEntity> FindMany(Expression<Func<MonsterTypeEntity, bool>> predicate)
         {
             return monsterTypeCatalog.Values.AsQueryable().Where(predicate);
         }
@@ -70,7 +72,7 @@ namespace Fibula.Data.Repositories
         /// </summary>
         /// <param name="predicate">The expression to satisfy.</param>
         /// <returns>The entity found.</returns>
-        public IMonsterTypeEntity FindOne(Expression<Func<IMonsterTypeEntity, bool>> predicate)
+        public MonsterTypeEntity FindOne(Expression<Func<MonsterTypeEntity, bool>> predicate)
         {
             return monsterTypeCatalog.Values.AsQueryable().FirstOrDefault(predicate);
         }
@@ -79,21 +81,38 @@ namespace Fibula.Data.Repositories
         /// Gets all the entities from the set in the context.
         /// </summary>
         /// <returns>The collection of entities retrieved.</returns>
-        public IEnumerable<IMonsterTypeEntity> GetAll()
+        public Task<IEnumerable<MonsterTypeEntity>> GetAll()
         {
-            return monsterTypeCatalog.Values;
+            return Task.FromResult(monsterTypeCatalog.Values.AsEnumerable());
         }
 
         /// <summary>
-        /// Gets an entity that matches an id, from the context.
+        /// Gets an entity by the primary key, from the context.
         /// </summary>
-        /// <param name="id">The id to match.</param>
+        /// <param name="keyMembersFunc">A function that returns the keys used to find the entity, in order.</param>
         /// <returns>The entity found, if any.</returns>
-        public IMonsterTypeEntity GetById(string id)
+        public MonsterTypeEntity GetByPrimaryKey(Func<object[]> keyMembersFunc)
         {
-            if (monsterTypeCatalog.ContainsKey(id))
+            keyMembersFunc.ThrowIfNull(nameof(keyMembersFunc));
+
+            var key = keyMembersFunc();
+            var raceId = key.FirstOrDefault()?.ToString();
+
+            return this.GetByRaceId(raceId);
+        }
+
+        /// <summary>
+        /// Gets a monster type from the context.
+        /// </summary>
+        /// <param name="raceId">The id of the monster type to get.</param>
+        /// <returns>The monster type found, if any.</returns>
+        public MonsterTypeEntity GetByRaceId(string raceId)
+        {
+            raceId.ThrowIfNullOrWhiteSpace(nameof(raceId));
+
+            if (monsterTypeCatalog.ContainsKey(raceId))
             {
-                return monsterTypeCatalog[id];
+                return monsterTypeCatalog[raceId];
             }
 
             return null;

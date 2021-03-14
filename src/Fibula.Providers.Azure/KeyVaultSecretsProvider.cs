@@ -41,14 +41,21 @@ namespace Fibula.Providers.Azure
         public KeyVaultSecretsProvider(
             IOptions<KeyVaultSecretsProviderOptions> secretsProviderOptions,
             ITokenProvider tokenProvider,
-            ILogger logger)
+            ILogger<KeyVaultSecretsProvider> logger)
         {
             secretsProviderOptions.ThrowIfNull(nameof(secretsProviderOptions));
             tokenProvider.ThrowIfNull(nameof(tokenProvider));
 
             DataAnnotationsValidator.ValidateObjectRecursive(secretsProviderOptions.Value);
 
-            this.keyVaultClient = new SecretClient(new Uri(secretsProviderOptions.Value.VaultBaseUrl), new ManagedIdentityCredential());
+            var options = new DefaultAzureCredentialOptions()
+            {
+                ExcludeInteractiveBrowserCredential = false,
+                ExcludeSharedTokenCacheCredential = true,
+                VisualStudioTenantId = "6780920b-09e8-4bbe-9736-77c1b346813c",
+            };
+
+            this.keyVaultClient = new SecretClient(new Uri(secretsProviderOptions.Value.VaultBaseUrl), new DefaultAzureCredential(options));
             this.Logger = logger;
         }
 

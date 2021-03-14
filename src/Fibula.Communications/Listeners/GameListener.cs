@@ -31,7 +31,7 @@ namespace Fibula.Communications.Listeners
         /// <param name="connectionFactory">A reference to the connection factory in play here.</param>
         /// <param name="dosDefender">A reference to the DoS defender service implementation.</param>
         public GameListener(
-            ILogger logger,
+            ILogger<GameListener<TConnectionFactory>> logger,
             IOptions<GameListenerOptions> options,
             TConnectionFactory connectionFactory,
             IDoSDefender dosDefender)
