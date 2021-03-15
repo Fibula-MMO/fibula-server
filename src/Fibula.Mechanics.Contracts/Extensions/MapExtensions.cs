@@ -12,8 +12,8 @@
 namespace Fibula.Mechanics.Contracts.Extensions
 {
     using System;
-    using Fibula.Common.Contracts.Enumerations;
-    using Fibula.Common.Contracts.Structs;
+    using Fibula.Definitions.Data.Structures;
+    using Fibula.Definitions.Enumerations;
     using Fibula.Map.Contracts.Abstractions;
     using Fibula.Map.Contracts.Constants;
     using Fibula.Utilities.Validation;

@@ -11,7 +11,7 @@
 
 namespace Fibula.Common.Contracts.Abstractions
 {
-    using Fibula.Common.Contracts.Structs;
+    using Fibula.Definitions.Data.Structures;
 
     /// <summary>
     /// Interface for all entities with a location.

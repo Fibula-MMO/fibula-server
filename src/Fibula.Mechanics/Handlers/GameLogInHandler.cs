@@ -13,13 +13,14 @@ namespace Fibula.Mechanics.Handlers
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using Fibula.Client.Contracts.Abstractions;
     using Fibula.Common.Contracts.Abstractions;
     using Fibula.Common.Contracts.Enumerations;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Packets.Contracts.Abstractions;
     using Fibula.Communications.Packets.Outgoing;
-    using Fibula.Data.Entities;
+    using Fibula.Definitions.Data.Entities;
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Enumerations;
     using Fibula.Utilities.Common.Extensions;
@@ -96,13 +97,13 @@ namespace Fibula.Mechanics.Handlers
 
             using var unitOfWork = this.ApplicationContext.CreateNewUnitOfWork();
 
-            if (!(unitOfWork.Accounts.FindOne(a => a.Number == loginInfo.AccountNumber && a.Password.Equals(loginInfo.Password)) is AccountEntity account))
+            if (!(unitOfWork.Accounts.FindAccountByNumber(loginInfo.AccountNumber) is AccountEntity account && account.Password.Equals(loginInfo.Password)))
             {
                 // TODO: hardcoded messages.
                 return new GameServerDisconnectPacket("The account number and password combination is invalid.").YieldSingleItem();
             }
 
-            if (!(unitOfWork.Characters.FindOne(c => c.AccountId.Equals(account.Id) && c.Name.Equals(loginInfo.CharacterName)) is CharacterEntity character))
+            if (!(unitOfWork.Characters.FindCharacterByName(loginInfo.CharacterName) is CharacterEntity character))
             {
                 // TODO: hardcoded messages.
                 return new GameServerDisconnectPacket("The character selected was not found in this account.").YieldSingleItem();
@@ -127,7 +128,7 @@ namespace Fibula.Mechanics.Handlers
                 // TODO: hardcoded messages.
                 return new GameServerDisconnectPacket("Your account is disabled.\nPlease contact us for more information.").YieldSingleItem();
             }
-            else if (unitOfWork.Characters.FindOne(c => c.IsOnline && c.AccountId == account.Id && !c.Name.Equals(loginInfo.CharacterName)) is CharacterEntity otherCharacterOnline)
+            else if (account.Characters.FirstOrDefault(c => c.IsOnline && !c.Name.Equals(loginInfo.CharacterName)) is CharacterEntity otherCharacterOnline)
             {
                 // TODO: hardcoded messages.
                 // return new GameServerDisconnectPacket("Another character in your account is online.").YieldSingleItem();

@@ -14,8 +14,7 @@ namespace Fibula.Common.Contracts
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Fibula.Common.Contracts.Enumerations;
-    using Fibula.Common.Contracts.Structs;
+    using Fibula.Definitions.Data.Structures;
     using Fibula.Definitions.Enumerations;
     using Fibula.Utilities.Validation;
 

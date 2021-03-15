@@ -12,7 +12,7 @@
 namespace Fibula.Creatures
 {
     using Fibula.Client.Contracts.Abstractions;
-    using Fibula.Data.Entities;
+    using Fibula.Definitions.Data.Entities;
 
     /// <summary>
     /// Class that represents creation arguments for players.

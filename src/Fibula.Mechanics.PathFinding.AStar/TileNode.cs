@@ -15,7 +15,7 @@ namespace Fibula.PathFinding.AStar
     using System.Collections.Generic;
     using System.Linq;
     using Fibula.Common.Contracts.Extensions;
-    using Fibula.Common.Contracts.Structs;
+    using Fibula.Definitions.Data.Structures;
     using Fibula.Map.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Extensions;
     using Fibula.Utilities.Pathfinding.Abstractions;

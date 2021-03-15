@@ -11,7 +11,6 @@
 
 namespace Fibula.Mechanics.Contracts.Abstractions
 {
-    using Fibula.Common.Contracts.Enumerations;
     using Fibula.Definitions.Enumerations;
 
     /// <summary>

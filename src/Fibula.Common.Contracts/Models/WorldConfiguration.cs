@@ -12,7 +12,7 @@
 namespace Fibula.Common.Contracts.Models
 {
     using System.ComponentModel.DataAnnotations;
-    using Fibula.Common.Contracts.Enumerations;
+    using Fibula.Definitions.Enumerations;
 
     /// <summary>
     /// Class that represents options for the configuration of a world.

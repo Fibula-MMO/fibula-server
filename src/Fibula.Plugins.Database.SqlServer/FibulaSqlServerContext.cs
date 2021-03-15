@@ -105,8 +105,11 @@ namespace Fibula.Plugins.Database.SqlServer
         /// <inheritdoc/>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.HasDefaultSchema("fibula_v1");
+
             modelBuilder.ApplyConfiguration(new AccountConfiguration());
             modelBuilder.ApplyConfiguration(new CharacterConfiguration());
+            modelBuilder.ApplyConfiguration(new CharacterStatConfiguration());
         }
     }
 }

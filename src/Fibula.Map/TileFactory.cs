@@ -11,7 +11,7 @@
 
 namespace Fibula.Map
 {
-    using Fibula.Common.Contracts.Structs;
+    using Fibula.Definitions.Data.Structures;
     using Fibula.Items.Contracts.Abstractions;
     using Fibula.Map.Contracts.Abstractions;
 

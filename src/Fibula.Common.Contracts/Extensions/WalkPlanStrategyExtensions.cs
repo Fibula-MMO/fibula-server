@@ -11,7 +11,7 @@
 
 namespace Fibula.Common.Contracts.Extensions
 {
-    using Fibula.Common.Contracts.Enumerations;
+    using Fibula.Definitions.Enumerations;
 
     /// <summary>
     /// Helper class for extension methods of walk plan strategies.

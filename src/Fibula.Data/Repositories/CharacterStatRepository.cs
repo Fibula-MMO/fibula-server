@@ -11,7 +11,7 @@
 
 namespace Fibula.Data.Repositories
 {
-    using Fibula.Data.Entities;
+    using Fibula.Definitions.Data.Entities;
     using Microsoft.EntityFrameworkCore;
 
     /// <summary>

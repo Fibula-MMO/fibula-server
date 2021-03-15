@@ -13,7 +13,7 @@ namespace Fibula.Common
 {
     using System;
     using Fibula.Common.Contracts.Abstractions;
-    using Fibula.Data.Entities.Contracts.Abstractions;
+    using Fibula.Data.Contracts.Abstractions;
     using Fibula.Data.Repositories;
     using Fibula.Utilities.Validation;
     using Microsoft.EntityFrameworkCore;

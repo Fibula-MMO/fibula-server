@@ -16,8 +16,8 @@ namespace Fibula.Data.Repositories
     using System.Linq;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
-    using Fibula.Data.Contracts.Abstractions;
-    using Fibula.Data.Entities;
+    using Fibula.Data.Contracts.Abstractions.Repositories;
+    using Fibula.Definitions.Data.Entities;
     using Fibula.Utilities.Validation;
     using Microsoft.EntityFrameworkCore;
 
@@ -78,10 +78,18 @@ namespace Fibula.Data.Repositories
         /// If more than one entity satisfies the expression, one is picked up in an unknown criteria.
         /// </summary>
         /// <param name="predicate">The expression to satisfy.</param>
+        /// <param name="includeProperties">Optional. Any additional properties to include.</param>
         /// <returns>The entity found.</returns>
-        public TEntity FindOne(Expression<Func<TEntity, bool>> predicate)
+        public TEntity FindOne(Expression<Func<TEntity, bool>> predicate, params string[] includeProperties)
         {
-            return this.Context.Set<TEntity>().FirstOrDefault(predicate);
+            var query = this.Context.Set<TEntity>().AsQueryable();
+
+            if (includeProperties != null && includeProperties.Length > 0)
+            {
+                query = includeProperties.Aggregate(query, EntityFrameworkQueryableExtensions.Include);
+            }
+
+            return query.FirstOrDefault(predicate);
         }
     }
 }

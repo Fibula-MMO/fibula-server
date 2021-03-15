@@ -11,8 +11,8 @@
 
 namespace Fibula.Creatures.Contracts.Abstractions
 {
+    using Fibula.Creatures.Contracts.Delegates;
     using Fibula.Creatures.Contracts.Enumerations;
-    using Fibula.Mechanics.Contracts.Delegates;
 
     /// <summary>
     /// Interface for stats in the game.

@@ -18,8 +18,8 @@ namespace Fibula.Items
     using Fibula.Common;
     using Fibula.Common.Contracts.Abstractions;
     using Fibula.Common.Contracts.Enumerations;
-    using Fibula.Common.Contracts.Structs;
-    using Fibula.Data.Entities;
+    using Fibula.Definitions.Data.Entities;
+    using Fibula.Definitions.Data.Structures;
     using Fibula.Definitions.Enumerations;
     using Fibula.Definitions.Flags;
     using Fibula.Items.Contracts.Abstractions;

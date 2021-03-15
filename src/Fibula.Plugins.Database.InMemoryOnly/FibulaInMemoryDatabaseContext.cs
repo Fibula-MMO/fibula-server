@@ -9,12 +9,12 @@
 // </copyright>
 // -----------------------------------------------------------------
 
-namespace Fibula.Data.InMemoryDatabase
+namespace Fibula.Plugins.Database.InMemoryOnly
 {
     using System;
     using Fibula.Data.Contracts.Abstractions;
-    using Fibula.Data.Entities;
-    using Fibula.Data.Entities.Contracts.Structs;
+    using Fibula.Definitions.Data.Entities;
+    using Fibula.Definitions.Data.Structures;
     using Fibula.Definitions.Enumerations;
     using Microsoft.EntityFrameworkCore;
 
@@ -83,11 +83,11 @@ namespace Fibula.Data.InMemoryDatabase
                     AccountId = accountId,
                     Profession = ProfessionType.None,
                     World = "Fibula",
-                    Gender = 0,
+                    Type = CharacterType.HumanMale,
                     Creation = DateTimeOffset.UtcNow,
                     LastLogin = DateTimeOffset.UtcNow,
                     IsOnline = false,
-                    Outfit = new Outfit
+                    OriginalOutfit = new Outfit
                     {
                         Id = 128,
                         Head = 114,
@@ -105,11 +105,11 @@ namespace Fibula.Data.InMemoryDatabase
                     AccountId = accountId,
                     Profession = ProfessionType.None,
                     World = "Fibula",
-                    Gender = 0,
+                    Type = CharacterType.HumanMale,
                     Creation = DateTimeOffset.UtcNow,
                     LastLogin = DateTimeOffset.UtcNow,
                     IsOnline = false,
-                    Outfit = new Outfit
+                    OriginalOutfit = new Outfit
                     {
                         Id = 128,
                         Head = 114,
@@ -127,11 +127,11 @@ namespace Fibula.Data.InMemoryDatabase
                     AccountId = accountId,
                     Profession = ProfessionType.None,
                     World = "Fibula",
-                    Gender = 0,
+                    Type = CharacterType.HumanMale,
                     Creation = DateTimeOffset.UtcNow,
                     LastLogin = DateTimeOffset.UtcNow,
                     IsOnline = false,
-                    Outfit = new Outfit
+                    OriginalOutfit = new Outfit
                     {
                         Id = 128,
                         Head = 114,

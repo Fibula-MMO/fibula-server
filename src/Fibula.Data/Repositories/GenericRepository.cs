@@ -12,8 +12,8 @@
 namespace Fibula.Data.Repositories
 {
     using System.Collections.Generic;
-    using Fibula.Data.Contracts.Abstractions;
-    using Fibula.Data.Entities;
+    using Fibula.Data.Contracts.Abstractions.Repositories;
+    using Fibula.Definitions.Data.Entities;
     using Microsoft.EntityFrameworkCore;
 
     /// <summary>

@@ -15,9 +15,9 @@ namespace Fibula.Mechanics.Contracts.Abstractions
     using Fibula.Client.Contracts.Abstractions;
     using Fibula.Common.Contracts.Abstractions;
     using Fibula.Common.Contracts.Enumerations;
-    using Fibula.Common.Contracts.Structs;
     using Fibula.Creatures.Contracts.Abstractions;
-    using Fibula.Data.Entities;
+    using Fibula.Definitions.Data.Entities;
+    using Fibula.Definitions.Data.Structures;
     using Fibula.Definitions.Enumerations;
 
     /// <summary>
@@ -173,8 +173,8 @@ namespace Fibula.Mechanics.Contracts.Abstractions
         /// Logs a player into the game.
         /// </summary>
         /// <param name="client">The client from which the player is connecting.</param>
-        /// <param name="creatureCreationMetadata">The metadata for the player's creation.</param>
-        void LogPlayerIn(IClient client, CreatureEntity creatureCreationMetadata);
+        /// <param name="playerCreationMetadata">The metadata for the player's creation.</param>
+        void LogPlayerIn(IClient client, CharacterEntity playerCreationMetadata);
 
         /// <summary>
         /// Logs a player out of the game.

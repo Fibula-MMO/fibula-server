@@ -15,10 +15,10 @@ namespace Fibula.Mechanics
     using System.Collections.Generic;
     using System.Linq;
     using Fibula.Common.Contracts.Abstractions;
-    using Fibula.Common.Contracts.Enumerations;
-    using Fibula.Common.Contracts.Structs;
     using Fibula.Communications.Packets.Outgoing;
     using Fibula.Creatures.Contracts.Abstractions;
+    using Fibula.Definitions.Data.Structures;
+    using Fibula.Definitions.Enumerations;
     using Fibula.Items.Contracts.Abstractions;
     using Fibula.Items.Contracts.Constants;
     using Fibula.Mechanics.Contracts.Extensions;
@@ -89,8 +89,7 @@ namespace Fibula.Mechanics
 
             if (this.creatureFinder.FindPlayerById(forCreatureId) is IPlayer player)
             {
-                this.scheduler.ScheduleEvent(
-                    new GenericNotification(
+                var notification = new GenericNotification(
                         () => player.YieldSingleItem(),
                         new ContainerOpenPacket(
                             containerId,
@@ -98,7 +97,9 @@ namespace Fibula.Mechanics
                             container.Type.Name,
                             container.Capacity,
                             container.ParentContainer is IContainerItem parentContainer && parentContainer.Type.TypeId != 0,
-                            container.Content)));
+                            container.Content));
+
+                this.scheduler.ScheduleEvent(notification);
             }
         }
 
@@ -122,7 +123,9 @@ namespace Fibula.Mechanics
 
             if (this.creatureFinder.FindPlayerById(forCreatureId) is IPlayer player)
             {
-                this.scheduler.ScheduleEvent(new GenericNotification(() => player.YieldSingleItem(), new ContainerClosePacket(atPosition)));
+                var notification = new GenericNotification(() => player.YieldSingleItem(), new ContainerClosePacket(atPosition));
+
+                this.scheduler.ScheduleEvent(notification);
             }
         }
 

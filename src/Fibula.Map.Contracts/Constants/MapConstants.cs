@@ -12,7 +12,7 @@
 namespace Fibula.Map.Contracts.Constants
 {
     using Fibula.Common.Contracts.Abstractions;
-    using Fibula.Common.Contracts.Structs;
+    using Fibula.Definitions.Data.Structures;
 
     /// <summary>
     /// Static class that contains constants regarding the map.

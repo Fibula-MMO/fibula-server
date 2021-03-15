@@ -11,7 +11,7 @@
 
 namespace Fibula.Plugins.Database.SqlServer.Configurations
 {
-    using Fibula.Data.Entities;
+    using Fibula.Definitions.Data.Entities;
     using Fibula.Plugins.Database.SqlServer.Constants;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -48,10 +48,10 @@ namespace Fibula.Plugins.Database.SqlServer.Configurations
             builder.Property(a => a.PremiumDays).HasColumnName("premiumDays").HasColumnType(ColumnTypeConstants.Int16);
             builder.Property(a => a.TrialOrBonusPremiumDays).HasColumnName("trialDays").HasColumnType(ColumnTypeConstants.Byte);
             builder.Property(a => a.BanishedUntil).HasColumnName("banishedUntil").HasColumnType(ColumnTypeConstants.DateTimeOffset);
-            builder.Property(a => a.AccessLevel).HasColumnName("accessLevel").HasColumnType(ColumnTypeConstants.Byte);
             builder.Property(a => a.DeletedOn).HasColumnName("deletedOn").HasColumnType(ColumnTypeConstants.DateTimeOffset);
 
             // Unmapped columns.
+            builder.Ignore(a => a.AccessLevel);
             builder.Ignore(a => a.Banished);
             builder.Ignore(a => a.Deleted);
             builder.Ignore(a => a.LastLogin);

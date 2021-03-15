@@ -11,7 +11,7 @@
 
 namespace Fibula.PathFinding.AStar
 {
-    using Fibula.Common.Contracts.Structs;
+    using Fibula.Definitions.Data.Structures;
     using Fibula.Utilities.Pathfinding.Abstractions;
 
     /// <summary>

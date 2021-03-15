@@ -12,8 +12,8 @@
 namespace Fibula.Mechanics.Contracts.Abstractions
 {
     using System.Collections.Generic;
-    using Fibula.Common.Contracts.Structs;
     using Fibula.Creatures.Contracts.Abstractions;
+    using Fibula.Definitions.Data.Structures;
     using Fibula.Definitions.Enumerations;
     using Fibula.Utilities.Pathfinding;
 

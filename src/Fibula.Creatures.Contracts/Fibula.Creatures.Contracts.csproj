@@ -60,7 +60,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Fibula.Client.Contracts\Fibula.Client.Contracts.csproj" />
-    <ProjectReference Include="..\Fibula.Data.Entities.Contracts\Fibula.Data.Entities.Contracts.csproj" />
     <ProjectReference Include="..\Fibula.Items.Contracts\Fibula.Items.Contracts.csproj" />
   </ItemGroup>
 

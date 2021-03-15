@@ -11,7 +11,6 @@
 
 namespace Fibula.Mechanics.Operations
 {
-    using Fibula.Common.Contracts.Enumerations;
     using Fibula.Definitions.Enumerations;
     using Fibula.Mechanics.Contracts.Abstractions;
     using Microsoft.Extensions.Logging;

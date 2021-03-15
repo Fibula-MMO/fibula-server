@@ -14,7 +14,7 @@ namespace Fibula.Mechanics.Operations
     using System;
     using System.Collections.Generic;
     using Fibula.Common.Contracts.Abstractions;
-    using Fibula.Common.Contracts.Structs;
+    using Fibula.Definitions.Data.Structures;
     using Fibula.Definitions.Enumerations;
     using Fibula.Items.Contracts;
     using Fibula.Mechanics.Contracts.Abstractions;

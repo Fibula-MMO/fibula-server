@@ -11,7 +11,7 @@
 
 namespace Fibula.Items.Contracts.Abstractions
 {
-    using Fibula.Data.Entities;
+    using Fibula.Definitions.Data.Entities;
     using Fibula.Definitions.Enumerations;
 
     /// <summary>

@@ -18,8 +18,8 @@ namespace Fibula.Plugins.MapLoaders.CipSectorFiles
     using System.Threading;
     using System.Threading.Tasks;
     using Fibula.Common.Contracts.Abstractions;
-    using Fibula.Common.Contracts.Structs;
     using Fibula.Creatures.Contracts.Abstractions;
+    using Fibula.Definitions.Data.Structures;
     using Fibula.Definitions.Enumerations;
     using Fibula.Items.Contracts;
     using Fibula.Items.Contracts.Abstractions;

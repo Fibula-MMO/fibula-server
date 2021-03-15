@@ -13,7 +13,7 @@ namespace Fibula.PathFinding.AStar
 {
     using System;
     using System.Collections.Generic;
-    using Fibula.Common.Contracts.Structs;
+    using Fibula.Definitions.Data.Structures;
     using Fibula.Map.Contracts.Abstractions;
     using Fibula.Utilities.Pathfinding.Abstractions;
     using Fibula.Utilities.Validation;

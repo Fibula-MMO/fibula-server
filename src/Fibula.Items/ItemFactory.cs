@@ -13,7 +13,7 @@ namespace Fibula.Items
 {
     using System;
     using Fibula.Common.Contracts.Abstractions;
-    using Fibula.Data.Entities;
+    using Fibula.Definitions.Data.Entities;
     using Fibula.Definitions.Flags;
     using Fibula.Items.Contracts;
     using Fibula.Items.Contracts.Abstractions;

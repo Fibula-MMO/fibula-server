@@ -9,24 +9,37 @@
 // </copyright>
 // -----------------------------------------------------------------
 
-namespace Fibula.Common.Contracts
+namespace Fibula.Plugins.Database.SqlServer.Converters
 {
     using System;
-    using Fibula.Common.Contracts.Abstractions;
-    using Fibula.Common.Contracts.Structs;
+    using System.Linq.Expressions;
+    using Fibula.Definitions.Data.Structures;
     using Fibula.Utilities.Validation;
+    using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
     /// <summary>
-    /// Class that represents a converter for a location.
+    /// Class that represents a converter from <see cref="string"/> to <see cref="Location"/>.
     /// </summary>
-    internal class LocationConverter : IConverter
+    public class LocationConverter : ValueConverter<Location, string>
     {
+        private static readonly Expression<Func<string, Location>> ConvertFromProviderExp = (storedStr) => ParseLocation(storedStr);
+
+        private static readonly Expression<Func<Location, string>> ConvertToProviderExp = (location) => location.ToString();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LocationConverter"/> class.
+        /// </summary>
+        public LocationConverter()
+            : base(ConvertToProviderExp, ConvertFromProviderExp, null)
+        {
+        }
+
         /// <summary>
         /// Converts a string into a <see cref="Location"/>.
         /// </summary>
         /// <param name="value">The string to convert.</param>
         /// <returns>The location converted.</returns>
-        public object Convert(string value)
+        public static Location ParseLocation(string value)
         {
             value.ThrowIfNullOrWhiteSpace(nameof(value));
 

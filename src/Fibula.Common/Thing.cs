@@ -16,7 +16,7 @@ namespace Fibula.Common
     using System.Diagnostics.CodeAnalysis;
     using Fibula.Common.Contracts.Abstractions;
     using Fibula.Common.Contracts.Delegates;
-    using Fibula.Common.Contracts.Structs;
+    using Fibula.Definitions.Data.Structures;
     using Fibula.Scheduling.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
 

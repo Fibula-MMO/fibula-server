@@ -11,7 +11,7 @@
 
 namespace Fibula.Communications.Packets.Contracts.Abstractions
 {
-    using Fibula.Common.Contracts.Structs;
+    using Fibula.Definitions.Data.Structures;
 
     /// <summary>
     /// Interface for a look at information.

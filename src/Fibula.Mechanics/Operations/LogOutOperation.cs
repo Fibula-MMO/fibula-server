@@ -11,9 +11,11 @@
 
 namespace Fibula.Mechanics.Operations
 {
+    using System;
     using Fibula.Common.Contracts.Enumerations;
     using Fibula.Communications.Packets.Outgoing;
     using Fibula.Creatures.Contracts.Abstractions;
+    using Fibula.Definitions.Data.Entities;
     using Fibula.Definitions.Enumerations;
     using Fibula.Map.Contracts.Abstractions;
     using Fibula.Map.Contracts.Extensions;
@@ -67,9 +69,16 @@ namespace Fibula.Mechanics.Operations
             }
 
             // TODO: more validations missing
+            using var uow = context.ApplicationContext.CreateNewUnitOfWork();
+
+            if (!(uow.Characters.FindCharacterByName(this.Player.Name) is CharacterEntity characterEntity))
+            {
+                throw new InvalidOperationException($"Unable to find entity for player {this.Player.Name}.");
+            }
 
             // At this point, we're allowed to log this player out, so go for it.
             var playerLocation = this.Player.Location;
+            var saveAtLocation = this.Player.IsDead ? characterEntity.StartingLocation : playerLocation;
             var removedFromMap = context.GameApi.RemoveCreatureFromGame(this.Player);
 
             if (removedFromMap || this.Player.IsDead)
@@ -85,6 +94,10 @@ namespace Fibula.Mechanics.Operations
                 }
 
                 context.CreatureManager.UnregisterCreature(this.Player);
+
+                characterEntity.LastLocation = saveAtLocation;
+
+                uow.Complete();
             }
         }
     }

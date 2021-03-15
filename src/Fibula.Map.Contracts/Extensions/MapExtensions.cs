@@ -13,8 +13,8 @@ namespace Fibula.Map.Contracts.Extensions
 {
     using System.Collections.Generic;
     using System.Linq;
-    using Fibula.Common.Contracts.Structs;
     using Fibula.Creatures.Contracts.Abstractions;
+    using Fibula.Definitions.Data.Structures;
     using Fibula.Map.Contracts.Abstractions;
     using Fibula.Map.Contracts.Constants;
     using Fibula.Utilities.Validation;

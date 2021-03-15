@@ -9,17 +9,17 @@
 // </copyright>
 // -----------------------------------------------------------------
 
-namespace Fibula.Data.Contracts.Abstractions
+namespace Fibula.Data.Contracts.Abstractions.Repositories
 {
     using System.Collections.Generic;
-    using Fibula.Data.Entities.Contracts.Abstractions;
+    using Fibula.Definitions.Data.Entities;
 
     /// <summary>
     /// Interface for a generic entity repository.
     /// </summary>
     /// <typeparam name="TEntity">The entity type.</typeparam>
     public interface IRepository<TEntity> : IReadOnlyRepository<TEntity>
-        where TEntity : IEntity
+        where TEntity : BaseEntity
     {
         /// <summary>
         /// Adds an entity to the repository.

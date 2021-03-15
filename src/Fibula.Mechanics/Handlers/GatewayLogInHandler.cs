@@ -19,7 +19,7 @@ namespace Fibula.Mechanics.Handlers
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Packets.Contracts.Abstractions;
     using Fibula.Communications.Packets.Outgoing;
-    using Fibula.Data.Entities;
+    using Fibula.Definitions.Data.Entities;
     using Fibula.Utilities.Common.Extensions;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Logging;
@@ -86,15 +86,13 @@ namespace Fibula.Mechanics.Handlers
             using var unitOfWork = this.ApplicationContext.CreateNewUnitOfWork();
 
             // validate credentials.
-            if (!uint.TryParse(accountLoginInfo.AccountName, out uint accountNumber) || !(unitOfWork.Accounts.FindOne(a => a.Number == accountNumber && a.Password.Equals(accountLoginInfo.Password)) is AccountEntity account))
+            if (!uint.TryParse(accountLoginInfo.AccountName, out uint accountNumber) || !(unitOfWork.Accounts.FindAccountByNumber(accountNumber) is AccountEntity account && account.Password.Equals(accountLoginInfo.Password)))
             {
                 // TODO: hardcoded messages.
                 return new GatewayServerDisconnectPacket("Please enter a valid account number and password.").YieldSingleItem();
             }
 
-            var charactersInAccount = unitOfWork.Characters.FindMany(p => p.AccountId == account.Id);
-
-            if (!charactersInAccount.Any())
+            if (!account.Characters.Any())
             {
                 // TODO: hardcoded messages.
                 return new GatewayServerDisconnectPacket($"You don't have any characters in your account.\nPlease create a new character in our web site: {this.ApplicationContext.Options.WebsiteUrl}").YieldSingleItem();
@@ -102,7 +100,7 @@ namespace Fibula.Mechanics.Handlers
 
             var charList = new List<CharacterInfo>();
 
-            foreach (var character in charactersInAccount)
+            foreach (var character in account.Characters)
             {
                 charList.Add(new CharacterInfo()
                 {

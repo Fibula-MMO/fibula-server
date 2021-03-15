@@ -12,12 +12,14 @@
 namespace Fibula.Creatures
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using Fibula.Client.Contracts.Abstractions;
     using Fibula.Common.Contracts.Abstractions;
-    using Fibula.Common.Contracts.Constants;
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Creatures.Contracts.Enumerations;
-    using Fibula.Data.Entities;
+    using Fibula.Definitions.Constants;
+    using Fibula.Definitions.Data.Entities;
     using Fibula.Definitions.Enumerations;
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Structs;
@@ -47,17 +49,16 @@ namespace Fibula.Creatures
 
             this.CharacterId = characterEntity.Id;
 
-            this.Outfit = characterEntity.Outfit;
+            this.Outfit = characterEntity.OriginalOutfit;
 
             this.InitializeSkills();
+            this.InitializeStats(characterEntity.Stats);
 
+            // Override some of the stats for now.
             var expLevel = this.Skills.TryGetValue(SkillType.Experience, out ISkill expSkill) ? expSkill.CurrentLevel : 1;
 
             this.Stats[CreatureStat.BaseSpeed].Set(220 + (2 * (expLevel - 1)));
             this.Stats[CreatureStat.CarryStrength].Set(150);
-
-            this.Stats.Add(CreatureStat.ManaPoints, new Stat(CreatureStat.ManaPoints, characterEntity.CurrentManapoints == default ? characterEntity.MaxHitpoints : characterEntity.CurrentManapoints, characterEntity.MaxManapoints));
-            this.Stats[CreatureStat.ManaPoints].Changed += this.RaiseStatChange;
 
             this.Stats.Add(CreatureStat.SoulPoints, new Stat(CreatureStat.SoulPoints, 0, 0));
             this.Stats[CreatureStat.SoulPoints].Changed += this.RaiseStatChange;
@@ -173,6 +174,43 @@ namespace Fibula.Creatures
             if (damageInfo.Damage > 0 && damageInfo.Dealer != null && damageInfo.Dealer is IPlayer)
             {
                 damageInfo.Damage = (int)Math.Ceiling((decimal)damageInfo.Damage / 2);
+            }
+        }
+
+        private void InitializeStats(IEnumerable<CharacterStatEntity> stats)
+        {
+            if (stats == null || !stats.Any())
+            {
+                throw new ArgumentNullException(nameof(stats));
+            }
+
+            // TODO: move somewhere or merge
+            static CreatureStat ToCreatureStat(CharacterStat stat)
+            {
+                return stat switch
+                {
+                    CharacterStat.HitPoints => CreatureStat.HitPoints,
+                    CharacterStat.ManaPoints => CreatureStat.ManaPoints,
+                    CharacterStat.BaseSpeed => CreatureStat.BaseSpeed,
+                    CharacterStat.CarryStrength => CreatureStat.CarryStrength,
+                    _ => throw new NotSupportedException($"Unsupported stat {stat}.")
+                };
+            }
+
+            foreach (var stat in stats)
+            {
+                var creatureStat = ToCreatureStat(stat.Type);
+
+                if (!this.Stats.ContainsKey(creatureStat))
+                {
+                    this.Stats.Add(creatureStat, new Stat(creatureStat, stat.Current == default ? stat.Maximum : stat.Current, stat.Maximum));
+                    this.Stats[creatureStat].Changed += this.RaiseStatChange;
+                }
+                else
+                {
+                    // TODO: set maximum and minimum?
+                    this.Stats[creatureStat].Set(stat.Current);
+                }
             }
         }
 

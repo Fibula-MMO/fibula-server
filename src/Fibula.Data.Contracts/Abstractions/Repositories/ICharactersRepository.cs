@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------
-// <copyright file="IMonster.cs" company="2Dudes">
+// <copyright file="ICharactersRepository.cs" company="2Dudes">
 // Copyright (c) | Jose L. Nunez de Caceres et al.
 // https://linkedin.com/in/nunezdecaceres
 //
@@ -9,23 +9,20 @@
 // </copyright>
 // -----------------------------------------------------------------
 
-namespace Fibula.Creatures.Contracts.Abstractions
+namespace Fibula.Data.Contracts.Abstractions.Repositories
 {
     using Fibula.Definitions.Data.Entities;
 
     /// <summary>
-    /// Interface for all monsters.
+    /// Interface for a repository of accounts.
     /// </summary>
-    public interface IMonster : ICreature
+    public interface ICharactersRepository
     {
         /// <summary>
-        /// Gets the type of this monster.
+        /// Attempts to find a character in the repo with a given name.
         /// </summary>
-        MonsterTypeEntity Type { get; }
-
-        /// <summary>
-        /// Gets the experience yielded when this monster dies.
-        /// </summary>
-        uint ExperienceToYield { get; }
+        /// <param name="characterName">The name of the character.</param>
+        /// <returns>The entity if one was bound, and null otherwise.</returns>
+        CharacterEntity FindCharacterByName(string characterName);
     }
 }

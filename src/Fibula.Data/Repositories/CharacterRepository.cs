@@ -11,13 +11,14 @@
 
 namespace Fibula.Data.Repositories
 {
-    using Fibula.Data.Entities;
+    using Fibula.Data.Contracts.Abstractions.Repositories;
+    using Fibula.Definitions.Data.Entities;
     using Microsoft.EntityFrameworkCore;
 
     /// <summary>
     /// Class that represents a character repository.
     /// </summary>
-    public class CharacterRepository : GenericRepository<CharacterEntity>
+    public class CharacterRepository : GenericRepository<CharacterEntity>, ICharactersRepository
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="CharacterRepository"/> class.
@@ -26,6 +27,17 @@ namespace Fibula.Data.Repositories
         public CharacterRepository(DbContext context)
             : base(context)
         {
+        }
+
+        /// <summary>
+        /// Attempts to find a character in the repo with a given name.
+        /// </summary>
+        /// <param name="characterName">The name of the character.</param>
+        /// <returns>The entity if one was bound, and null otherwise.</returns>
+        /// <remarks>Does not load nested relationships, only those at this entity level.</remarks>
+        public CharacterEntity FindCharacterByName(string characterName)
+        {
+            return this.FindOne(c => c.Name.ToUpper() == characterName.ToUpper(), nameof(CharacterEntity.Stats));
         }
     }
 }

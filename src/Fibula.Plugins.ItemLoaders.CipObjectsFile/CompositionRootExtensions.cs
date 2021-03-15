@@ -11,7 +11,7 @@
 
 namespace Fibula.Plugins.ItemLoaders.CipObjectsFile
 {
-    using Fibula.Data.Entities.Contracts.Abstractions;
+    using Fibula.Data.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;

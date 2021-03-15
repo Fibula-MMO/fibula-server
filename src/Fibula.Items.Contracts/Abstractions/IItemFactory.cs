@@ -12,7 +12,7 @@
 namespace Fibula.Items.Contracts.Abstractions
 {
     using Fibula.Common.Contracts.Abstractions;
-    using Fibula.Data.Entities;
+    using Fibula.Definitions.Data.Entities;
     using Fibula.Items.Contracts.Delegates;
 
     /// <summary>

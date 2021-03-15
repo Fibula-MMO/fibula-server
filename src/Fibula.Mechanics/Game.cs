@@ -22,13 +22,14 @@ namespace Fibula.Mechanics
     using Fibula.Common.Contracts.Abstractions;
     using Fibula.Common.Contracts.Constants;
     using Fibula.Common.Contracts.Enumerations;
-    using Fibula.Common.Contracts.Structs;
     using Fibula.Communications.Packets.Outgoing;
     using Fibula.Creatures;
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Creatures.Contracts.Enumerations;
     using Fibula.Creatures.Contracts.Structs;
-    using Fibula.Data.Entities;
+    using Fibula.Definitions.Constants;
+    using Fibula.Definitions.Data.Entities;
+    using Fibula.Definitions.Data.Structures;
     using Fibula.Definitions.Enumerations;
     using Fibula.Definitions.Flags;
     using Fibula.Items.Contracts.Abstractions;
@@ -586,7 +587,7 @@ namespace Fibula.Mechanics
         /// </summary>
         /// <param name="client">The client from which the player is connecting.</param>
         /// <param name="creatureCreationMetadata">The metadata for the player's creation.</param>
-        public void LogPlayerIn(IClient client, CreatureEntity creatureCreationMetadata)
+        public void LogPlayerIn(IClient client, CharacterEntity creatureCreationMetadata)
         {
             client.ThrowIfNull(nameof(client));
             creatureCreationMetadata.ThrowIfNull(nameof(creatureCreationMetadata));
@@ -677,11 +678,12 @@ namespace Fibula.Mechanics
                 {
                     if (targetContainer is ITile targetTile)
                     {
-                        this.scheduler.ScheduleEvent(
-                            new TileUpdatedNotification(
+                        var notification = new TileUpdatedNotification(
                                 () => this.map.FindPlayersThatCanSee(targetTile.Location),
                                 targetTile.Location,
-                                this.mapDescriptor.DescribeTile));
+                                this.mapDescriptor.DescribeTile);
+
+                        this.scheduler.ScheduleEvent(notification);
 
                         // this.EventRulesApi.EvaluateRules(this, EventRuleType.Collision, new CollisionEventRuleArguments(targetContainer.Location, lastAddedThing, requestorCreature));
                     }
@@ -757,8 +759,7 @@ namespace Fibula.Mechanics
 
                 var placedAtStackPos = targetTile.GetStackOrderOfThing(creature);
 
-                this.scheduler.ScheduleEvent(
-                    new CreatureMovedNotification(
+                var notification = new CreatureMovedNotification(
                         () =>
                         {
                             if (creature is IPlayer player)
@@ -773,7 +774,9 @@ namespace Fibula.Mechanics
                         byte.MaxValue,
                         creature.Location,
                         placedAtStackPos,
-                        wasTeleport: true));
+                        wasTeleport: true);
+
+                this.scheduler.ScheduleEvent(notification);
             }
 
             return addSuccessful;
@@ -868,17 +871,20 @@ namespace Fibula.Mechanics
 
                 if (creature is IPlayer player)
                 {
-                    this.scheduler.ScheduleEvent(
-                        new CreatureRemovedNotification(
+                    var notification = new CreatureRemovedNotification(
                             () => this.map.FindPlayersThatCanSee(creature.Location).Union(player.YieldSingleItem()),
                             creature,
-                            oldStackpos));
+                            oldStackpos);
+
+                    this.scheduler.ScheduleEvent(notification);
 
                     // player.Inventory.SlotChanged -= context.GameApi.OnPlayerInventoryChanged;
                 }
                 else
                 {
-                    this.scheduler.ScheduleEvent(new CreatureRemovedNotification(() => this.map.FindPlayersThatCanSee(creature.Location), creature, oldStackpos));
+                    var notification = new CreatureRemovedNotification(() => this.map.FindPlayersThatCanSee(creature.Location), creature, oldStackpos);
+
+                    this.scheduler.ScheduleEvent(notification);
                 }
             }
 

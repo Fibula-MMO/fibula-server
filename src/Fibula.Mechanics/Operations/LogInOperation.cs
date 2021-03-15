@@ -18,10 +18,9 @@ namespace Fibula.Mechanics.Operations
     using Fibula.Creatures;
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Creatures.Contracts.Enumerations;
-    using Fibula.Data.Entities;
+    using Fibula.Definitions.Data.Entities;
     using Fibula.Definitions.Enumerations;
     using Fibula.Map.Contracts.Abstractions;
-    using Fibula.Map.Contracts.Constants;
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Mechanics.Notifications;
     using Fibula.Utilities.Common.Extensions;
@@ -40,7 +39,7 @@ namespace Fibula.Mechanics.Operations
         /// <param name="playerMetadata">The creation metadata of the player that is logging in.</param>
         /// <param name="worldLightLevel">The level of the world light to send to the player.</param>
         /// <param name="worldLightColor">The color of the world light to send to the player.</param>
-        public LogInOperation(uint requestorId, IClient client, CreatureEntity playerMetadata, byte worldLightLevel, byte worldLightColor)
+        public LogInOperation(uint requestorId, IClient client, CharacterEntity playerMetadata, byte worldLightLevel, byte worldLightColor)
             : base(requestorId)
         {
             this.Client = client;
@@ -68,7 +67,7 @@ namespace Fibula.Mechanics.Operations
         /// <summary>
         /// Gets the player metadata.
         /// </summary>
-        public CreatureEntity PlayerMetadata { get; }
+        public CharacterEntity PlayerMetadata { get; }
 
         /// <summary>
         /// Executes the operation's logic.
@@ -76,8 +75,12 @@ namespace Fibula.Mechanics.Operations
         /// <param name="context">A reference to the operation context.</param>
         protected override void Execute(IOperationContext context)
         {
-            // This will eventually come from the character, or fall back.
-            var targetLoginLocation = MapConstants.ThaisTempleMark;
+            var targetLoginLocation = this.PlayerMetadata.LastLocation;
+
+            if (context.Map.GetTileAt(targetLoginLocation) == null)
+            {
+                targetLoginLocation = this.PlayerMetadata.StartingLocation;
+            }
 
             var creationArguments = new PlayerCreationArguments()
             {
@@ -96,10 +99,11 @@ namespace Fibula.Mechanics.Operations
             if (!context.GameApi.AddCreatureToGame(targetLoginLocation, player))
             {
                 // Unable to place the player in the map.
-                context.Scheduler.ScheduleEvent(
-                    new GenericNotification(
+                var disconnectNotification = new GenericNotification(
                         () => player.YieldSingleItem(),
-                        new GameServerDisconnectPacket("Your character could not be placed on the map.\nPlease try again, or contact an administrator if the issue persists.")));
+                        new GameServerDisconnectPacket("Your character could not be placed on the map.\nPlease try again, or contact an administrator if the issue persists."));
+
+                context.Scheduler.ScheduleEvent(disconnectNotification);
 
                 return;
             }

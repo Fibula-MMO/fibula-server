@@ -11,10 +11,10 @@
 
 namespace Fibula.Protocol.V772.PacketReaders
 {
-    using Fibula.Common.Contracts.Structs;
     using Fibula.Communications;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Packets.Incoming;
+    using Fibula.Definitions.Data.Structures;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Logging;
 

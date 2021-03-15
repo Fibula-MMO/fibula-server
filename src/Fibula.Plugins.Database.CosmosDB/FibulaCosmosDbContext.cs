@@ -9,11 +9,11 @@
 // </copyright>
 // -----------------------------------------------------------------
 
-namespace Fibula.Data.CosmosDB
+namespace Fibula.Plugins.Database.CosmosDB
 {
     using System.Security;
     using Fibula.Data.Contracts.Abstractions;
-    using Fibula.Data.Entities;
+    using Fibula.Definitions.Data.Entities;
     using Fibula.Providers.Contracts;
     using Fibula.Utilities.Validation;
     using Microsoft.EntityFrameworkCore;

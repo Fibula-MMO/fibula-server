@@ -27,11 +27,6 @@ namespace Fibula.Creatures.Contracts.Enumerations
         ManaPoints,
 
         /// <summary>
-        /// The soul points of a creature.
-        /// </summary>
-        SoulPoints,
-
-        /// <summary>
         /// The carry strength of a creature.
         /// </summary>
         CarryStrength,
@@ -40,6 +35,11 @@ namespace Fibula.Creatures.Contracts.Enumerations
         /// The base speed of a creature.
         /// </summary>
         BaseSpeed,
+
+        /// <summary>
+        /// The soul points of a creature.
+        /// </summary>
+        SoulPoints,
 
         /// <summary>
         /// The creature's attack points.

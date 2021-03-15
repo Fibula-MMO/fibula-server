@@ -12,7 +12,7 @@
 namespace Fibula.Common.Contracts.Delegates
 {
     using Fibula.Common.Contracts.Abstractions;
-    using Fibula.Common.Contracts.Structs;
+    using Fibula.Definitions.Data.Structures;
 
     /// <summary>
     /// Delegate for <see cref="IThing"/> state changing.

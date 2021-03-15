@@ -9,20 +9,20 @@
 // </copyright>
 // -----------------------------------------------------------------
 
-namespace Fibula.Data.Contracts.Abstractions
+namespace Fibula.Data.Contracts.Abstractions.Repositories
 {
     using System;
     using System.Collections.Generic;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
-    using Fibula.Data.Entities.Contracts.Abstractions;
+    using Fibula.Definitions.Data.Entities;
 
     /// <summary>
     /// Interface for a generic, read-only entity repository.
     /// </summary>
     /// <typeparam name="TEntity">The entity type.</typeparam>
     public interface IReadOnlyRepository<TEntity>
-        where TEntity : IEntity
+        where TEntity : BaseEntity
     {
         /// <summary>
         /// Gets an entity by the primary key, from the context.
@@ -49,7 +49,8 @@ namespace Fibula.Data.Contracts.Abstractions
         /// If more than one entity satisfies the expression, one is picked up in an unknown criteria.
         /// </summary>
         /// <param name="predicate">The expression to satisfy.</param>
+        /// <param name="includeProperties">Optional. Any additional properties to include.</param>
         /// <returns>The entity found.</returns>
-        TEntity FindOne(Expression<Func<TEntity, bool>> predicate);
+        TEntity FindOne(Expression<Func<TEntity, bool>> predicate, params string[] includeProperties);
     }
 }

@@ -17,12 +17,12 @@ namespace Fibula.Creatures
     using Fibula.Common;
     using Fibula.Common.Contracts;
     using Fibula.Common.Contracts.Abstractions;
-    using Fibula.Common.Contracts.Structs;
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Creatures.Contracts.Constants;
+    using Fibula.Creatures.Contracts.Delegates;
     using Fibula.Creatures.Contracts.Enumerations;
-    using Fibula.Data.Entities;
-    using Fibula.Data.Entities.Contracts.Structs;
+    using Fibula.Definitions.Data.Entities;
+    using Fibula.Definitions.Data.Structures;
     using Fibula.Definitions.Enumerations;
     using Fibula.Items.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Abstractions;

@@ -9,9 +9,10 @@
 // </copyright>
 // -----------------------------------------------------------------
 
-namespace Fibula.Data.Entities.Contracts.Abstractions
+namespace Fibula.Data.Contracts.Abstractions
 {
     using System.Collections.Generic;
+    using Fibula.Definitions.Data.Entities;
 
     /// <summary>
     /// Interface for an <see cref="ItemTypeEntity"/> loader.

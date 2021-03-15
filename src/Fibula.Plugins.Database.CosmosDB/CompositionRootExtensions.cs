@@ -9,7 +9,7 @@
 // </copyright>
 // -----------------------------------------------------------------
 
-namespace Fibula.Data.CosmosDB
+namespace Fibula.Plugins.Database.CosmosDB
 {
     using Fibula.Data.Contracts.Abstractions;
     using Fibula.Utilities.Validation;

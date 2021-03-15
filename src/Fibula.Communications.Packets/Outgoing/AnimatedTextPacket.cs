@@ -12,9 +12,9 @@
 namespace Fibula.Communications.Packets.Outgoing
 {
     using Fibula.Common.Contracts.Enumerations;
-    using Fibula.Common.Contracts.Structs;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Contracts.Enumerations;
+    using Fibula.Definitions.Data.Structures;
 
     /// <summary>
     /// Class that represents a packet with information about animated text that should be displayed to the player.

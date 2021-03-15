@@ -14,10 +14,10 @@ namespace Fibula.Mechanics.Notifications
     using System;
     using System.Buffers;
     using System.Collections.Generic;
-    using Fibula.Common.Contracts.Structs;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Packets.Outgoing;
     using Fibula.Creatures.Contracts.Abstractions;
+    using Fibula.Definitions.Data.Structures;
     using Fibula.Map.Contracts.Abstractions;
     using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Utilities.Common.Extensions;

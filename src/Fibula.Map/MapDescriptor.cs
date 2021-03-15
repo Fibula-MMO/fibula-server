@@ -15,9 +15,9 @@ namespace Fibula.Map
     using System.Buffers;
     using System.Collections.Generic;
     using System.Linq;
-    using Fibula.Common.Contracts.Enumerations;
-    using Fibula.Common.Contracts.Structs;
     using Fibula.Creatures.Contracts.Abstractions;
+    using Fibula.Definitions.Data.Structures;
+    using Fibula.Definitions.Enumerations;
     using Fibula.Map.Contracts;
     using Fibula.Map.Contracts.Abstractions;
     using Fibula.Map.Contracts.Constants;

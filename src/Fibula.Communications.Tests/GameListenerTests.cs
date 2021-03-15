@@ -9,7 +9,7 @@
 // </copyright>
 // -----------------------------------------------------------------
 
-namespace Fibula.Communications.Listeners.Tests
+namespace Fibula.Communications.Tests
 {
     using System;
     using System.ComponentModel.DataAnnotations;

@@ -12,7 +12,7 @@
 namespace Fibula.Creatures.Contracts.Structs
 {
     using System;
-    using Fibula.Common.Contracts.Structs;
+    using Fibula.Definitions.Data.Structures;
 
     /// <summary>
     /// Structure that represents spawns.

@@ -15,8 +15,8 @@ namespace Fibula.Plugins.ItemLoaders.CipObjectsFile
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using Fibula.Data.Entities;
-    using Fibula.Data.Entities.Contracts.Abstractions;
+    using Fibula.Data.Contracts.Abstractions;
+    using Fibula.Definitions.Data.Entities;
     using Fibula.Definitions.Enumerations;
     using Fibula.Definitions.Flags;
     using Fibula.Parsing.CipFiles;

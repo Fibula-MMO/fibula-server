@@ -15,9 +15,9 @@ namespace Fibula.Plugins.MonsterLoaders.CipMonFiles
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using Fibula.Data.Entities;
-    using Fibula.Data.Entities.Contracts.Abstractions;
-    using Fibula.Data.Entities.Contracts.Structs;
+    using Fibula.Data.Contracts.Abstractions;
+    using Fibula.Definitions.Data.Entities;
+    using Fibula.Definitions.Data.Structures;
     using Fibula.Definitions.Enumerations;
     using Fibula.Definitions.Flags;
     using Fibula.Parsing.CipFiles;
@@ -142,7 +142,7 @@ namespace Fibula.Plugins.MonsterLoaders.CipMonFiles
                     case "outfit":
                         var (lookTypeId, headColor, bodyColor, legsColor, feetColor) = CipFileParser.ParseMonsterOutfit(value);
 
-                        monsterType.Outfit = new Outfit()
+                        monsterType.OriginalOutfit = new Outfit()
                         {
                             Id = lookTypeId,
                             Head = headColor,
@@ -180,7 +180,7 @@ namespace Fibula.Plugins.MonsterLoaders.CipMonFiles
                         monsterType.BaseArmorRating = Convert.ToUInt16(value);
                         break;
                     case "poison":
-                        monsterType.SetConditionInfect(ConditionType.Posioned, Convert.ToUInt16(value));
+                        // monsterType.SetConditionInfect(ConditionType.Posioned, Convert.ToUInt16(value));
                         break;
                     case "losetarget":
                         monsterType.LoseTargetDistance = Convert.ToByte(value);
@@ -241,7 +241,7 @@ namespace Fibula.Plugins.MonsterLoaders.CipMonFiles
 
                         break;
                     case "spells":
-                        monsterType.SetSpells(CipFileParser.ParseMonsterSpells(value));
+                        // monsterType.SetSpells(CipFileParser.ParseMonsterSpells(value));
                         break;
                     case "inventory":
                         monsterType.SetInventory(CipFileParser.ParseMonsterInventory(value));
