@@ -22,14 +22,13 @@ namespace Fibula.Providers.Azure
         /// Gets or sets the base url for the Key Vault.
         /// </summary>
         [Required(ErrorMessage = "A Key Vault URL is required.")]
-        [Url(ErrorMessage = "An invalid URL was supplied.")]
+        [Url(ErrorMessage = "An invalid URL was not supplied.")]
         public string VaultBaseUrl { get; set; }
 
         /// <summary>
         /// Gets or sets the id of the tenant in Azure.
         /// </summary>
         [Required(ErrorMessage = "An Azure tenant id is required.")]
-        [Url(ErrorMessage = "An Azure tenant id was supplied.")]
         public string AzureTenantId { get; set; }
     }
 }
