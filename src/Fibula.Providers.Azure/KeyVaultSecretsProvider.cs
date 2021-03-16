@@ -52,7 +52,7 @@ namespace Fibula.Providers.Azure
             {
                 ExcludeInteractiveBrowserCredential = false,
                 ExcludeSharedTokenCacheCredential = true,
-                VisualStudioTenantId = "6780920b-09e8-4bbe-9736-77c1b346813c",
+                VisualStudioTenantId = secretsProviderOptions.Value.AzureTenantId,
             };
 
             this.keyVaultClient = new SecretClient(new Uri(secretsProviderOptions.Value.VaultBaseUrl), new DefaultAzureCredential(options));
