@@ -21,7 +21,7 @@ namespace Fibula.Items.Contracts.Abstractions
     /// <summary>
     /// Interface for all items in the game.
     /// </summary>
-    public interface IItem : IThing, IContainedThing
+    public interface IItem : IThing, IContainedThing, ICloneableThing<IItem>
     {
         /// <summary>
         /// Gets a reference to this item's <see cref="ItemTypeEntity"/>.

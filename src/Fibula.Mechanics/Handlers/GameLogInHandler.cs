@@ -14,7 +14,6 @@ namespace Fibula.Mechanics.Handlers
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Fibula.Client.Contracts.Abstractions;
     using Fibula.Common.Contracts.Abstractions;
     using Fibula.Common.Contracts.Enumerations;
     using Fibula.Communications.Contracts.Abstractions;

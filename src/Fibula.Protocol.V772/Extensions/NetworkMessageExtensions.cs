@@ -198,31 +198,17 @@ namespace Fibula.Protocol.V772.Extensions
         /// <returns>The color supported by the client.</returns>
         public static LiquidColor ToLiquidColor(this LiquidType liquidType)
         {
-            switch (liquidType)
+            return liquidType switch
             {
-                default:
-                case LiquidType.None:
-                    return LiquidColor.None;
-                case LiquidType.Water:
-                    return LiquidColor.Blue;
-                case LiquidType.Wine:
-                case LiquidType.ManaFluid:
-                    return LiquidColor.Purple;
-                case LiquidType.Beer:
-                case LiquidType.Mud:
-                case LiquidType.Oil:
-                    return LiquidColor.Brown;
-                case LiquidType.Blood:
-                case LiquidType.LifeFluid:
-                    return LiquidColor.Red;
-                case LiquidType.Slime:
-                case LiquidType.Lemonade:
-                    return LiquidColor.Green;
-                case LiquidType.Urine:
-                    return LiquidColor.Yellow;
-                case LiquidType.Milk:
-                    return LiquidColor.White;
-            }
+                LiquidType.Water => LiquidColor.Blue,
+                LiquidType.Wine or LiquidType.ManaFluid => LiquidColor.Purple,
+                LiquidType.Beer or LiquidType.Mud or LiquidType.Oil => LiquidColor.Brown,
+                LiquidType.Blood or LiquidType.LifeFluid => LiquidColor.Red,
+                LiquidType.Slime or LiquidType.Lemonade => LiquidColor.Green,
+                LiquidType.Urine => LiquidColor.Yellow,
+                LiquidType.Milk => LiquidColor.White,
+                _ => LiquidColor.None,
+            };
         }
 
         private static void InsertPacketLength(this INetworkMessage message)

@@ -17,11 +17,11 @@ namespace Fibula.Mechanics
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using Fibula.Client.Contracts.Abstractions;
     using Fibula.Common.Contracts;
     using Fibula.Common.Contracts.Abstractions;
     using Fibula.Common.Contracts.Constants;
     using Fibula.Common.Contracts.Enumerations;
+    using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Packets.Outgoing;
     using Fibula.Creatures;
     using Fibula.Creatures.Contracts.Abstractions;

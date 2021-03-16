@@ -12,8 +12,8 @@
 namespace Fibula.Mechanics.Operations
 {
     using System.Collections.Generic;
-    using Fibula.Client.Contracts.Abstractions;
     using Fibula.Common.Contracts.Enumerations;
+    using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Packets.Outgoing;
     using Fibula.Creatures;
     using Fibula.Creatures.Contracts.Abstractions;

@@ -19,7 +19,7 @@ namespace Fibula.Common.Contracts.Abstractions
     /// <summary>
     /// Interface for all things in the game.
     /// </summary>
-    public interface IThing : ILocatable, IContainedThing, IEquatable<IThing>, ICloneableThing<IThing>
+    public interface IThing : ILocatable, IContainedThing, IEquatable<IThing>
     {
         /// <summary>
         /// Event to invoke when any of the properties of this thing have changed.

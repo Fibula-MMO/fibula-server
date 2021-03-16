@@ -487,7 +487,7 @@ namespace Fibula.Map
                                 break;
                             }
 
-                            item = item.Clone() as Item;
+                            item = item.Clone() as IItem;
 
                             item.Amount = remainingAmountToAdd;
 
@@ -606,7 +606,7 @@ namespace Fibula.Map
                             item.Amount = newExistingAmount;
 
                             // Create a new item as the remainder.
-                            remainder = item.Clone() as Item;
+                            remainder = item.Clone() as IItem;
 
                             remainder.Amount = amount;
 

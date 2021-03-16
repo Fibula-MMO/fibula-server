@@ -45,9 +45,6 @@ namespace Fibula.Protocol.V772.Extensions
             // Configure the options required by the services we're about to add.
             services.Configure<GameListenerOptions>(configuration.GetSection(nameof(GameListenerOptions)));
 
-            // Add all handlers
-            services.TryAddSingleton<GameLogInPacketReader>();
-
             var packetReadersToAdd = new Dictionary<IncomingPacketType, Type>()
             {
                 { IncomingPacketType.Attack, typeof(AttackPacketReader) },

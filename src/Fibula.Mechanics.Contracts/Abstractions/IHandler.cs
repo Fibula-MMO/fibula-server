@@ -12,7 +12,6 @@
 namespace Fibula.Mechanics.Contracts.Abstractions
 {
     using System.Collections.Generic;
-    using Fibula.Client.Contracts.Abstractions;
     using Fibula.Communications.Contracts.Abstractions;
 
     /// <summary>

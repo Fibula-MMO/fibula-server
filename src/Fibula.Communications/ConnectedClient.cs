@@ -9,14 +9,13 @@
 // </copyright>
 // -----------------------------------------------------------------
 
-namespace Fibula.Client
+namespace Fibula.Communications
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Fibula.Client.Contracts.Abstractions;
-    using Fibula.Client.Contracts.Models;
     using Fibula.Common.Contracts.Enumerations;
+    using Fibula.Communications.Contracts;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Logging;

@@ -9,7 +9,7 @@
 // </copyright>
 // -----------------------------------------------------------------
 
-namespace Fibula.Client.Contracts.Models
+namespace Fibula.Communications.Contracts
 {
     using Fibula.Common.Contracts.Enumerations;
 

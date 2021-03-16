@@ -11,7 +11,7 @@
 
 namespace Fibula.Creatures
 {
-    using Fibula.Client.Contracts.Abstractions;
+    using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Definitions.Data.Entities;
 
     /// <summary>

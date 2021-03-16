@@ -11,7 +11,7 @@
 
 namespace Fibula.Mechanics.Contracts.Delegates
 {
-    using Fibula.Client.Contracts.Abstractions;
+    using Fibula.Communications.Contracts.Abstractions;
 
     /// <summary>
     /// Delegate meant for when a notification is sent to a client.

@@ -342,7 +342,7 @@ namespace Fibula.Items
         /// Creates a new <see cref="ContainerItem"/> that is a shallow copy of the current instance.
         /// </summary>
         /// <returns>A new <see cref="ContainerItem"/> that is a shallow copy of this instance.</returns>
-        public override IThing Clone()
+        public override IItem Clone()
         {
             var newItem = new ContainerItem(this.Type);
 

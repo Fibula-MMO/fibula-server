@@ -16,11 +16,10 @@ namespace Fibula.Standalone
     using System.IO;
     using System.Threading;
     using System.Threading.Tasks;
-    using Fibula.Client;
-    using Fibula.Client.Contracts.Abstractions;
     using Fibula.Common;
     using Fibula.Common.Contracts.Abstractions;
     using Fibula.Common.Contracts.Models;
+    using Fibula.Communications;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Packets.Contracts.Abstractions;
     using Fibula.Creatures;

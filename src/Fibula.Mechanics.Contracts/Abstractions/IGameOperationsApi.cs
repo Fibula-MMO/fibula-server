@@ -12,9 +12,9 @@
 namespace Fibula.Mechanics.Contracts.Abstractions
 {
     using System;
-    using Fibula.Client.Contracts.Abstractions;
     using Fibula.Common.Contracts.Abstractions;
     using Fibula.Common.Contracts.Enumerations;
+    using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Definitions.Data.Entities;
     using Fibula.Definitions.Data.Structures;

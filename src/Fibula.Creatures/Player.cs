@@ -14,8 +14,8 @@ namespace Fibula.Creatures
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Fibula.Client.Contracts.Abstractions;
     using Fibula.Common.Contracts.Abstractions;
+    using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Creatures.Contracts.Enumerations;
     using Fibula.Definitions.Constants;

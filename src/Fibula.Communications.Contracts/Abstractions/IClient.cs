@@ -9,11 +9,10 @@
 // </copyright>
 // -----------------------------------------------------------------
 
-namespace Fibula.Client.Contracts.Abstractions
+namespace Fibula.Communications.Contracts.Abstractions
 {
     using System.Collections.Generic;
-    using Fibula.Client.Contracts.Models;
-    using Fibula.Communications.Contracts.Abstractions;
+    using Fibula.Communications.Contracts;
 
     /// <summary>
     /// Interface for service clients.

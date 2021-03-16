@@ -17,23 +17,8 @@ namespace Fibula.Common.Contracts.Enumerations
     public enum SquareColor : byte
     {
         /// <summary>
-        /// A pointer to the first valid value in this enumeration.
-        /// </summary>
-        First = Black,
-
-        /// <summary>
         /// A black square.
         /// </summary>
         Black = 0x00,
-
-        /// <summary>
-        /// A white square.
-        /// </summary>
-        White = byte.MaxValue,
-
-        /// <summary>
-        /// A pointer to the last valid value in this enumeration.
-        /// </summary>
-        Last = White,
     }
 }

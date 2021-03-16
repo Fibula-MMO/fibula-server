@@ -57,6 +57,23 @@ namespace Fibula.Data.Repositories
         }
 
         /// <summary>
+        /// Gets a monster type from the context.
+        /// </summary>
+        /// <param name="raceId">The id of the monster type to get.</param>
+        /// <returns>The monster type found, if any.</returns>
+        public static MonsterTypeEntity GetByRaceId(string raceId)
+        {
+            raceId.ThrowIfNullOrWhiteSpace(nameof(raceId));
+
+            if (monsterTypeCatalog.ContainsKey(raceId))
+            {
+                return monsterTypeCatalog[raceId];
+            }
+
+            return null;
+        }
+
+        /// <summary>
         /// Finds all the entities in the set within the context that satisfy an expression.
         /// </summary>
         /// <param name="predicate">The expression to satisfy.</param>
@@ -99,24 +116,7 @@ namespace Fibula.Data.Repositories
             var key = keyMembersFunc();
             var raceId = key.FirstOrDefault()?.ToString();
 
-            return this.GetByRaceId(raceId);
-        }
-
-        /// <summary>
-        /// Gets a monster type from the context.
-        /// </summary>
-        /// <param name="raceId">The id of the monster type to get.</param>
-        /// <returns>The monster type found, if any.</returns>
-        public MonsterTypeEntity GetByRaceId(string raceId)
-        {
-            raceId.ThrowIfNullOrWhiteSpace(nameof(raceId));
-
-            if (monsterTypeCatalog.ContainsKey(raceId))
-            {
-                return monsterTypeCatalog[raceId];
-            }
-
-            return null;
+            return GetByRaceId(raceId);
         }
     }
 }
