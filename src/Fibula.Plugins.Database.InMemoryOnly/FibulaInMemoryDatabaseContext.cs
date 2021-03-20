@@ -12,6 +12,7 @@
 namespace Fibula.Plugins.Database.InMemoryOnly
 {
     using System;
+    using System.Collections.Generic;
     using Fibula.Data.Contracts.Abstractions;
     using Fibula.Definitions.Data.Entities;
     using Fibula.Definitions.Data.Structures;
@@ -55,6 +56,21 @@ namespace Fibula.Plugins.Database.InMemoryOnly
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             var accountId = Guid.NewGuid().ToString();
+            var characterId = Guid.NewGuid().ToString();
+
+            // Accounts
+            modelBuilder.Entity<AccountEntity>().HasKey(a => a.Id);
+            modelBuilder.Entity<AccountEntity>().HasIndex(a => a.Number).IsUnique();
+            modelBuilder.Entity<AccountEntity>().HasMany(a => a.Characters).WithOne().HasForeignKey(c => c.AccountId);
+
+            modelBuilder.Entity<AccountEntity>().Ignore(a => a.AccessLevel);
+            modelBuilder.Entity<AccountEntity>().Ignore(a => a.Banished);
+            modelBuilder.Entity<AccountEntity>().Ignore(a => a.Deleted);
+            modelBuilder.Entity<AccountEntity>().Ignore(a => a.LastLogin);
+            modelBuilder.Entity<AccountEntity>().Ignore(a => a.LastLoginIp);
+            modelBuilder.Entity<AccountEntity>().Ignore(a => a.Premium);
+            modelBuilder.Entity<AccountEntity>().Ignore(a => a.TrialPremium);
+            modelBuilder.Entity<AccountEntity>().Ignore(a => a.SessionKey);
 
             modelBuilder.Entity<AccountEntity>()
                 .HasData(new AccountEntity()
@@ -73,13 +89,26 @@ namespace Fibula.Plugins.Database.InMemoryOnly
                     Password = "1",
                     Premium = false,
                     PremiumDays = 0,
+                    Characters = new List<CharacterEntity>(),
                 });
+
+            // Characters
+            modelBuilder.Entity<CharacterEntity>().HasKey(c => c.Id);
+            modelBuilder.Entity<CharacterEntity>().HasIndex(c => c.Name).IsUnique();
+            modelBuilder.Entity<CharacterEntity>().HasMany(a => a.Stats).WithOne().HasForeignKey(c => c.CharacterId);
+
+            modelBuilder.Entity<CharacterEntity>().Ignore(c => c.Article);
+            modelBuilder.Entity<CharacterEntity>().Ignore(c => c.Corpse);
+            modelBuilder.Entity<CharacterEntity>().Ignore(c => c.CurrentHitpoints);
+            modelBuilder.Entity<CharacterEntity>().Ignore(c => c.CurrentManapoints);
+            modelBuilder.Entity<CharacterEntity>().Ignore(c => c.MaxHitpoints);
+            modelBuilder.Entity<CharacterEntity>().Ignore(c => c.MaxManapoints);
 
             modelBuilder.Entity<CharacterEntity>()
                 .HasData(new CharacterEntity()
                 {
-                    Id = Guid.NewGuid().ToString(),
-                    Name = "Alpha",
+                    Id = characterId,
+                    Name = "Test",
                     AccountId = accountId,
                     Profession = ProfessionType.None,
                     World = "Fibula",
@@ -95,21 +124,7 @@ namespace Fibula.Plugins.Database.InMemoryOnly
                         Legs = 114,
                         Feet = 114,
                     },
-                });
-
-            modelBuilder.Entity<CharacterEntity>()
-                .HasData(new CharacterEntity()
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Name = "Beta",
-                    AccountId = accountId,
-                    Profession = ProfessionType.None,
-                    World = "Fibula",
-                    Type = CharacterType.HumanMale,
-                    Creation = DateTimeOffset.UtcNow,
-                    LastLogin = DateTimeOffset.UtcNow,
-                    IsOnline = false,
-                    OriginalOutfit = new Outfit
+                    LastOutfit = new Outfit
                     {
                         Id = 128,
                         Head = 114,
@@ -117,28 +132,56 @@ namespace Fibula.Plugins.Database.InMemoryOnly
                         Legs = 114,
                         Feet = 114,
                     },
+                    Stats = new List<CharacterStatEntity>(),
+                    StartingLocation = new Location() { X = 32369, Y = 32241, Z = 7 },
+                    LastLocation = new Location() { X = 32369, Y = 32241, Z = 7 },
                 });
 
-            modelBuilder.Entity<CharacterEntity>()
-                .HasData(new CharacterEntity()
+            // Character Stats
+            modelBuilder.Entity<CharacterStatEntity>().HasKey(s => new { s.CharacterId, s.Type });
+
+            modelBuilder.Entity<CharacterStatEntity>()
+                .HasData(new CharacterStatEntity()
                 {
-                    Id = Guid.NewGuid().ToString(),
-                    Name = "Charlie",
-                    AccountId = accountId,
-                    Profession = ProfessionType.None,
-                    World = "Fibula",
-                    Type = CharacterType.HumanMale,
-                    Creation = DateTimeOffset.UtcNow,
-                    LastLogin = DateTimeOffset.UtcNow,
-                    IsOnline = false,
-                    OriginalOutfit = new Outfit
-                    {
-                        Id = 128,
-                        Head = 114,
-                        Body = 114,
-                        Legs = 114,
-                        Feet = 114,
-                    },
+                    CharacterId = characterId,
+                    Type = CharacterStat.HitPoints,
+                    Current = 1000,
+                    Maximum = 1000,
+                    Default = 100,
+                    Minimum = 0,
+                });
+
+            modelBuilder.Entity<CharacterStatEntity>()
+                .HasData(new CharacterStatEntity()
+                {
+                    CharacterId = characterId,
+                    Type = CharacterStat.ManaPoints,
+                    Current = 100,
+                    Maximum = 100,
+                    Default = 100,
+                    Minimum = 0,
+                });
+
+            modelBuilder.Entity<CharacterStatEntity>()
+                .HasData(new CharacterStatEntity()
+                {
+                    CharacterId = characterId,
+                    Type = CharacterStat.BaseSpeed,
+                    Current = 220,
+                    Maximum = 220,
+                    Default = 50,
+                    Minimum = 0,
+                });
+
+            modelBuilder.Entity<CharacterStatEntity>()
+                .HasData(new CharacterStatEntity()
+                {
+                    CharacterId = characterId,
+                    Type = CharacterStat.CarryStrength,
+                    Current = 100,
+                    Maximum = 100,
+                    Default = 100,
+                    Minimum = 0,
                 });
         }
     }

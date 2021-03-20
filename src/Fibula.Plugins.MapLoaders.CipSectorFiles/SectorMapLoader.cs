@@ -241,7 +241,10 @@ namespace Fibula.Plugins.MapLoaders.CipSectorFiles
             var fromSectorY = fromY / SquareSectorSize;
             var toSectorY = toY / SquareSectorSize;
 
-            if (toSectorX < fromSectorX || toSectorY < fromSectorY || toZ < fromZ)
+            if (toSectorX < fromSectorX || toSectorY < fromSectorY || toZ < fromZ ||
+                fromSectorX < SectorXMin || toSectorX > SectorXMax ||
+                fromSectorY < SectorYMin || toSectorY > SectorYMax ||
+                fromZ < SectorZMin || toZ > SectorZMax)
             {
                 throw new InvalidOperationException("Bad range supplied.");
             }

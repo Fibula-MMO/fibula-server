@@ -28,6 +28,7 @@ namespace Fibula.Standalone
     using Fibula.Mechanics;
     using Fibula.Mechanics.Handlers;
     using Fibula.Mechanics.Operations;
+    using Fibula.Plugins.Database.InMemoryOnly;
     using Fibula.Plugins.Database.SqlServer;
     using Fibula.Plugins.ItemLoaders.CipObjectsFile;
     using Fibula.Plugins.MapLoaders.CipSectorFiles;
@@ -281,8 +282,8 @@ namespace Fibula.Standalone
         {
             // Chose a type of Database context:
             // services.AddCosmosDBDatabaseContext(hostingContext.Configuration);
-            // services.AddInMemoryDatabaseContext(hostingContext.Configuration);
-            services.AddSqlServerDatabaseContext(hostingContext.Configuration);
+            // services.AddSqlServerDatabaseContext(hostingContext.Configuration);
+            services.AddInMemoryDatabaseContext(hostingContext.Configuration);
 
             // IFibulaDbContext itself is added by the Add<DatabaseProvider>() call above.
             // We add Func<IFibulaDbContext> to let callers retrieve a transient instance of this from the Application context,
