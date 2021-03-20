@@ -9,13 +9,12 @@
 // </copyright>
 // -----------------------------------------------------------------
 
-namespace Fibula.Creatures
+namespace Fibula.Server
 {
     using System;
     using Fibula.Common.Contracts.Abstractions;
-    using Fibula.Creatures.Contracts.Abstractions;
-    using Fibula.Creatures.Contracts.Enumerations;
-    using Fibula.Items.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Enumerations;
     using Fibula.Utilities.Validation;
 
     /// <summary>

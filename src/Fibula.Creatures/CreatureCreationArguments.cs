@@ -9,11 +9,11 @@
 // </copyright>
 // -----------------------------------------------------------------
 
-namespace Fibula.Creatures
+namespace Fibula.Server
 {
     using Fibula.Common.Contracts.Abstractions;
-    using Fibula.Creatures.Contracts.Enumerations;
     using Fibula.Definitions.Data.Entities;
+    using Fibula.Server.Contracts.Enumerations;
 
     /// <summary>
     /// Class that represents creation arguments for creatures.

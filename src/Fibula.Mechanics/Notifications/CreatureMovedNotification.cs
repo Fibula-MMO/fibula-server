@@ -17,12 +17,10 @@ namespace Fibula.Mechanics.Notifications
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Contracts.Enumerations;
     using Fibula.Communications.Packets.Outgoing;
-    using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Definitions.Data.Structures;
     using Fibula.Definitions.Enumerations;
-    using Fibula.Map.Contracts.Abstractions;
-    using Fibula.Map.Contracts.Constants;
-    using Fibula.Mechanics.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Constants;
 
     /// <summary>
     /// Class that represents a notification for when a creature has moved.

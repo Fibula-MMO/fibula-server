@@ -15,9 +15,9 @@ namespace Fibula.Items
     using Fibula.Common.Contracts.Abstractions;
     using Fibula.Definitions.Data.Entities;
     using Fibula.Definitions.Flags;
-    using Fibula.Items.Contracts;
-    using Fibula.Items.Contracts.Abstractions;
-    using Fibula.Items.Contracts.Delegates;
+    using Fibula.Server.Contracts;
+    using Fibula.Server.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Delegates;
     using Fibula.Utilities.Validation;
 
     /// <summary>

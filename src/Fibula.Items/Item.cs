@@ -16,14 +16,13 @@ namespace Fibula.Items
     using System.Globalization;
     using System.Linq;
     using Fibula.Common;
-    using Fibula.Common.Contracts.Abstractions;
     using Fibula.Common.Contracts.Enumerations;
     using Fibula.Definitions.Data.Entities;
     using Fibula.Definitions.Data.Structures;
     using Fibula.Definitions.Enumerations;
     using Fibula.Definitions.Flags;
-    using Fibula.Items.Contracts.Abstractions;
-    using Fibula.Items.Contracts.Constants;
+    using Fibula.Server.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Constants;
     using Fibula.Utilities.Validation;
 
     /// <summary>

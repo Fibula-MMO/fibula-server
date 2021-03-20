@@ -16,14 +16,13 @@ namespace Fibula.Mechanics
     using System.Linq;
     using Fibula.Common.Contracts.Abstractions;
     using Fibula.Communications.Packets.Outgoing;
-    using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Definitions.Data.Structures;
     using Fibula.Definitions.Enumerations;
-    using Fibula.Items.Contracts.Abstractions;
-    using Fibula.Items.Contracts.Constants;
-    using Fibula.Mechanics.Contracts.Extensions;
     using Fibula.Mechanics.Notifications;
     using Fibula.Scheduling.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Constants;
+    using Fibula.Server.Contracts.Extensions;
     using Fibula.Utilities.Common.Extensions;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Logging;

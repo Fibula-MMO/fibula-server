@@ -12,7 +12,7 @@
 namespace Fibula.Mechanics.Operations
 {
     using Fibula.Definitions.Enumerations;
-    using Fibula.Mechanics.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Abstractions;
     using Microsoft.Extensions.Logging;
 
     /// <summary>

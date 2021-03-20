@@ -14,7 +14,7 @@ namespace Fibula.Communications.Packets.Outgoing
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Contracts.Enumerations;
     using Fibula.Definitions.Enumerations;
-    using Fibula.Items.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Abstractions;
 
     /// <summary>
     /// Class that represents a player's filled inventory slot packet.

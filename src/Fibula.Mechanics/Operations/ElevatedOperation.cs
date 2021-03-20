@@ -12,7 +12,7 @@
 namespace Fibula.Mechanics.Operations
 {
     using System;
-    using Fibula.Mechanics.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
 
     /// <summary>

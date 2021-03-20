@@ -12,11 +12,10 @@
 namespace Fibula.Mechanics.Operations
 {
     using System;
-    using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Definitions.Flags;
-    using Fibula.Mechanics.Contracts.Abstractions;
-    using Fibula.Mechanics.Contracts.Constants;
-    using Fibula.Mechanics.Contracts.Extensions;
+    using Fibula.Server.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Constants;
+    using Fibula.Server.Contracts.Extensions;
     using Fibula.Utilities.Validation;
 
     /// <summary>

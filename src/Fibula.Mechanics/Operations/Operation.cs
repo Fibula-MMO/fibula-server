@@ -15,13 +15,12 @@ namespace Fibula.Mechanics.Operations
     using System.Collections.Generic;
     using System.Linq;
     using Fibula.Common.Contracts.Enumerations;
-    using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Definitions.Flags;
     using Fibula.Mechanics.Conditions;
-    using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Mechanics.Notifications;
     using Fibula.Scheduling;
     using Fibula.Scheduling.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Abstractions;
     using Fibula.Utilities.Common.Extensions;
     using Fibula.Utilities.Validation;
 

@@ -16,10 +16,9 @@ namespace Fibula.Protocol.V772.Extensions
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Contracts.Enumerations;
     using Fibula.Communications.Listeners;
-    using Fibula.Items.Contracts.Abstractions;
-    using Fibula.Map.Contracts.Abstractions;
     using Fibula.Protocol.V772.PacketReaders;
     using Fibula.Protocol.V772.PacketWriters;
+    using Fibula.Server.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;

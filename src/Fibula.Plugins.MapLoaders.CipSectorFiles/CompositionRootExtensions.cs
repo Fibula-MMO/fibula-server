@@ -11,7 +11,7 @@
 
 namespace Fibula.Plugins.MapLoaders.CipSectorFiles
 {
-    using Fibula.Map.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;

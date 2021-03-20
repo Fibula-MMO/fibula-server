@@ -14,9 +14,9 @@ namespace Fibula.Communications
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Fibula.Common.Contracts.Enumerations;
     using Fibula.Communications.Contracts;
     using Fibula.Communications.Contracts.Abstractions;
+    using Fibula.Definitions.Enumerations;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Logging;
 

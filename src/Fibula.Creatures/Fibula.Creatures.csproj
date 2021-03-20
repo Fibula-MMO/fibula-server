@@ -28,10 +28,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Fibula.Creatures.Contracts\Fibula.Creatures.Contracts.csproj" />
     <ProjectReference Include="..\Fibula.Items\Fibula.Items.csproj" />
-    <ProjectReference Include="..\Fibula.Mechanics.Contracts\Fibula.Mechanics.Contracts.csproj" />
     <ProjectReference Include="..\Fibula.Scripting.Formulae\Fibula.Scripting.Formulae.csproj" />
+    <ProjectReference Include="..\Fibula.Server.Contracts\Fibula.Server.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

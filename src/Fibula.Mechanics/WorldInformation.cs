@@ -11,8 +11,8 @@
 
 namespace Fibula.Mechanics
 {
-    using Fibula.Mechanics.Contracts.Abstractions;
-    using Fibula.Mechanics.Contracts.Enumerations;
+    using Fibula.Server.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Enumerations;
 
     /// <summary>
     /// Class that implements an <see cref="IWorldInformation"/> model.

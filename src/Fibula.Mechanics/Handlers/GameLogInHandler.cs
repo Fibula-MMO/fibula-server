@@ -15,13 +15,13 @@ namespace Fibula.Mechanics.Handlers
     using System.Collections.Generic;
     using System.Linq;
     using Fibula.Common.Contracts.Abstractions;
-    using Fibula.Common.Contracts.Enumerations;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Packets.Contracts.Abstractions;
     using Fibula.Communications.Packets.Outgoing;
     using Fibula.Definitions.Data.Entities;
-    using Fibula.Mechanics.Contracts.Abstractions;
-    using Fibula.Mechanics.Contracts.Enumerations;
+    using Fibula.Definitions.Enumerations;
+    using Fibula.Server.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Enumerations;
     using Fibula.Utilities.Common.Extensions;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Logging;

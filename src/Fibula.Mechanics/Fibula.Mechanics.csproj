@@ -77,7 +77,7 @@
     <ProjectReference Include="..\Fibula.Communications.Packets\Fibula.Communications.Packets.csproj" />
     <ProjectReference Include="..\Fibula.Communications\Fibula.Communications.csproj" />
     <ProjectReference Include="..\Fibula.Creatures\Fibula.Creatures.csproj" />
-    <ProjectReference Include="..\Fibula.Mechanics.Contracts\Fibula.Mechanics.Contracts.csproj" />
+    <ProjectReference Include="..\Fibula.Server.Contracts\Fibula.Server.Contracts.csproj" />
   </ItemGroup>
 
   <ItemGroup>

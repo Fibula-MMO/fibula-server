@@ -16,11 +16,9 @@ namespace Fibula.Mechanics.Operations
     using Fibula.Common.Contracts.Abstractions;
     using Fibula.Common.Contracts.Enumerations;
     using Fibula.Communications.Packets.Outgoing;
-    using Fibula.Creatures.Contracts.Abstractions;
-    using Fibula.Items.Contracts;
-    using Fibula.Map.Contracts.Abstractions;
-    using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Mechanics.Notifications;
+    using Fibula.Server.Contracts;
+    using Fibula.Server.Contracts.Abstractions;
     using Fibula.Utilities.Common.Extensions;
 
     /// <summary>

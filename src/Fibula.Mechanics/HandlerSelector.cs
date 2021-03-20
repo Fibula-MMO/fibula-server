@@ -14,7 +14,7 @@ namespace Fibula.Mechanics
     using System;
     using System.Collections.Generic;
     using Fibula.Communications.Contracts.Abstractions;
-    using Fibula.Mechanics.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Logging;
 

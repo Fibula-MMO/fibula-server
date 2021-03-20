@@ -9,7 +9,7 @@
 // </copyright>
 // -----------------------------------------------------------------
 
-namespace Fibula.Creatures
+namespace Fibula.Server
 {
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Definitions.Data.Entities;

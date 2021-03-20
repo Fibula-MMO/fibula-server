@@ -17,7 +17,7 @@ namespace Fibula.Mechanics.Conditions
     using Fibula.Common.Contracts.Abstractions;
     using Fibula.Definitions.Enumerations;
     using Fibula.Definitions.Flags;
-    using Fibula.Mechanics.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
 
     /// <summary>

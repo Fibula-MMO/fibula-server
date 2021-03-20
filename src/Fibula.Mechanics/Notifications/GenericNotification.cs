@@ -15,8 +15,7 @@ namespace Fibula.Mechanics.Notifications
     using System.Collections.Generic;
     using System.Linq;
     using Fibula.Communications.Contracts.Abstractions;
-    using Fibula.Creatures.Contracts.Abstractions;
-    using Fibula.Mechanics.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Abstractions;
 
     /// <summary>
     /// Class that represents a generic notification.

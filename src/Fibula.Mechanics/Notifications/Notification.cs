@@ -16,11 +16,10 @@ namespace Fibula.Mechanics.Notifications
     using System.Linq;
     using Fibula.Communications;
     using Fibula.Communications.Contracts.Abstractions;
-    using Fibula.Creatures.Contracts.Abstractions;
-    using Fibula.Mechanics.Contracts.Abstractions;
-    using Fibula.Mechanics.Contracts.Delegates;
     using Fibula.Scheduling;
     using Fibula.Scheduling.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Delegates;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Logging;
 

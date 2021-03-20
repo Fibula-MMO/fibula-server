@@ -16,9 +16,9 @@ namespace Fibula.Mechanics.Operations
     using Fibula.Common.Contracts.Abstractions;
     using Fibula.Definitions.Data.Structures;
     using Fibula.Definitions.Enumerations;
-    using Fibula.Items.Contracts;
-    using Fibula.Mechanics.Contracts.Abstractions;
-    using Fibula.Mechanics.Contracts.Extensions;
+    using Fibula.Server.Contracts;
+    using Fibula.Server.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Extensions;
 
     /// <summary>
     /// Class that represents an event for an item creation.

@@ -14,13 +14,11 @@ namespace Fibula.Mechanics.Conditions
     using System;
     using Fibula.Common.Contracts.Abstractions;
     using Fibula.Definitions.Enumerations;
-    using Fibula.Items.Contracts;
-    using Fibula.Items.Contracts.Abstractions;
-    using Fibula.Map.Contracts.Abstractions;
-    using Fibula.Map.Contracts.Extensions;
-    using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Mechanics.Notifications;
     using Fibula.Mechanics.Operations;
+    using Fibula.Server.Contracts;
+    using Fibula.Server.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Extensions;
     using Fibula.Utilities.Validation;
 
     /// <summary>

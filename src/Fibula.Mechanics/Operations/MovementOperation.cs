@@ -15,17 +15,13 @@ namespace Fibula.Mechanics.Operations
     using Fibula.Common.Contracts.Abstractions;
     using Fibula.Common.Contracts.Extensions;
     using Fibula.Communications.Packets.Outgoing;
-    using Fibula.Creatures.Contracts.Abstractions;
-    using Fibula.Creatures.Contracts.Constants;
     using Fibula.Definitions.Data.Structures;
     using Fibula.Definitions.Enumerations;
     using Fibula.Definitions.Flags;
-    using Fibula.Items.Contracts.Abstractions;
-    using Fibula.Map.Contracts.Abstractions;
-    using Fibula.Map.Contracts.Extensions;
-    using Fibula.Mechanics.Contracts.Abstractions;
-    using Fibula.Mechanics.Contracts.Extensions;
     using Fibula.Mechanics.Notifications;
+    using Fibula.Server.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Constants;
+    using Fibula.Server.Contracts.Extensions;
     using Fibula.Utilities.Common.Extensions;
     using Microsoft.Extensions.Logging;
 

@@ -14,14 +14,11 @@ namespace Fibula.Mechanics.Operations
     using System;
     using Fibula.Common.Contracts.Enumerations;
     using Fibula.Communications.Packets.Outgoing;
-    using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Definitions.Data.Entities;
     using Fibula.Definitions.Enumerations;
-    using Fibula.Map.Contracts.Abstractions;
-    using Fibula.Map.Contracts.Extensions;
-    using Fibula.Mechanics.Contracts.Abstractions;
-    using Fibula.Mechanics.Contracts.Extensions;
     using Fibula.Mechanics.Notifications;
+    using Fibula.Server.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Extensions;
     using Fibula.Utilities.Common.Extensions;
 
     /// <summary>

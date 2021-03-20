@@ -14,12 +14,11 @@ namespace Fibula.Items
     using System;
     using System.Linq;
     using Fibula.Common.Contracts.Abstractions;
-    using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Definitions.Constants;
     using Fibula.Definitions.Data.Entities;
     using Fibula.Definitions.Data.Structures;
     using Fibula.Definitions.Enumerations;
-    using Fibula.Items.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
 
     /// <summary>

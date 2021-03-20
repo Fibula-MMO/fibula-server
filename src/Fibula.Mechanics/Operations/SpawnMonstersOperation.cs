@@ -12,13 +12,10 @@
 namespace Fibula.Mechanics.Operations
 {
     using System;
-    using Fibula.Creatures;
-    using Fibula.Creatures.Contracts.Abstractions;
-    using Fibula.Creatures.Contracts.Enumerations;
-    using Fibula.Creatures.Contracts.Structs;
     using Fibula.Definitions.Data.Structures;
-    using Fibula.Map.Contracts.Abstractions;
-    using Fibula.Mechanics.Contracts.Abstractions;
+    using Fibula.Server;
+    using Fibula.Server.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Enumerations;
     using Microsoft.Extensions.Logging;
 
     /// <summary>

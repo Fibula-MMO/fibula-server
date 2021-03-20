@@ -13,7 +13,7 @@ namespace Fibula.Communications.Packets.Outgoing
 {
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Contracts.Enumerations;
-    using Fibula.Items.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Abstractions;
 
     /// <summary>
     /// Class that represents a packet for an item being updated within a container.

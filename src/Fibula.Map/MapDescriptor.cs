@@ -15,12 +15,11 @@ namespace Fibula.Map
     using System.Buffers;
     using System.Collections.Generic;
     using System.Linq;
-    using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Definitions.Data.Structures;
     using Fibula.Definitions.Enumerations;
-    using Fibula.Map.Contracts;
-    using Fibula.Map.Contracts.Abstractions;
-    using Fibula.Map.Contracts.Constants;
+    using Fibula.Server.Contracts;
+    using Fibula.Server.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Constants;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Logging;
 

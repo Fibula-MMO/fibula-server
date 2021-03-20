@@ -22,28 +22,25 @@ namespace Fibula.Standalone
     using Fibula.Communications;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Packets.Contracts.Abstractions;
-    using Fibula.Creatures;
-    using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Data.Contracts.Abstractions;
     using Fibula.Items;
-    using Fibula.Items.Contracts.Abstractions;
     using Fibula.Map;
-    using Fibula.Map.Contracts.Abstractions;
     using Fibula.Mechanics;
-    using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Mechanics.Handlers;
     using Fibula.Mechanics.Operations;
-    using Fibula.PathFinding.AStar;
     using Fibula.Plugins.Database.SqlServer;
     using Fibula.Plugins.ItemLoaders.CipObjectsFile;
     using Fibula.Plugins.MapLoaders.CipSectorFiles;
     using Fibula.Plugins.MonsterLoaders.CipMonFiles;
+    using Fibula.Plugins.PathFinding.AStar.Extensions;
     using Fibula.Plugins.SpawnLoaders.CipMonstersDbFile;
     using Fibula.Protocol.V772.Extensions;
-    using Fibula.Providers.Azure;
+    using Fibula.Providers.Azure.Extensions;
     using Fibula.Scheduling;
     using Fibula.Scheduling.Contracts.Abstractions;
     using Fibula.Security;
+    using Fibula.Server;
+    using Fibula.Server.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
     using Microsoft.ApplicationInsights.Extensibility;
     using Microsoft.Extensions.Configuration;
@@ -178,7 +175,7 @@ namespace Fibula.Standalone
         }
 
         /// <summary>
-        /// Configuration root, where services are configured and added into the service collection, often depending on the configuration set.
+        /// Composition root, where services are configured and added into the service collection, often depending on the configuration set.
         /// </summary>
         /// <param name="hostingContext">The hosting context.</param>
         /// <param name="services">The services collection.</param>

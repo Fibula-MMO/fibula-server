@@ -14,7 +14,7 @@ namespace Fibula.Plugins.Database.SqlServer
     using System.Security;
     using Fibula.Data.Contracts.Abstractions;
     using Fibula.Plugins.Database.SqlServer.Configurations;
-    using Fibula.Providers.Contracts;
+    using Fibula.Providers.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Options;

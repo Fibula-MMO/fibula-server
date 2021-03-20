@@ -13,10 +13,9 @@ namespace Fibula.Map
 {
     using System;
     using System.Collections.Concurrent;
-    using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Definitions.Data.Structures;
-    using Fibula.Map.Contracts.Abstractions;
-    using Fibula.Map.Contracts.Delegates;
+    using Fibula.Server.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Delegates;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Logging;
 

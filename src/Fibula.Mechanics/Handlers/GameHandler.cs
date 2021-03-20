@@ -11,7 +11,7 @@
 
 namespace Fibula.Mechanics.Handlers
 {
-    using Fibula.Mechanics.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Logging;
 

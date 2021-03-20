@@ -11,12 +11,10 @@
 
 namespace Fibula.Mechanics.Operations
 {
-    using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Definitions.Enumerations;
-    using Fibula.Map.Contracts.Abstractions;
-    using Fibula.Map.Contracts.Extensions;
-    using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Mechanics.Notifications;
+    using Fibula.Server.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Extensions;
 
     /// <summary>
     /// Class that represents an event for a creature turning.

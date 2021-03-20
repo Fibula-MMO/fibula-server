@@ -11,9 +11,7 @@
 
 namespace Fibula.Mechanics.Operations
 {
-    using Fibula.Creatures.Contracts.Abstractions;
-    using Fibula.Map.Contracts.Abstractions;
-    using Fibula.Mechanics.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Abstractions;
     using Microsoft.Extensions.Logging;
 
     /// <summary>

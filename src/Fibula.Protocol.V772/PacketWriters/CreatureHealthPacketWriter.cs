@@ -14,8 +14,8 @@ namespace Fibula.Protocol.V772.PacketWriters
     using Fibula.Communications;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Packets.Outgoing;
-    using Fibula.Creatures.Contracts.Enumerations;
     using Fibula.Protocol.V772.Extensions;
+    using Fibula.Server.Contracts.Enumerations;
     using Microsoft.Extensions.Logging;
 
     /// <summary>

@@ -12,8 +12,7 @@
 namespace Fibula.Map
 {
     using Fibula.Definitions.Data.Structures;
-    using Fibula.Items.Contracts.Abstractions;
-    using Fibula.Map.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Abstractions;
 
     /// <summary>
     /// Class that represents a tile factory.

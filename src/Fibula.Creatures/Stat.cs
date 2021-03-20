@@ -9,12 +9,12 @@
 // </copyright>
 // -----------------------------------------------------------------
 
-namespace Fibula.Creatures
+namespace Fibula.Server
 {
     using System;
-    using Fibula.Creatures.Contracts.Abstractions;
-    using Fibula.Creatures.Contracts.Delegates;
-    using Fibula.Creatures.Contracts.Enumerations;
+    using Fibula.Server.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Delegates;
+    using Fibula.Server.Contracts.Enumerations;
 
     /// <summary>
     /// Class that represents a stat.

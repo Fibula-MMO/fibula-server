@@ -9,20 +9,19 @@
 // </copyright>
 // -----------------------------------------------------------------
 
-namespace Fibula.Creatures
+namespace Fibula.Server
 {
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
-    using Fibula.Creatures.Contracts.Abstractions;
-    using Fibula.Creatures.Contracts.Enumerations;
     using Fibula.Definitions.Data.Entities;
     using Fibula.Definitions.Enumerations;
-    using Fibula.Mechanics.Contracts.Abstractions;
-    using Fibula.Mechanics.Contracts.Constants;
-    using Fibula.Mechanics.Contracts.Delegates;
-    using Fibula.Mechanics.Contracts.Structs;
+    using Fibula.Server.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Constants;
+    using Fibula.Server.Contracts.Delegates;
+    using Fibula.Server.Contracts.Enumerations;
+    using Fibula.Server.Contracts.Structs;
 
     /// <summary>
     /// Class that represents all creatures in the game.

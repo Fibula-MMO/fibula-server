@@ -12,10 +12,8 @@
 namespace Fibula.Mechanics.Notifications
 {
     using System;
-    using Fibula.Creatures.Contracts.Abstractions;
-    using Fibula.Map.Contracts.Abstractions;
-    using Fibula.Mechanics.Contracts.Abstractions;
     using Fibula.Scheduling;
+    using Fibula.Server.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Logging;
 

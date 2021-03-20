@@ -11,7 +11,7 @@
 
 namespace Fibula.Communications.Contracts
 {
-    using Fibula.Common.Contracts.Enumerations;
+    using Fibula.Definitions.Enumerations;
 
     /// <summary>
     /// Class that represents inforamtion about the client.
