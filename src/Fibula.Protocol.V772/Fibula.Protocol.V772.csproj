@@ -20,6 +20,7 @@
   </ItemGroup>
   
   <ItemGroup>
+    <PackageReference Include="Fibula.Security" Version="1.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
@@ -33,6 +34,5 @@
     <ProjectReference Include="..\Fibula.Data\Fibula.Data.csproj" />
     <ProjectReference Include="..\Fibula.Items\Fibula.Items.csproj" />
     <ProjectReference Include="..\Fibula.Mechanics\Fibula.Mechanics.csproj" />
-    <ProjectReference Include="..\Fibula.Security\Fibula.Security.csproj" />
   </ItemGroup>
 </Project>

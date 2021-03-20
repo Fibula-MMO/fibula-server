@@ -9,7 +9,7 @@
 // </copyright>
 // -----------------------------------------------------------------
 
-namespace Fibula.Security.Encryption
+namespace Fibula.Security.Cryptography
 {
     using System.ComponentModel.DataAnnotations;
 

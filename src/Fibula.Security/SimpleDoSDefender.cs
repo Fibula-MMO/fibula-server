@@ -16,7 +16,7 @@ namespace Fibula.Security
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using Fibula.Security.Contracts;
+    using Fibula.Security.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Options;

@@ -15,7 +15,7 @@ namespace Fibula.Protocol.V772.PacketReaders
     using Fibula.Communications;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Packets.Incoming;
-    using Fibula.Security.Contracts;
+    using Fibula.Security.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Logging;
 

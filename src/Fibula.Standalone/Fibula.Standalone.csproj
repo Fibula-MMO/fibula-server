@@ -32,6 +32,7 @@
   
   <ItemGroup>
     <PackageReference Include="Fibula.Providers.Azure" Version="1.0.0" />
+    <PackageReference Include="Fibula.Security" Version="1.0.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="3.8.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="5.0.0" />
@@ -69,7 +70,6 @@
     <ProjectReference Include="..\Fibula.Plugins.PathFinding.AStar\Fibula.Plugins.PathFinding.AStar.csproj" />
     <ProjectReference Include="..\Fibula.Plugins.SpawnLoaders.CipMonstersDbFile\Fibula.Plugins.SpawnLoaders.CipMonstersDbFile.csproj" />
     <ProjectReference Include="..\Fibula.Protocol.V772\Fibula.Protocol.V772.csproj" />
-    <ProjectReference Include="..\Fibula.Security\Fibula.Security.csproj" />
     <ProjectReference Include="..\Fibula.Communications\Fibula.Communications.csproj" />
   </ItemGroup>
   

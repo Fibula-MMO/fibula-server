@@ -12,7 +12,7 @@
 namespace Fibula.Communications.Listeners
 {
     using Fibula.Communications.Contracts.Abstractions;
-    using Fibula.Security.Contracts;
+    using Fibula.Security.Contracts.Abstractions;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
 

@@ -38,7 +38,7 @@ namespace Fibula.Standalone
     using Fibula.Providers.Azure.Extensions;
     using Fibula.Scheduling;
     using Fibula.Scheduling.Contracts.Abstractions;
-    using Fibula.Security;
+    using Fibula.Security.Extensions;
     using Fibula.Server;
     using Fibula.Server.Contracts.Abstractions;
     using Fibula.Utilities.Validation;

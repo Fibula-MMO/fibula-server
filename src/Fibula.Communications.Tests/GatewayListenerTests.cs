@@ -18,7 +18,7 @@ namespace Fibula.Communications.Tests
     using System.Threading.Tasks;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Listeners;
-    using Fibula.Security.Contracts;
+    using Fibula.Security.Contracts.Abstractions;
     using Fibula.Utilities.Testing;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;

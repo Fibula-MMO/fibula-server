@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------
-// <copyright file="Xtea.cs" company="2Dudes">
+// <copyright file="SpanExtensions.cs" company="2Dudes">
 // Copyright (c) | Jose L. Nunez de Caceres et al.
 // https://linkedin.com/in/nunezdecaceres
 //
@@ -9,14 +9,14 @@
 // </copyright>
 // -----------------------------------------------------------------
 
-namespace Fibula.Security.Encryption
+namespace Fibula.Security.Extensions
 {
     using System;
 
     /// <summary>
-    /// Static class that provides helper methods for Xtea encryption and decryption.
+    /// Static class that provides security-related helper methods for <see cref="Span{T}"/> structures.
     /// </summary>
-    public static class Xtea
+    public static class SpanExtensions
     {
         /// <summary>
         /// Encrypts a byte range.
@@ -25,7 +25,7 @@ namespace Fibula.Security.Encryption
         /// <param name="key">The encryption key bytes.</param>
         /// <param name="messageLength">The resulting length of the buffer.</param>
         /// <returns>True if encryption was successful, false otherwise.</returns>
-        public static unsafe bool Encrypt(Span<byte> buffer, uint[] key, out int messageLength)
+        public static unsafe bool XteaEncrypt(this Span<byte> buffer, uint[] key, out int messageLength)
         {
             messageLength = buffer.Length;
 
@@ -51,11 +51,11 @@ namespace Fibula.Security.Encryption
 
                     while (xCount-- > 0)
                     {
-                        words[pos] += (((words[pos + 1] << 4) ^ (words[pos + 1] >> 5)) + words[pos + 1]) ^ (xSum + key[xSum & 3]);
+                        words[pos] += (words[pos + 1] << 4 ^ words[pos + 1] >> 5) + words[pos + 1] ^ xSum + key[xSum & 3];
 
                         xSum += xDelta;
 
-                        words[pos + 1] += (((words[pos] << 4) ^ (words[pos] >> 5)) + words[pos]) ^ (xSum + key[(xSum >> 11) & 3]);
+                        words[pos + 1] += (words[pos] << 4 ^ words[pos] >> 5) + words[pos] ^ xSum + key[xSum >> 11 & 3];
                     }
                 }
             }
@@ -70,7 +70,7 @@ namespace Fibula.Security.Encryption
         /// <param name="key">The decryption key bytes.</param>
         /// <param name="messageLength">The resulting length of the buffer.</param>
         /// <returns>True if decryption was successful, false otherwise.</returns>
-        public static unsafe bool Decrypt(Span<byte> buffer, uint[] key, out int messageLength)
+        public static unsafe bool XteaDecrypt(this Span<byte> buffer, uint[] key, out int messageLength)
         {
             messageLength = buffer.Length;
 
@@ -89,11 +89,11 @@ namespace Fibula.Security.Encryption
 
                     while (xCount-- > 0)
                     {
-                        words[pos + 1] -= (((words[pos] << 4) ^ (words[pos] >> 5)) + words[pos]) ^ (xSum + key[(xSum >> 11) & 3]);
+                        words[pos + 1] -= (words[pos] << 4 ^ words[pos] >> 5) + words[pos] ^ xSum + key[xSum >> 11 & 3];
 
                         xSum -= xDelta;
 
-                        words[pos] -= (((words[pos + 1] << 4) ^ (words[pos + 1] >> 5)) + words[pos + 1]) ^ (xSum + key[xSum & 3]);
+                        words[pos] -= (words[pos + 1] << 4 ^ words[pos + 1] >> 5) + words[pos + 1] ^ xSum + key[xSum & 3];
                     }
                 }
             }

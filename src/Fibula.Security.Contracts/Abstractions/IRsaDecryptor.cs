@@ -9,7 +9,7 @@
 // </copyright>
 // -----------------------------------------------------------------
 
-namespace Fibula.Security.Contracts
+namespace Fibula.Security.Contracts.Abstractions
 {
     using System;
 

@@ -9,11 +9,11 @@
 // </copyright>
 // -----------------------------------------------------------------
 
-namespace Fibula.Security.Encryption
+namespace Fibula.Security.Cryptography
 {
     using System;
     using System.IO;
-    using Fibula.Security.Contracts;
+    using Fibula.Security.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Options;
     using Org.BouncyCastle.Crypto;

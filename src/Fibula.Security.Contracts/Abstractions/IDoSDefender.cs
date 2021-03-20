@@ -9,7 +9,7 @@
 // </copyright>
 // -----------------------------------------------------------------
 
-namespace Fibula.Security.Contracts
+namespace Fibula.Security.Contracts.Abstractions
 {
     /// <summary>
     /// Interface for a DoS defender service.

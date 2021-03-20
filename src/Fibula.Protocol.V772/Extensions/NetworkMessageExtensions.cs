@@ -17,7 +17,7 @@ namespace Fibula.Protocol.V772.Extensions
     using Fibula.Communications.Contracts.Enumerations;
     using Fibula.Definitions.Data.Structures;
     using Fibula.Definitions.Enumerations;
-    using Fibula.Security.Encryption;
+    using Fibula.Security.Extensions;
     using Fibula.Server.Contracts.Abstractions;
     using Fibula.Server.Contracts.Enumerations;
     using Fibula.Utilities.Validation;
@@ -37,7 +37,7 @@ namespace Fibula.Protocol.V772.Extensions
         {
             var targetSpan = message.Buffer[0..message.Length];
 
-            var result = Xtea.Decrypt(targetSpan, key, out int newMessageLen);
+            var result = targetSpan.XteaDecrypt(key, out int newMessageLen);
 
             if (result)
             {
@@ -57,7 +57,7 @@ namespace Fibula.Protocol.V772.Extensions
         {
             var targetSpan = message.Buffer[2..message.Length];
 
-            var result = Xtea.Encrypt(targetSpan, key, out int newMessageLen);
+            var result = targetSpan.XteaEncrypt(key, out int newMessageLen);
 
             if (result)
             {

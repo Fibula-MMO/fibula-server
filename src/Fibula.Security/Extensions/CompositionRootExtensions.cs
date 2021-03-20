@@ -9,10 +9,10 @@
 // </copyright>
 // -----------------------------------------------------------------
 
-namespace Fibula.Security
+namespace Fibula.Security.Extensions
 {
-    using Fibula.Security.Contracts;
-    using Fibula.Security.Encryption;
+    using Fibula.Security.Contracts.Abstractions;
+    using Fibula.Security.Cryptography;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
