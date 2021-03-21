@@ -17,7 +17,7 @@
     <Company>The Fibula Project</Company>
     <Product>Fibula MMO</Product>
     <PackageProjectUrl>https://fibula-mmo.github.io/</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/Fibula-MMO/fibula-security</RepositoryUrl>
+    <RepositoryUrl>https://github.com/Fibula-MMO/fibula-server</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
     <Version>1.0.0</Version>
     <NeutralLanguage>en</NeutralLanguage>
