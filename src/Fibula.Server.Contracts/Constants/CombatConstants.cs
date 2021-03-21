@@ -19,22 +19,22 @@ namespace Fibula.Server.Contracts.Constants
         /// <summary>
         /// The maximum allowed combat speed in the game for combatants.
         /// </summary>
-        public const decimal MaximumCombatSpeed = 5.0m;
+        public const decimal MaximumCombatSpeedFactor = 8.0m;
 
         /// <summary>
         /// The minimum allowed combat speed in the game for combatants.
         /// </summary>
-        public const decimal MinimumCombatSpeed = 0.2m;
+        public const decimal MinimumCombatSpeedFactor = 0.1m;
 
         /// <summary>
         /// The default attack speed of a combatant.
         /// </summary>
-        public const decimal DefaultAttackSpeed = 1.0m;
+        public const decimal DefaultAttackSpeedFactor = 1.0m;
 
         /// <summary>
         /// The default defense speed of a combatant.
         /// </summary>
-        public const decimal DefaultDefenseSpeed = 1.0m;
+        public const decimal DefaultDefenseSpeedFactor = 1.0m;
 
         /// <summary>
         /// The default maximum attack credits that a combatant has.

@@ -35,7 +35,7 @@ namespace Fibula.Data.Repositories
         /// <param name="number">The number of the account.</param>
         /// <returns>The entity for the account if one was bound, and null otherwise.</returns>
         /// <remarks>Does not load nested relationships, only those at this entity level.</remarks>
-        public AccountEntity FindAccountByNumber(uint number)
+        public AccountEntity FindByNumber(uint number)
         {
             return this.FindOne(a => a.Number == number, nameof(AccountEntity.Characters));
         }

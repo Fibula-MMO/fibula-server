@@ -22,7 +22,7 @@ namespace Fibula.Plugins.Database.SqlServer.Converters
     {
         private static readonly Expression<Func<byte, bool>> ConvertFromProviderExp = (storedInt) => storedInt > 0;
 
-        private static readonly Expression<Func<bool, byte>> ConvertToProviderExp = (boolean) => boolean ? 1 : 0;
+        private static readonly Expression<Func<bool, byte>> ConvertToProviderExp = (boolean) => (byte)(boolean ? 0x01 : 0x00);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BoolConverter"/> class.

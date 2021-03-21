@@ -12,15 +12,15 @@
 namespace Fibula.Common.Contracts.Abstractions
 {
     using System.Threading;
-    using Fibula.Common.Contracts.Models;
+    using Fibula.Common.Contracts;
     using Fibula.Data.Contracts.Abstractions;
     using Microsoft.ApplicationInsights;
 
     using IUnitOfWork = Fibula.Data.Contracts.Abstractions.IUnitOfWork<
         Fibula.Data.Contracts.Abstractions.Repositories.IAccountsRepository,
         Fibula.Data.Contracts.Abstractions.Repositories.ICharactersRepository,
-        Fibula.Data.Contracts.Abstractions.Repositories.IReadOnlyRepository<Fibula.Definitions.Data.Entities.MonsterTypeEntity>,
-        Fibula.Data.Contracts.Abstractions.Repositories.IReadOnlyRepository<Fibula.Definitions.Data.Entities.ItemTypeEntity>>;
+        Fibula.Data.Contracts.Abstractions.Repositories.IMonsterTypeReadOnlyRepository,
+        Fibula.Data.Contracts.Abstractions.Repositories.IItemTypeReadOnlyRepository>;
 
     /// <summary>
     /// Interface that represents the common context of the entire application.

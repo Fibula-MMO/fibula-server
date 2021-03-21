@@ -56,10 +56,7 @@
   
   <ItemGroup>
     <ProjectReference Include="..\Fibula.Common\Fibula.Common.csproj" />
-    <ProjectReference Include="..\Fibula.Creatures\Fibula.Creatures.csproj" />
-    <ProjectReference Include="..\Fibula.Items\Fibula.Items.csproj" />
-    <ProjectReference Include="..\Fibula.Map\Fibula.Map.csproj" />
-    <ProjectReference Include="..\Fibula.Mechanics\Fibula.Mechanics.csproj" />
+    <ProjectReference Include="..\Fibula.Server\Fibula.Server.csproj" />
     <ProjectReference Include="..\Fibula.Plugins.Database.CosmosDB\Fibula.Plugins.Database.CosmosDB.csproj" />
     <ProjectReference Include="..\Fibula.Plugins.Database.InMemoryOnly\Fibula.Plugins.Database.InMemoryOnly.csproj" />
     <ProjectReference Include="..\Fibula.Plugins.Database.SqlServer\Fibula.Plugins.Database.SqlServer.csproj" />

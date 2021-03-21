@@ -24,7 +24,7 @@ namespace Fibula.Data.Repositories
     /// <summary>
     /// Class that represents a read-only repository for item types.
     /// </summary>
-    public class ItemTypeReadOnlyRepository : IReadOnlyRepository<ItemTypeEntity>
+    public class ItemTypeReadOnlyRepository : IItemTypeReadOnlyRepository
     {
         /// <summary>
         /// A locking object to prevent double initialization of the catalog.
@@ -57,11 +57,11 @@ namespace Fibula.Data.Repositories
         }
 
         /// <summary>
-        /// Gets a monster type from the context.
+        /// Gets an item type from the context.
         /// </summary>
-        /// <param name="typeId">The id of the monster type to get.</param>
-        /// <returns>The monster type found, if any.</returns>
-        public static ItemTypeEntity GetByTypeId(string typeId)
+        /// <param name="typeId">The id of the type to get.</param>
+        /// <returns>The type found, if any.</returns>
+        public ItemTypeEntity GetByTypeId(string typeId)
         {
             typeId.ThrowIfNullOrWhiteSpace(nameof(typeId));
 
@@ -77,8 +77,9 @@ namespace Fibula.Data.Repositories
         /// Finds all the entities in the set within the context that satisfy an expression.
         /// </summary>
         /// <param name="predicate">The expression to satisfy.</param>
+        /// <param name="includeProperties">Optional. Any additional properties to include.</param>
         /// <returns>The collection of entities retrieved.</returns>
-        public IEnumerable<ItemTypeEntity> FindMany(Expression<Func<ItemTypeEntity, bool>> predicate)
+        public IEnumerable<ItemTypeEntity> FindMany(Expression<Func<ItemTypeEntity, bool>> predicate, params string[] includeProperties)
         {
             return itemTypeCatalog.Values.AsQueryable().Where(predicate);
         }
@@ -98,8 +99,9 @@ namespace Fibula.Data.Repositories
         /// <summary>
         /// Gets all the entities from the set in the context.
         /// </summary>
+        /// <param name="includeProperties">Optional. Any additional properties to include.</param>
         /// <returns>The collection of entities retrieved.</returns>
-        public Task<IEnumerable<ItemTypeEntity>> GetAll()
+        public Task<IEnumerable<ItemTypeEntity>> GetAll(params string[] includeProperties)
         {
             return Task.FromResult(itemTypeCatalog.Values.AsEnumerable());
         }
@@ -116,7 +118,7 @@ namespace Fibula.Data.Repositories
             var key = keyMembersFunc();
             var typeId = key.FirstOrDefault()?.ToString();
 
-            return GetByTypeId(typeId);
+            return this.GetByTypeId(typeId);
         }
     }
 }

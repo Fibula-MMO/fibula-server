@@ -16,13 +16,13 @@ namespace Fibula.Data.Contracts.Abstractions.Repositories
     /// <summary>
     /// Interface for a repository of accounts.
     /// </summary>
-    public interface IAccountsRepository
+    public interface IAccountsRepository : IRepository<AccountEntity>
     {
         /// <summary>
         /// Attempts to find an account in the repo with a given number.
         /// </summary>
         /// <param name="number">The number of the account.</param>
         /// <returns>The entity for the account if one was bound, and null otherwise.</returns>
-        AccountEntity FindAccountByNumber(uint number);
+        AccountEntity FindByNumber(uint number);
     }
 }

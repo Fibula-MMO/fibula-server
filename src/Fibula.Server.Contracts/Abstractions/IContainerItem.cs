@@ -12,7 +12,6 @@
 namespace Fibula.Server.Contracts.Abstractions
 {
     using System.Collections.Generic;
-    using Fibula.Common.Contracts.Abstractions;
     using Fibula.Server.Contracts.Delegates;
 
     /// <summary>

@@ -13,8 +13,8 @@ namespace Fibula.Server.Contracts
 {
     using System;
     using System.Collections.Generic;
-    using Fibula.Common.Contracts.Abstractions;
     using Fibula.Definitions.Enumerations;
+    using Fibula.Server.Contracts.Abstractions;
 
     /// <summary>
     /// Class that implements <see cref="IThingCreationArguments"/>, for the creation of an item.

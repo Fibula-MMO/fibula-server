@@ -12,12 +12,11 @@
 namespace Fibula.Server.Contracts.Abstractions
 {
     using System;
-    using Fibula.Common.Contracts.Abstractions;
-    using Fibula.Common.Contracts.Enumerations;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Definitions.Data.Entities;
     using Fibula.Definitions.Data.Structures;
     using Fibula.Definitions.Enumerations;
+    using Fibula.Server.Contracts.Enumerations;
 
     /// <summary>
     /// Interface for the operations available in the game API.

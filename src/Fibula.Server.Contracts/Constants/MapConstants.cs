@@ -11,8 +11,7 @@
 
 namespace Fibula.Server.Contracts.Constants
 {
-    using Fibula.Common.Contracts.Abstractions;
-    using Fibula.Definitions.Data.Structures;
+    using Fibula.Server.Contracts.Abstractions;
 
     /// <summary>
     /// Static class that contains constants regarding the map.
@@ -33,25 +32,5 @@ namespace Fibula.Server.Contracts.Constants
         /// The default window size in the Y coordinate.
         /// </summary>
         public const byte DefaultWindowSizeY = 14;
-
-        /// <summary>
-        /// The mark for the temple in Rookgaard.
-        /// </summary>
-        public static readonly Location RookgaardTempleMark = new Location { X = 32097, Y = 32219, Z = 7 };
-
-        /// <summary>
-        /// The mark for the temple in Thais.
-        /// </summary>
-        public static readonly Location ThaisTempleMark = new Location { X = 32369, Y = 32241, Z = 7 };
-
-        /// <summary>
-        /// The mark for Fibula downdown.
-        /// </summary>
-        public static readonly Location FibulaMark = new Location { X = 32176, Y = 32437, Z = 7 };
-
-        /// <summary>
-        /// The mark for Elvenbane.
-        /// </summary>
-        public static readonly Location ElvenbaneMark = new Location { X = 32590, Y = 31657, Z = 7 };
     }
 }

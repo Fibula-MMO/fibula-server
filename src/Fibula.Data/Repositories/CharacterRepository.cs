@@ -35,7 +35,7 @@ namespace Fibula.Data.Repositories
         /// <param name="characterName">The name of the character.</param>
         /// <returns>The entity if one was bound, and null otherwise.</returns>
         /// <remarks>Does not load nested relationships, only those at this entity level.</remarks>
-        public CharacterEntity FindCharacterByName(string characterName)
+        public CharacterEntity FindByName(string characterName)
         {
             return this.FindOne(c => c.Name.ToUpper() == characterName.ToUpper(), nameof(CharacterEntity.Stats));
         }

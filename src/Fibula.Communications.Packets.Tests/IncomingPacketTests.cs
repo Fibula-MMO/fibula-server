@@ -11,13 +11,13 @@
 
 namespace Fibula.Communications.Packets.Tests
 {
-    using Fibula.Common.Contracts.Enumerations;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Contracts.Enumerations;
     using Fibula.Communications.Packets.Contracts.Abstractions;
     using Fibula.Communications.Packets.Incoming;
     using Fibula.Definitions.Data.Structures;
     using Fibula.Definitions.Enumerations;
+    using Fibula.Server.Contracts.Enumerations;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     /// <summary>

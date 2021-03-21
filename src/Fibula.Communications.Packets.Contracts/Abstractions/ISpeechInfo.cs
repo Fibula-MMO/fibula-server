@@ -11,7 +11,7 @@
 
 namespace Fibula.Communications.Packets.Contracts.Abstractions
 {
-    using Fibula.Common.Contracts.Enumerations;
+    using Fibula.Server.Contracts.Enumerations;
 
     /// <summary>
     /// Interface for speech information.

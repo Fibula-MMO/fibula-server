@@ -12,7 +12,6 @@
 namespace Fibula.Server.Contracts.Extensions
 {
     using System.Collections.Generic;
-    using Fibula.Common.Contracts.Abstractions;
     using Fibula.Server.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
 

@@ -12,7 +12,6 @@
 namespace Fibula.Server.Contracts.Extensions
 {
     using System.Linq;
-    using Fibula.Common.Contracts.Abstractions;
     using Fibula.Definitions.Data.Structures;
     using Fibula.Definitions.Enumerations;
     using Fibula.Server.Contracts.Abstractions;

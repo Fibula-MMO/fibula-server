@@ -13,8 +13,8 @@ namespace Fibula.Common
 {
     using System;
     using System.Threading;
+    using Fibula.Common.Contracts;
     using Fibula.Common.Contracts.Abstractions;
-    using Fibula.Common.Contracts.Models;
     using Fibula.Data.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
     using Microsoft.ApplicationInsights;
@@ -23,8 +23,8 @@ namespace Fibula.Common
     using IUnitOfWork = Fibula.Data.Contracts.Abstractions.IUnitOfWork<
         Fibula.Data.Contracts.Abstractions.Repositories.IAccountsRepository,
         Fibula.Data.Contracts.Abstractions.Repositories.ICharactersRepository,
-        Fibula.Data.Contracts.Abstractions.Repositories.IReadOnlyRepository<Fibula.Definitions.Data.Entities.MonsterTypeEntity>,
-        Fibula.Data.Contracts.Abstractions.Repositories.IReadOnlyRepository<Fibula.Definitions.Data.Entities.ItemTypeEntity>>;
+        Fibula.Data.Contracts.Abstractions.Repositories.IMonsterTypeReadOnlyRepository,
+        Fibula.Data.Contracts.Abstractions.Repositories.IItemTypeReadOnlyRepository>;
 
     /// <summary>
     /// Class that represents the common context of the entire application.

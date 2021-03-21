@@ -13,8 +13,6 @@ namespace Fibula.Server.Contracts.Abstractions
 {
     using System;
     using System.Collections.Generic;
-    using Fibula.Common.Contracts.Abstractions;
-    using Fibula.Common.Contracts.Enumerations;
     using Fibula.Server.Contracts.Constants;
     using Fibula.Server.Contracts.Enumerations;
 

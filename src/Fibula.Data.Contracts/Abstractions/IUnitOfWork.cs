@@ -13,7 +13,6 @@ namespace Fibula.Data.Contracts.Abstractions
 {
     using System;
     using Fibula.Data.Contracts.Abstractions.Repositories;
-    using Fibula.Definitions.Data.Entities;
 
     /// <summary>
     /// Interface for units of work that target the Fibula project.
@@ -29,8 +28,8 @@ namespace Fibula.Data.Contracts.Abstractions
         out TItemTypesRepository> : IDisposable
         where TAccountsRepository : IAccountsRepository
         where TCharactersRepository : ICharactersRepository
-        where TMonsterTypesRepository : IReadOnlyRepository<MonsterTypeEntity>
-        where TItemTypesRepository : IReadOnlyRepository<ItemTypeEntity>
+        where TMonsterTypesRepository : IMonsterTypeReadOnlyRepository
+        where TItemTypesRepository : IItemTypeReadOnlyRepository
     {
         /// <summary>
         /// Gets the repository of accounts.

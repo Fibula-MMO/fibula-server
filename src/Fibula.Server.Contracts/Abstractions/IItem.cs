@@ -13,10 +13,9 @@ namespace Fibula.Server.Contracts.Abstractions
 {
     using System;
     using System.Collections.Generic;
-    using Fibula.Common.Contracts.Abstractions;
-    using Fibula.Common.Contracts.Enumerations;
     using Fibula.Definitions.Data.Entities;
     using Fibula.Definitions.Enumerations;
+    using Fibula.Server.Contracts.Enumerations;
 
     /// <summary>
     /// Interface for all items in the game.

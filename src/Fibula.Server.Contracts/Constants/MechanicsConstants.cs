@@ -20,5 +20,10 @@ namespace Fibula.Server.Contracts.Constants
         /// A default value to use when calculating movement penalty.
         /// </summary>
         public const int DefaultGroundMovementPenaltyInMs = 150;
+
+        /// <summary>
+        /// The default maximum delay to introduce between a death ocurring the it's consequences (i.e. body dropping) happening.
+        /// </summary>
+        public const int DefaultDeathDelayMs = 2000;
     }
 }

@@ -11,7 +11,6 @@
 
 namespace Fibula.Server.Contracts.Abstractions
 {
-    using Fibula.Common.Contracts.Abstractions;
     using Fibula.Definitions.Data.Entities;
     using Fibula.Server.Contracts.Delegates;
 

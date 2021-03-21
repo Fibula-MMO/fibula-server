@@ -16,13 +16,13 @@ namespace Fibula.Data.Contracts.Abstractions.Repositories
     /// <summary>
     /// Interface for a repository of accounts.
     /// </summary>
-    public interface ICharactersRepository
+    public interface ICharactersRepository : IRepository<CharacterEntity>
     {
         /// <summary>
         /// Attempts to find a character in the repo with a given name.
         /// </summary>
         /// <param name="characterName">The name of the character.</param>
         /// <returns>The entity if one was bound, and null otherwise.</returns>
-        CharacterEntity FindCharacterByName(string characterName);
+        CharacterEntity FindByName(string characterName);
     }
 }

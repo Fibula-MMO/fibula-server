@@ -24,7 +24,7 @@ namespace Fibula.Data.Repositories
     /// <summary>
     /// Class that represents a read-only repository for monster types.
     /// </summary>
-    public class MonsterTypeReadOnlyRepository : IReadOnlyRepository<MonsterTypeEntity>
+    public class MonsterTypeReadOnlyRepository : IMonsterTypeReadOnlyRepository
     {
         /// <summary>
         /// A locking object to prevent double initialization of the catalog.
@@ -59,9 +59,9 @@ namespace Fibula.Data.Repositories
         /// <summary>
         /// Gets a monster type from the context.
         /// </summary>
-        /// <param name="raceId">The id of the monster type to get.</param>
+        /// <param name="raceId">The id of the race of monster type to get.</param>
         /// <returns>The monster type found, if any.</returns>
-        public static MonsterTypeEntity GetByRaceId(string raceId)
+        public MonsterTypeEntity GetByRaceId(string raceId)
         {
             raceId.ThrowIfNullOrWhiteSpace(nameof(raceId));
 
@@ -77,8 +77,9 @@ namespace Fibula.Data.Repositories
         /// Finds all the entities in the set within the context that satisfy an expression.
         /// </summary>
         /// <param name="predicate">The expression to satisfy.</param>
+        /// <param name="includeProperties">Optional. Any additional properties to include.</param>
         /// <returns>The collection of entities retrieved.</returns>
-        public IEnumerable<MonsterTypeEntity> FindMany(Expression<Func<MonsterTypeEntity, bool>> predicate)
+        public IEnumerable<MonsterTypeEntity> FindMany(Expression<Func<MonsterTypeEntity, bool>> predicate, params string[] includeProperties)
         {
             return monsterTypeCatalog.Values.AsQueryable().Where(predicate);
         }
@@ -98,8 +99,9 @@ namespace Fibula.Data.Repositories
         /// <summary>
         /// Gets all the entities from the set in the context.
         /// </summary>
+        /// <param name="includeProperties">Optional. Any additional properties to include.</param>
         /// <returns>The collection of entities retrieved.</returns>
-        public Task<IEnumerable<MonsterTypeEntity>> GetAll()
+        public Task<IEnumerable<MonsterTypeEntity>> GetAll(params string[] includeProperties)
         {
             return Task.FromResult(monsterTypeCatalog.Values.AsEnumerable());
         }
@@ -116,7 +118,7 @@ namespace Fibula.Data.Repositories
             var key = keyMembersFunc();
             var raceId = key.FirstOrDefault()?.ToString();
 
-            return GetByRaceId(raceId);
+            return this.GetByRaceId(raceId);
         }
     }
 }

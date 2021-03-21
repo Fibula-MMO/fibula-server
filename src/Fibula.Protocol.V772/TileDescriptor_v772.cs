@@ -15,7 +15,6 @@ namespace Fibula.Protocol.V772
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
-    using Fibula.Common.Contracts.Extensions;
     using Fibula.Communications.Contracts.Enumerations;
     using Fibula.Definitions.Data.Structures;
     using Fibula.Protocol.V772.Extensions;
@@ -23,6 +22,7 @@ namespace Fibula.Protocol.V772
     using Fibula.Server.Contracts.Abstractions;
     using Fibula.Server.Contracts.Constants;
     using Fibula.Server.Contracts.Enumerations;
+    using Fibula.Server.Contracts.Extensions;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Logging;
 

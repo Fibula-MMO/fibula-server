@@ -25,24 +25,19 @@ namespace Fibula.Data.Contracts.Abstractions.Repositories
         where TEntity : BaseEntity
     {
         /// <summary>
-        /// Gets an entity by the primary key, from the context.
-        /// </summary>
-        /// <param name="keyMembersFunc">A function that returns the keys used to find the entity, in order.</param>
-        /// <returns>The entity found, if any.</returns>
-        TEntity GetByPrimaryKey(Func<object[]> keyMembersFunc);
-
-        /// <summary>
         /// Gets all the entities from the set in the context.
         /// </summary>
+        /// <param name="includeProperties">Optional. Any additional properties to include.</param>
         /// <returns>The collection of entities retrieved.</returns>
-        Task<IEnumerable<TEntity>> GetAll();
+        Task<IEnumerable<TEntity>> GetAll(params string[] includeProperties);
 
         /// <summary>
         /// Finds all entities that match a predicate.
         /// </summary>
         /// <param name="predicate">The predicate to use for matching.</param>
+        /// <param name="includeProperties">Optional. Any additional properties to include.</param>
         /// <returns>The entities that matched the predicate.</returns>
-        IEnumerable<TEntity> FindMany(Expression<Func<TEntity, bool>> predicate);
+        IEnumerable<TEntity> FindMany(Expression<Func<TEntity, bool>> predicate, params string[] includeProperties);
 
         /// <summary>
         /// Finds an entity in the set within the context that satisfies an expression.

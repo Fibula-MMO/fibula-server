@@ -12,7 +12,6 @@
 namespace Fibula.Protocol.V772.Extensions
 {
     using System;
-    using Fibula.Common.Contracts.Extensions;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Contracts.Enumerations;
     using Fibula.Definitions.Data.Structures;
@@ -20,6 +19,7 @@ namespace Fibula.Protocol.V772.Extensions
     using Fibula.Security.Extensions;
     using Fibula.Server.Contracts.Abstractions;
     using Fibula.Server.Contracts.Enumerations;
+    using Fibula.Server.Contracts.Extensions;
     using Fibula.Utilities.Validation;
 
     /// <summary>

@@ -17,7 +17,6 @@ namespace Fibula.Plugins.MapLoaders.CipSectorFiles
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using Fibula.Common.Contracts.Abstractions;
     using Fibula.Definitions.Data.Structures;
     using Fibula.Definitions.Enumerations;
     using Fibula.Parsing.CipFiles;
