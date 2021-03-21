@@ -1,0 +1,41 @@
+name: .NET
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        # SDK Version to use; x will use the latest version of the 5.0 channel
+        dotnet-version: 5.0.x
+        # Authenticates packages to push to GPR
+        source-url: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+      env:
+        NUGET_AUTH_TOKEN: ${{ secrets.PKG_READ_AUTH_TOKEN }}
+
+    - name: Restore dependencies
+      run: dotnet restore src
+      env:
+        AUTH_TOKEN: ${{ secrets.PKG_READ_AUTH_TOKEN }}
+
+    - name: Build
+      run: dotnet build src --configuration Release --no-restore
+
+    - name: Test
+      run: dotnet test src
+
+    - name: Publish Fibula.Server.Contracts Package
+      run: dotnet nuget push "src/Fibula.Server.Contracts/bin/Release/*.nupkg" --skip-duplicate --api-key ${{ secrets.GITHUB_TOKEN }}
+
+      

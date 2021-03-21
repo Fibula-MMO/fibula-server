@@ -5,6 +5,23 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DebugType>full</DebugType>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>Fibula.Server.Contracts</PackageId>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <Copyright>2020</Copyright>
+    <Authors>Jose L. Nunez de Caceres et al.</Authors>
+    <Company>The Fibula Project</Company>
+    <Product>Fibula MMO</Product>
+    <PackageProjectUrl>https://fibula-mmo.github.io/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Fibula-MMO/fibula-security</RepositoryUrl>
+    <RepositoryType>GitHub</RepositoryType>
+    <Version>1.0.0</Version>
+    <NeutralLanguage>en</NeutralLanguage>
+    <Description>A library containing the server side contracts, abstractions and constants in the Fibula project.</Description>
   </PropertyGroup>
 
   <ItemGroup>
@@ -49,6 +66,10 @@
 
   <ItemGroup>
     <AdditionalFiles Include="stylecop.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE" Link="LICENSE" Pack="true" Visible="false" PackagePath="" />
   </ItemGroup>
 
   <ItemGroup>

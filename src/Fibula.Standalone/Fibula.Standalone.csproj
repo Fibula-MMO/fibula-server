@@ -25,9 +25,9 @@
   <ItemGroup>
     <AdditionalFiles Include="stylecop.json" />
   </ItemGroup>
-  
+
   <ItemGroup>
-    <None Include="..\..\LICENSE" Link="LICENSE" />
+    <None Include="..\..\LICENSE" Link="LICENSE" Pack="true" Visible="false" PackagePath="" />
   </ItemGroup>
   
   <ItemGroup>
