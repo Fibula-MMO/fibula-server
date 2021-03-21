@@ -39,7 +39,7 @@ namespace Fibula.Protocol.V772
         /// </summary>
         /// <param name="logger">A reference to the logger in use.</param>
         /// <param name="protocol">A reference to the protocol to target.</param>
-        public ClientConnectionFactory(ILogger logger, TProtocol protocol)
+        public ClientConnectionFactory(ILogger<ClientConnectionFactory<TProtocol>> logger, TProtocol protocol)
         {
             logger.ThrowIfNull(nameof(logger));
             protocol.ThrowIfNull(nameof(protocol));

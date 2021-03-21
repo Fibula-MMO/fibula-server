@@ -16,34 +16,31 @@ namespace Fibula.Standalone
     using System.IO;
     using System.Threading;
     using System.Threading.Tasks;
-    using Fibula.Client;
-    using Fibula.Client.Contracts.Abstractions;
     using Fibula.Common;
+    using Fibula.Common.Contracts;
     using Fibula.Common.Contracts.Abstractions;
-    using Fibula.Common.Contracts.Models;
+    using Fibula.Communications;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Packets.Contracts.Abstractions;
-    using Fibula.Creatures;
-    using Fibula.Creatures.Contracts.Abstractions;
     using Fibula.Data.Contracts.Abstractions;
-    using Fibula.Data.InMemoryDatabase;
-    using Fibula.Items;
-    using Fibula.Items.Contracts.Abstractions;
-    using Fibula.Map;
-    using Fibula.Map.Contracts.Abstractions;
-    using Fibula.Mechanics;
-    using Fibula.Mechanics.Contracts.Abstractions;
-    using Fibula.Mechanics.Handlers;
-    using Fibula.Mechanics.Operations;
-    using Fibula.PathFinding.AStar;
+    using Fibula.Plugins.Database.InMemoryOnly;
     using Fibula.Plugins.ItemLoaders.CipObjectsFile;
     using Fibula.Plugins.MapLoaders.CipSectorFiles;
     using Fibula.Plugins.MonsterLoaders.CipMonFiles;
+    using Fibula.Plugins.PathFinding.AStar.Extensions;
     using Fibula.Plugins.SpawnLoaders.CipMonstersDbFile;
     using Fibula.Protocol.V772.Extensions;
+    using Fibula.Providers.Azure.Extensions;
     using Fibula.Scheduling;
     using Fibula.Scheduling.Contracts.Abstractions;
-    using Fibula.Security;
+    using Fibula.Security.Extensions;
+    using Fibula.Server;
+    using Fibula.Server.Contracts.Abstractions;
+    using Fibula.Server.Creatures;
+    using Fibula.Server.Items;
+    using Fibula.Server.Mechanics;
+    using Fibula.Server.Mechanics.Handlers;
+    using Fibula.Server.Mechanics.Operations;
     using Fibula.Utilities.Validation;
     using Microsoft.ApplicationInsights.Extensibility;
     using Microsoft.Extensions.Configuration;
@@ -149,9 +146,9 @@ namespace Fibula.Standalone
                     return;
                 }
 
-                var clientLogger = host.Services.GetRequiredService<Microsoft.Extensions.Logging.ILogger<Client>>();
+                var clientLogger = host.Services.GetRequiredService<Microsoft.Extensions.Logging.ILogger<ConnectedClient>>();
 
-                clientMap.Add(connection, new Client(clientLogger, connection));
+                clientMap.Add(connection, new ConnectedClient(clientLogger, connection));
 
                 connection.PacketReady += OnPacketReady;
 
@@ -178,7 +175,7 @@ namespace Fibula.Standalone
         }
 
         /// <summary>
-        /// Configuration root, where services are configured and added into the service collection, often depending on the configuration set.
+        /// Composition root, where services are configured and added into the service collection, often depending on the configuration set.
         /// </summary>
         /// <param name="hostingContext">The hosting context.</param>
         /// <param name="services">The services collection.</param>
@@ -284,6 +281,7 @@ namespace Fibula.Standalone
         {
             // Chose a type of Database context:
             // services.AddCosmosDBDatabaseContext(hostingContext.Configuration);
+            // services.AddSqlServerDatabaseContext(hostingContext.Configuration);
             services.AddInMemoryDatabaseContext(hostingContext.Configuration);
 
             // IFibulaDbContext itself is added by the Add<DatabaseProvider>() call above.
@@ -337,10 +335,8 @@ namespace Fibula.Standalone
 
         private static void ConfigureExtraServices(HostBuilderContext hostingContext, IServiceCollection services)
         {
-            /*
             // Azure providers for Azure VM hosting and storing secrets in KeyVault.
             services.AddAzureProviders(hostingContext.Configuration);
-            */
 
             services.Configure<TelemetryConfiguration>(hostingContext.Configuration.GetSection(nameof(TelemetryConfiguration)));
         }

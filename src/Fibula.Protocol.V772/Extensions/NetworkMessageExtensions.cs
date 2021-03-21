@@ -12,16 +12,14 @@
 namespace Fibula.Protocol.V772.Extensions
 {
     using System;
-    using Fibula.Common.Contracts.Enumerations;
-    using Fibula.Common.Contracts.Extensions;
-    using Fibula.Common.Contracts.Structs;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Contracts.Enumerations;
-    using Fibula.Creatures.Contracts.Abstractions;
-    using Fibula.Creatures.Contracts.Enumerations;
-    using Fibula.Data.Entities.Contracts.Structs;
-    using Fibula.Items.Contracts.Abstractions;
-    using Fibula.Security.Encryption;
+    using Fibula.Definitions.Data.Structures;
+    using Fibula.Definitions.Enumerations;
+    using Fibula.Security.Extensions;
+    using Fibula.Server.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Enumerations;
+    using Fibula.Server.Contracts.Extensions;
     using Fibula.Utilities.Validation;
 
     /// <summary>
@@ -39,7 +37,7 @@ namespace Fibula.Protocol.V772.Extensions
         {
             var targetSpan = message.Buffer[0..message.Length];
 
-            var result = Xtea.Decrypt(targetSpan, key, out int newMessageLen);
+            var result = targetSpan.XteaDecrypt(key, out int newMessageLen);
 
             if (result)
             {
@@ -59,7 +57,7 @@ namespace Fibula.Protocol.V772.Extensions
         {
             var targetSpan = message.Buffer[2..message.Length];
 
-            var result = Xtea.Encrypt(targetSpan, key, out int newMessageLen);
+            var result = targetSpan.XteaEncrypt(key, out int newMessageLen);
 
             if (result)
             {
@@ -199,31 +197,17 @@ namespace Fibula.Protocol.V772.Extensions
         /// <returns>The color supported by the client.</returns>
         public static LiquidColor ToLiquidColor(this LiquidType liquidType)
         {
-            switch (liquidType)
+            return liquidType switch
             {
-                default:
-                case LiquidType.None:
-                    return LiquidColor.None;
-                case LiquidType.Water:
-                    return LiquidColor.Blue;
-                case LiquidType.Wine:
-                case LiquidType.ManaFluid:
-                    return LiquidColor.Purple;
-                case LiquidType.Beer:
-                case LiquidType.Mud:
-                case LiquidType.Oil:
-                    return LiquidColor.Brown;
-                case LiquidType.Blood:
-                case LiquidType.LifeFluid:
-                    return LiquidColor.Red;
-                case LiquidType.Slime:
-                case LiquidType.Lemonade:
-                    return LiquidColor.Green;
-                case LiquidType.Urine:
-                    return LiquidColor.Yellow;
-                case LiquidType.Milk:
-                    return LiquidColor.White;
-            }
+                LiquidType.Water => LiquidColor.Blue,
+                LiquidType.Wine or LiquidType.ManaFluid => LiquidColor.Purple,
+                LiquidType.Beer or LiquidType.Mud or LiquidType.Oil => LiquidColor.Brown,
+                LiquidType.Blood or LiquidType.LifeFluid => LiquidColor.Red,
+                LiquidType.Slime or LiquidType.Lemonade => LiquidColor.Green,
+                LiquidType.Urine => LiquidColor.Yellow,
+                LiquidType.Milk => LiquidColor.White,
+                _ => LiquidColor.None,
+            };
         }
 
         private static void InsertPacketLength(this INetworkMessage message)

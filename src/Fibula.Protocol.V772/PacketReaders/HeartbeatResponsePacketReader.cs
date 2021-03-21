@@ -26,7 +26,7 @@ namespace Fibula.Protocol.V772.PacketReaders
         /// Initializes a new instance of the <see cref="HeartbeatResponsePacketReader"/> class.
         /// </summary>
         /// <param name="logger">A reference to the logger in use.</param>
-        public HeartbeatResponsePacketReader(ILogger logger)
+        public HeartbeatResponsePacketReader(ILogger<HeartbeatResponsePacketReader> logger)
             : base(logger)
         {
         }

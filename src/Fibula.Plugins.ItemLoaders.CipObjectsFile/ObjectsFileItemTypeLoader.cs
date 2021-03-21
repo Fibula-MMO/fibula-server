@@ -15,7 +15,8 @@ namespace Fibula.Plugins.ItemLoaders.CipObjectsFile
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using Fibula.Data.Entities.Contracts.Abstractions;
+    using Fibula.Data.Contracts.Abstractions;
+    using Fibula.Definitions.Data.Entities;
     using Fibula.Definitions.Enumerations;
     using Fibula.Definitions.Flags;
     using Fibula.Parsing.CipFiles;
@@ -38,7 +39,7 @@ namespace Fibula.Plugins.ItemLoaders.CipObjectsFile
     ///     Attributes  = {Capacity=1,Weight=0}
     /// .
     /// </remarks>
-    public sealed class ObjectsFileItemTypeLoader : IItemTypeLoader
+    public sealed class ObjectsFileItemTypeLoader : IItemTypesLoader
     {
         /// <summary>
         /// Character for comments.
@@ -82,12 +83,12 @@ namespace Fibula.Plugins.ItemLoaders.CipObjectsFile
         /// Attempts to load the item catalog.
         /// </summary>
         /// <returns>The catalog, containing a mapping of loaded id to the item types.</returns>
-        public IDictionary<ushort, IItemTypeEntity> LoadTypes()
+        public IDictionary<string, ItemTypeEntity> LoadTypes()
         {
-            var itemDictionary = new Dictionary<ushort, IItemTypeEntity>();
+            var itemDictionary = new Dictionary<string, ItemTypeEntity>();
             var objectsFilePath = Path.Combine(Environment.CurrentDirectory, this.LoaderOptions.FilePath);
 
-            var currentType = new CipItemTypeEntity();
+            var currentType = new ItemTypeEntity();
 
             foreach (var readLine in File.ReadLines(objectsFilePath))
             {
@@ -107,9 +108,9 @@ namespace Fibula.Plugins.ItemLoaders.CipObjectsFile
                         continue;
                     }
 
-                    itemDictionary.Add(currentType.TypeId, currentType);
+                    itemDictionary.Add(currentType.TypeId.ToString(), currentType);
 
-                    currentType = new CipItemTypeEntity();
+                    currentType = new ItemTypeEntity();
                     continue;
                 }
 
@@ -188,7 +189,7 @@ namespace Fibula.Plugins.ItemLoaders.CipObjectsFile
             // wrap up the last ItemType and add it if it has enough properties set:
             if (currentType.TypeId != 0 && !string.IsNullOrWhiteSpace(currentType.Name))
             {
-                itemDictionary.Add(currentType.TypeId, currentType);
+                itemDictionary.Add(currentType.TypeId.ToString(), currentType);
             }
 
             return itemDictionary;

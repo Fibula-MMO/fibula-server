@@ -15,15 +15,14 @@ namespace Fibula.Protocol.V772
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
-    using Fibula.Common.Contracts.Extensions;
-    using Fibula.Common.Contracts.Structs;
     using Fibula.Communications.Contracts.Enumerations;
-    using Fibula.Creatures.Contracts.Abstractions;
-    using Fibula.Creatures.Contracts.Enumerations;
-    using Fibula.Map.Contracts;
-    using Fibula.Map.Contracts.Abstractions;
-    using Fibula.Map.Contracts.Constants;
+    using Fibula.Definitions.Data.Structures;
     using Fibula.Protocol.V772.Extensions;
+    using Fibula.Server.Contracts;
+    using Fibula.Server.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Constants;
+    using Fibula.Server.Contracts.Enumerations;
+    using Fibula.Server.Contracts.Extensions;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Logging;
 

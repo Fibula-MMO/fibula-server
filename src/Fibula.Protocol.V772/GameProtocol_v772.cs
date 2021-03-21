@@ -42,7 +42,7 @@ namespace Fibula.Protocol.V772
         /// Initializes a new instance of the <see cref="GameProtocol_v772"/> class.
         /// </summary>
         /// <param name="logger">A reference to the logger in use.</param>
-        public GameProtocol_v772(ILogger logger)
+        public GameProtocol_v772(ILogger<GameProtocol_v772> logger)
         {
             logger.ThrowIfNull(nameof(logger));
 

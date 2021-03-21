@@ -26,7 +26,7 @@ namespace Fibula.Protocol.V772.PacketWriters
         /// Initializes a new instance of the <see cref="TileUpdatePacketWriter"/> class.
         /// </summary>
         /// <param name="logger">A reference to the logger in use.</param>
-        public TileUpdatePacketWriter(ILogger logger)
+        public TileUpdatePacketWriter(ILogger<TileUpdatePacketWriter> logger)
             : base(logger)
         {
         }
@@ -38,7 +38,7 @@ namespace Fibula.Protocol.V772.PacketWriters
         /// <param name="message">The message to write into.</param>
         public override void WriteToMessage(IOutboundPacket packet, ref INetworkMessage message)
         {
-            if (packet is not TileUpdatePacket tileUpdatePacket)
+            if (!(packet is TileUpdatePacket tileUpdatePacket))
             {
                 this.Logger.LogWarning($"Invalid packet {packet.GetType().Name} routed to {this.GetType().Name}");
 

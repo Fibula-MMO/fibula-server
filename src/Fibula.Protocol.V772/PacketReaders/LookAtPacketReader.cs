@@ -11,10 +11,10 @@
 
 namespace Fibula.Protocol.V772.PacketReaders
 {
-    using Fibula.Common.Contracts.Structs;
     using Fibula.Communications;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Packets.Incoming;
+    using Fibula.Definitions.Data.Structures;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Logging;
 
@@ -27,7 +27,7 @@ namespace Fibula.Protocol.V772.PacketReaders
         /// Initializes a new instance of the <see cref="LookAtPacketReader"/> class.
         /// </summary>
         /// <param name="logger">A reference to the logger in use.</param>
-        public LookAtPacketReader(ILogger logger)
+        public LookAtPacketReader(ILogger<LookAtPacketReader> logger)
             : base(logger)
         {
         }

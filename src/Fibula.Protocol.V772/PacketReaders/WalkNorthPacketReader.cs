@@ -27,7 +27,7 @@ namespace Fibula.Protocol.V772.PacketReaders
         /// Initializes a new instance of the <see cref="WalkNorthPacketReader"/> class.
         /// </summary>
         /// <param name="logger">A reference to the logger in use.</param>
-        public WalkNorthPacketReader(ILogger logger)
+        public WalkNorthPacketReader(ILogger<WalkNorthPacketReader> logger)
             : base(logger)
         {
         }

@@ -26,7 +26,7 @@ namespace Fibula.Protocol.V772.PacketWriters
         /// Initializes a new instance of the <see cref="CreatureMovedPacketWriter"/> class.
         /// </summary>
         /// <param name="logger">A reference to the logger in use.</param>
-        public CreatureMovedPacketWriter(ILogger logger)
+        public CreatureMovedPacketWriter(ILogger<CreatureMovedPacketWriter> logger)
             : base(logger)
         {
         }
@@ -38,7 +38,7 @@ namespace Fibula.Protocol.V772.PacketWriters
         /// <param name="message">The message to write into.</param>
         public override void WriteToMessage(IOutboundPacket packet, ref INetworkMessage message)
         {
-            if (packet is not CreatureMovedPacket creatureMovedPacket)
+            if (!(packet is CreatureMovedPacket creatureMovedPacket))
             {
                 this.Logger.LogWarning($"Invalid packet {packet.GetType().Name} routed to {this.GetType().Name}");
 

@@ -9,7 +9,7 @@
 // </copyright>
 // -----------------------------------------------------------------
 
-namespace Fibula.Communications.Listeners.Tests
+namespace Fibula.Communications.Tests
 {
     using System;
     using System.ComponentModel.DataAnnotations;
@@ -18,7 +18,7 @@ namespace Fibula.Communications.Listeners.Tests
     using System.Threading.Tasks;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Listeners;
-    using Fibula.Security.Contracts;
+    using Fibula.Security.Contracts.Abstractions;
     using Fibula.Utilities.Testing;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
@@ -37,7 +37,7 @@ namespace Fibula.Communications.Listeners.Tests
         [TestMethod]
         public void GameListener_Initialization()
         {
-            Mock<ILogger> loggerMock = new Mock<ILogger>();
+            Mock<ILogger<GameListener<ISocketConnectionFactory>>> loggerMock = new Mock<ILogger<GameListener<ISocketConnectionFactory>>>();
             Mock<ISocketConnectionFactory> connectionFactoryMock = new Mock<ISocketConnectionFactory>();
             Mock<IDoSDefender> defenderMock = new Mock<IDoSDefender>();
 
@@ -64,7 +64,7 @@ namespace Fibula.Communications.Listeners.Tests
         [TestMethod]
         public void GameListener_OptionsValidation()
         {
-            Mock<ILogger> loggerMock = new Mock<ILogger>();
+            Mock<ILogger<GameListener<ISocketConnectionFactory>>> loggerMock = new Mock<ILogger<GameListener<ISocketConnectionFactory>>>();
             Mock<ISocketConnectionFactory> connectionFactoryMock = new Mock<ISocketConnectionFactory>();
             Mock<IDoSDefender> defenderMock = new Mock<IDoSDefender>();
 

@@ -11,9 +11,9 @@
 
 namespace Fibula.Communications.Packets.Outgoing
 {
-    using Fibula.Common.Contracts.Structs;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Contracts.Enumerations;
+    using Fibula.Definitions.Data.Structures;
 
     /// <summary>
     /// Class that represents a remove at positiion packet.

@@ -26,7 +26,7 @@ namespace Fibula.Protocol.V772.PacketWriters
         /// Initializes a new instance of the <see cref="WorldLightPacketWriter"/> class.
         /// </summary>
         /// <param name="logger">A reference to the logger in use.</param>
-        public WorldLightPacketWriter(ILogger logger)
+        public WorldLightPacketWriter(ILogger<WorldLightPacketWriter> logger)
             : base(logger)
         {
         }
@@ -38,7 +38,7 @@ namespace Fibula.Protocol.V772.PacketWriters
         /// <param name="message">The message to write into.</param>
         public override void WriteToMessage(IOutboundPacket packet, ref INetworkMessage message)
         {
-            if (packet is not WorldLightPacket worldLightPacket)
+            if (!(packet is WorldLightPacket worldLightPacket))
             {
                 this.Logger.LogWarning($"Invalid packet {packet.GetType().Name} routed to {this.GetType().Name}");
 

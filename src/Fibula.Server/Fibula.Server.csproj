@@ -1,0 +1,81 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DebugType>full</DebugType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Mechanics\Handlers\AutoMoveCancelHandler.cs" />
+    <Compile Remove="Mechanics\Handlers\ContainerCloseHandler.cs" />
+    <Compile Remove="Mechanics\Handlers\ContainerMoveUpHandler.cs" />
+    <Compile Remove="Mechanics\Handlers\KeepAliveRequestHandler.cs" />
+    <Compile Remove="Mechanics\Handlers\MoveThingHandler.cs" />
+    <Compile Remove="Mechanics\Handlers\RotateItemHandler.cs" />
+    <Compile Remove="Mechanics\Handlers\SetModeHandler.cs" />
+    <Compile Remove="Mechanics\Handlers\StopAllActionsHandler.cs" />
+    <Compile Remove="Mechanics\Handlers\TurnEastHandler.cs" />
+    <Compile Remove="Mechanics\Handlers\TurnNorthHandler.cs" />
+    <Compile Remove="Mechanics\Handlers\TurnSouthHandler.cs" />
+    <Compile Remove="Mechanics\Handlers\TurnWestHandler.cs" />
+    <Compile Remove="Mechanics\Handlers\UseItemHandler.cs" />
+    <Compile Remove="Mechanics\Handlers\UseItemOnHandler.cs" />
+    <Compile Remove="Mechanics\Handlers\WalkEastHandler.cs" />
+    <Compile Remove="Mechanics\Handlers\WalkNortheastHandler.cs" />
+    <Compile Remove="Mechanics\Handlers\WalkNorthHandler.cs" />
+    <Compile Remove="Mechanics\Handlers\WalkNorthWestHandler.cs" />
+    <Compile Remove="Mechanics\Handlers\WalkSoutheastHandler.cs" />
+    <Compile Remove="Mechanics\Handlers\WalkSouthHandler.cs" />
+    <Compile Remove="Mechanics\Handlers\WalkSouthwestHandler.cs" />
+    <Compile Remove="Mechanics\Handlers\WalkWestHandler.cs" />
+    <Compile Remove="Mechanics\Operations\Unused\AutoAttackCombatOperation.cs" />
+    <Compile Remove="Mechanics\Operations\Unused\AutoWalkOperation.cs" />
+    <Compile Remove="Mechanics\Operations\Unused\BaseActionOperation.cs" />
+    <Compile Remove="Mechanics\Operations\Unused\BaseCombatOperation.cs" />
+    <Compile Remove="Mechanics\Operations\Unused\ChangeItemOperation.cs" />
+    <Compile Remove="Mechanics\Operations\Unused\CloseContainerOperation.cs" />
+    <Compile Remove="Mechanics\Operations\Unused\CreateItemOperation.cs" />
+    <Compile Remove="Mechanics\Operations\Unused\DeleteItemOperation.cs" />
+    <Compile Remove="Mechanics\Operations\Unused\MoveUpContainerOperation.cs" />
+    <Compile Remove="Mechanics\Operations\Unused\OpenContainerOperation.cs" />
+    <Compile Remove="Mechanics\Operations\Unused\PlaceCreatureOperation.cs" />
+    <Compile Remove="Mechanics\Operations\Unused\RemoveCreatureOperation.cs" />
+    <Compile Remove="Mechanics\Operations\Unused\RestoreCombatCreditOperation.cs" />
+    <Compile Remove="Mechanics\Operations\Unused\SpawnMonstersOperation.cs" />
+    <Compile Remove="Mechanics\Operations\Unused\ThinkingOperation.cs" />
+    <Compile Remove="Mechanics\Operations\Unused\UseItemOnOperation.cs" />
+    <Compile Remove="Mechanics\Operations\Unused\UseItemOperation.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="stylecop.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="stylecop.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Fibula.Scheduling" Version="1.1.1" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="3.8.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Fibula.Communications.Packets\Fibula.Communications.Packets.csproj" />
+    <ProjectReference Include="..\Fibula.Communications\Fibula.Communications.csproj" />
+    <ProjectReference Include="..\Fibula.Scripting.Formulae\Fibula.Scripting.Formulae.csproj" />
+    <ProjectReference Include="..\Fibula.Server.Contracts\Fibula.Server.Contracts.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Mechanics\Operations\Unused\" />
+  </ItemGroup>
+
+</Project>

@@ -14,8 +14,8 @@ namespace Fibula.Protocol.V772.PacketWriters
     using Fibula.Communications;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Packets.Outgoing;
-    using Fibula.Creatures.Contracts.Enumerations;
     using Fibula.Protocol.V772.Extensions;
+    using Fibula.Server.Contracts.Enumerations;
     using Microsoft.Extensions.Logging;
 
     /// <summary>
@@ -27,7 +27,7 @@ namespace Fibula.Protocol.V772.PacketWriters
         /// Initializes a new instance of the <see cref="CreatureHealthPacketWriter"/> class.
         /// </summary>
         /// <param name="logger">A reference to the logger in use.</param>
-        public CreatureHealthPacketWriter(ILogger logger)
+        public CreatureHealthPacketWriter(ILogger<CreatureHealthPacketWriter> logger)
             : base(logger)
         {
         }
@@ -39,7 +39,7 @@ namespace Fibula.Protocol.V772.PacketWriters
         /// <param name="message">The message to write into.</param>
         public override void WriteToMessage(IOutboundPacket packet, ref INetworkMessage message)
         {
-            if (packet is not CreatureHealthPacket creatureHealthPacket)
+            if (!(packet is CreatureHealthPacket creatureHealthPacket))
             {
                 this.Logger.LogWarning($"Invalid packet {packet.GetType().Name} routed to {this.GetType().Name}");
 

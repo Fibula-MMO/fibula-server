@@ -15,8 +15,9 @@ namespace Fibula.Data.Repositories
     using System.Collections.Generic;
     using System.Linq;
     using System.Linq.Expressions;
-    using Fibula.Data.Contracts.Abstractions;
-    using Fibula.Data.Entities;
+    using System.Threading.Tasks;
+    using Fibula.Data.Contracts.Abstractions.Repositories;
+    using Fibula.Definitions.Data.Entities;
     using Fibula.Utilities.Validation;
     using Microsoft.EntityFrameworkCore;
 
@@ -44,36 +45,38 @@ namespace Fibula.Data.Repositories
         protected DbContext Context { get; }
 
         /// <summary>
-        /// Gets an entity that matches an id, from the context.
-        /// </summary>
-        /// <param name="id">The id to match.</param>
-        /// <returns>The entity found, if any.</returns>
-        public TEntity GetById(string id)
-        {
-            return this.Context.Set<TEntity>().Find(id);
-        }
-
-        /// <summary>
         /// Gets all the entities from the set in the context.
         /// </summary>
+        /// <param name="includeProperties">Optional. Any additional properties to include.</param>
         /// <returns>The collection of entities retrieved.</returns>
-        public IEnumerable<TEntity> GetAll()
+        public async Task<IEnumerable<TEntity>> GetAll(params string[] includeProperties)
         {
-            var retrievalTask = this.Context.Set<TEntity>().ToListAsync();
+            var query = this.Context.Set<TEntity>().AsQueryable();
 
-            retrievalTask.Wait();
+            if (includeProperties != null && includeProperties.Length > 0)
+            {
+                query = includeProperties.Aggregate(query, EntityFrameworkQueryableExtensions.Include);
+            }
 
-            return retrievalTask.Result;
+            return await query.ToListAsync();
         }
 
         /// <summary>
         /// Finds all the entities in the set within the context that satisfy an expression.
         /// </summary>
         /// <param name="predicate">The expression to satisfy.</param>
+        /// <param name="includeProperties">Optional. Any additional properties to include.</param>
         /// <returns>The collection of entities retrieved.</returns>
-        public IEnumerable<TEntity> FindMany(Expression<Func<TEntity, bool>> predicate)
+        public IEnumerable<TEntity> FindMany(Expression<Func<TEntity, bool>> predicate, params string[] includeProperties)
         {
-            return this.Context.Set<TEntity>().Where(predicate);
+            var query = this.Context.Set<TEntity>().AsQueryable();
+
+            if (includeProperties != null && includeProperties.Length > 0)
+            {
+                query = includeProperties.Aggregate(query, EntityFrameworkQueryableExtensions.Include);
+            }
+
+            return query.Where(predicate);
         }
 
         /// <summary>
@@ -81,10 +84,18 @@ namespace Fibula.Data.Repositories
         /// If more than one entity satisfies the expression, one is picked up in an unknown criteria.
         /// </summary>
         /// <param name="predicate">The expression to satisfy.</param>
+        /// <param name="includeProperties">Optional. Any additional properties to include.</param>
         /// <returns>The entity found.</returns>
-        public TEntity FindOne(Expression<Func<TEntity, bool>> predicate)
+        public TEntity FindOne(Expression<Func<TEntity, bool>> predicate, params string[] includeProperties)
         {
-            return this.Context.Set<TEntity>().FirstOrDefault(predicate);
+            var query = this.Context.Set<TEntity>().AsQueryable();
+
+            if (includeProperties != null && includeProperties.Length > 0)
+            {
+                query = includeProperties.Aggregate(query, EntityFrameworkQueryableExtensions.Include);
+            }
+
+            return query.FirstOrDefault(predicate);
         }
     }
 }

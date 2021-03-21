@@ -15,8 +15,8 @@ namespace Fibula.Protocol.V772.PacketWriters
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Packets.Outgoing;
     using Fibula.Definitions.Enumerations;
-    using Fibula.Mechanics.Contracts.Extensions;
     using Fibula.Protocol.V772.Extensions;
+    using Fibula.Server.Contracts.Extensions;
     using Microsoft.Extensions.Logging;
 
     /// <summary>
@@ -28,7 +28,7 @@ namespace Fibula.Protocol.V772.PacketWriters
         /// Initializes a new instance of the <see cref="PlayerConditionsPacketWriter"/> class.
         /// </summary>
         /// <param name="logger">A reference to the logger in use.</param>
-        public PlayerConditionsPacketWriter(ILogger logger)
+        public PlayerConditionsPacketWriter(ILogger<PlayerConditionsPacketWriter> logger)
             : base(logger)
         {
         }
@@ -40,7 +40,7 @@ namespace Fibula.Protocol.V772.PacketWriters
         /// <param name="message">The message to write into.</param>
         public override void WriteToMessage(IOutboundPacket packet, ref INetworkMessage message)
         {
-            if (packet is not PlayerConditionsPacket playerConditionsPacket)
+            if (!(packet is PlayerConditionsPacket playerConditionsPacket))
             {
                 this.Logger.LogWarning($"Invalid packet {packet.GetType().Name} routed to {this.GetType().Name}");
 

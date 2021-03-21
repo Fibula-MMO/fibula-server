@@ -11,9 +11,9 @@
 
 namespace Fibula.Communications.Packets.Outgoing
 {
-    using Fibula.Common.Contracts.Structs;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Contracts.Enumerations;
+    using Fibula.Definitions.Data.Structures;
     using Fibula.Definitions.Enumerations;
 
     /// <summary>

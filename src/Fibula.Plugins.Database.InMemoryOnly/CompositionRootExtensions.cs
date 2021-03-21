@@ -9,7 +9,7 @@
 // </copyright>
 // -----------------------------------------------------------------
 
-namespace Fibula.Data.InMemoryDatabase
+namespace Fibula.Plugins.Database.InMemoryOnly
 {
     using Fibula.Data.Contracts.Abstractions;
     using Fibula.Utilities.Validation;

@@ -12,14 +12,15 @@
 namespace Fibula.Data.Repositories
 {
     using System.Collections.Generic;
-    using Fibula.Data.Entities;
+    using Fibula.Data.Contracts.Abstractions.Repositories;
+    using Fibula.Definitions.Data.Entities;
     using Microsoft.EntityFrameworkCore;
 
     /// <summary>
     /// Class that represents a repository for any entity in the context.
     /// </summary>
     /// <typeparam name="TEntity">The type of entity.</typeparam>
-    public abstract class GenericRepository<TEntity> : GenericReadOnlyRepository<TEntity>
+    public abstract class GenericRepository<TEntity> : GenericReadOnlyRepository<TEntity>, IRepository<TEntity>
         where TEntity : BaseEntity
     {
         /// <summary>

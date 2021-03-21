@@ -9,7 +9,6 @@
   
   <ItemGroup>
     <Compile Remove="Abstractions\IHasSkills.cs" />
-    <Compile Remove="Enumerations\MonsterSkillType.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,7 +30,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Fibula.Data.Contracts\Fibula.Data.Contracts.csproj" />
-    <ProjectReference Include="..\Fibula.Security.Contracts\Fibula.Security.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

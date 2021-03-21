@@ -52,7 +52,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\Fibula.Common.Contracts\Fibula.Common.Contracts.csproj" />
     <ProjectReference Include="..\Fibula.Communications.Contracts\Fibula.Communications.Contracts.csproj" />
+    <ProjectReference Include="..\Fibula.Server.Contracts\Fibula.Server.Contracts.csproj" />
   </ItemGroup>
 </Project>

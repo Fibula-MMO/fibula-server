@@ -12,7 +12,7 @@
 namespace Fibula.Communications.Listeners
 {
     using Fibula.Communications.Contracts.Abstractions;
-    using Fibula.Security.Contracts;
+    using Fibula.Security.Contracts.Abstractions;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
 
@@ -31,7 +31,7 @@ namespace Fibula.Communications.Listeners
         /// <param name="connectionFactory">A reference to the connection factory in play here.</param>
         /// <param name="dosDefender">A reference to the DoS defender service implementation.</param>
         public GatewayListener(
-            ILogger logger,
+            ILogger<GatewayListener<TConnectionFactory>> logger,
             IOptions<GatewayListenerOptions> options,
             TConnectionFactory connectionFactory,
             IDoSDefender dosDefender)
@@ -48,7 +48,7 @@ namespace Fibula.Communications.Listeners
         /// <param name="dosDefender">A reference to the DoS defender service implementation.</param>
         /// <param name="tcpListener">Optional. An intance to use as the TCP listener, useful for unit testing.</param>
         public GatewayListener(
-            ILogger logger,
+            ILogger<GatewayListener<TConnectionFactory>> logger,
             IOptions<GatewayListenerOptions> options,
             TConnectionFactory connectionFactory,
             IDoSDefender dosDefender,

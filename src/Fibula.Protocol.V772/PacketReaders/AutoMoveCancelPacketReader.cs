@@ -26,7 +26,7 @@ namespace Fibula.Protocol.V772.PacketReaders
         /// Initializes a new instance of the <see cref="AutoMoveCancelPacketReader"/> class.
         /// </summary>
         /// <param name="logger">A reference to the logger in use.</param>
-        public AutoMoveCancelPacketReader(ILogger logger)
+        public AutoMoveCancelPacketReader(ILogger<AutoMoveCancelPacketReader> logger)
             : base(logger)
         {
         }

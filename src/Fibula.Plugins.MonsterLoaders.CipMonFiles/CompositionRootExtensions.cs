@@ -11,7 +11,7 @@
 
 namespace Fibula.Plugins.MonsterLoaders.CipMonFiles
 {
-    using Fibula.Data.Entities.Contracts.Abstractions;
+    using Fibula.Data.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -35,7 +35,7 @@ namespace Fibula.Plugins.MonsterLoaders.CipMonFiles
             // configure options
             services.Configure<MonFilesMonsterTypeLoaderOptions>(configuration.GetSection(nameof(MonFilesMonsterTypeLoaderOptions)));
 
-            services.AddSingleton<IMonsterTypeLoader, MonFilesMonsterTypeLoader>();
+            services.AddSingleton<IMonsterTypesLoader, MonFilesMonsterTypeLoader>();
         }
     }
 }

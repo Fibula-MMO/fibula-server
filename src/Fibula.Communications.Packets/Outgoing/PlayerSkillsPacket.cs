@@ -13,7 +13,7 @@ namespace Fibula.Communications.Packets.Outgoing
 {
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Contracts.Enumerations;
-    using Fibula.Creatures.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Abstractions;
 
     /// <summary>
     /// Class that represents a player's skills packet.

@@ -16,10 +16,9 @@ namespace Fibula.Protocol.V772.Extensions
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Contracts.Enumerations;
     using Fibula.Communications.Listeners;
-    using Fibula.Items.Contracts.Abstractions;
-    using Fibula.Map.Contracts.Abstractions;
     using Fibula.Protocol.V772.PacketReaders;
     using Fibula.Protocol.V772.PacketWriters;
+    using Fibula.Server.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -44,9 +43,6 @@ namespace Fibula.Protocol.V772.Extensions
 
             // Configure the options required by the services we're about to add.
             services.Configure<GameListenerOptions>(configuration.GetSection(nameof(GameListenerOptions)));
-
-            // Add all handlers
-            services.TryAddSingleton<GameLogInPacketReader>();
 
             var packetReadersToAdd = new Dictionary<IncomingPacketType, Type>()
             {
@@ -128,7 +124,7 @@ namespace Fibula.Protocol.V772.Extensions
 
             services.AddSingleton(s =>
             {
-                var protocol = new GameProtocol_v772(s.GetRequiredService<ILogger>());
+                var protocol = new GameProtocol_v772(s.GetRequiredService<ILogger<GameProtocol_v772>>());
 
                 foreach (var (packetType, type) in packetReadersToAdd)
                 {
@@ -187,7 +183,7 @@ namespace Fibula.Protocol.V772.Extensions
 
             services.AddSingleton(s =>
             {
-                var protocol = new GatewayProtocol_v772(s.GetRequiredService<ILogger>());
+                var protocol = new GatewayProtocol_v772(s.GetRequiredService<ILogger<GatewayProtocol_v772>>());
 
                 protocol.RegisterPacketReader(IncomingPacketType.LogIn, s.GetRequiredService<GatewayLogInPacketReader>());
 

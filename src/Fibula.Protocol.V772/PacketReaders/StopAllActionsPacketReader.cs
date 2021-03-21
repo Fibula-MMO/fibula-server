@@ -26,7 +26,7 @@ namespace Fibula.Protocol.V772.PacketReaders
         /// Initializes a new instance of the <see cref="StopAllActionsPacketReader"/> class.
         /// </summary>
         /// <param name="logger">A reference to the logger in use.</param>
-        public StopAllActionsPacketReader(ILogger logger)
+        public StopAllActionsPacketReader(ILogger<StopAllActionsPacketReader> logger)
             : base(logger)
         {
         }

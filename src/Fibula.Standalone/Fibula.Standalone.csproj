@@ -17,9 +17,6 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DebugType>full</DebugType>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>..\..\bin</OutputPath>
-  </PropertyGroup>
   
   <ItemGroup>
     <None Remove="stylecop.json" />
@@ -28,12 +25,14 @@
   <ItemGroup>
     <AdditionalFiles Include="stylecop.json" />
   </ItemGroup>
-  
+
   <ItemGroup>
-    <None Include="..\..\LICENSE" Link="LICENSE" />
+    <None Include="..\..\LICENSE" Link="LICENSE" Pack="true" Visible="false" PackagePath="" />
   </ItemGroup>
   
   <ItemGroup>
+    <PackageReference Include="Fibula.Providers.Azure" Version="1.0.0" />
+    <PackageReference Include="Fibula.Security" Version="1.0.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="3.8.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="5.0.0" />
@@ -56,22 +55,18 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\Fibula.Client\Fibula.Client.csproj" />
     <ProjectReference Include="..\Fibula.Common\Fibula.Common.csproj" />
-    <ProjectReference Include="..\Fibula.Creatures\Fibula.Creatures.csproj" />
-    <ProjectReference Include="..\Fibula.Items\Fibula.Items.csproj" />
-    <ProjectReference Include="..\Fibula.Map\Fibula.Map.csproj" />
-    <ProjectReference Include="..\Fibula.Mechanics.PathFinding.AStar\Fibula.Mechanics.PathFinding.AStar.csproj" />
-    <ProjectReference Include="..\Fibula.Mechanics\Fibula.Mechanics.csproj" />
+    <ProjectReference Include="..\Fibula.Server\Fibula.Server.csproj" />
     <ProjectReference Include="..\Fibula.Plugins.Database.CosmosDB\Fibula.Plugins.Database.CosmosDB.csproj" />
     <ProjectReference Include="..\Fibula.Plugins.Database.InMemoryOnly\Fibula.Plugins.Database.InMemoryOnly.csproj" />
+    <ProjectReference Include="..\Fibula.Plugins.Database.SqlServer\Fibula.Plugins.Database.SqlServer.csproj" />
     <ProjectReference Include="..\Fibula.Plugins.ItemLoaders.CipObjectsFile\Fibula.Plugins.ItemLoaders.CipObjectsFile.csproj" />
     <ProjectReference Include="..\Fibula.Plugins.MapLoaders.CipSectorFiles\Fibula.Plugins.MapLoaders.CipSectorFiles.csproj" />
     <ProjectReference Include="..\Fibula.Plugins.MapLoaders.GrassOnly\Fibula.Plugins.MapLoaders.GrassOnly.csproj" />
     <ProjectReference Include="..\Fibula.Plugins.MonsterLoaders.CipMonFiles\Fibula.Plugins.MonsterLoaders.CipMonFiles.csproj" />
+    <ProjectReference Include="..\Fibula.Plugins.PathFinding.AStar\Fibula.Plugins.PathFinding.AStar.csproj" />
     <ProjectReference Include="..\Fibula.Plugins.SpawnLoaders.CipMonstersDbFile\Fibula.Plugins.SpawnLoaders.CipMonstersDbFile.csproj" />
     <ProjectReference Include="..\Fibula.Protocol.V772\Fibula.Protocol.V772.csproj" />
-    <ProjectReference Include="..\Fibula.Security\Fibula.Security.csproj" />
     <ProjectReference Include="..\Fibula.Communications\Fibula.Communications.csproj" />
   </ItemGroup>
   

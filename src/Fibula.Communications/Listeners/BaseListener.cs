@@ -18,7 +18,7 @@ namespace Fibula.Communications.Listeners
     using System.Threading.Tasks;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Contracts.Delegates;
-    using Fibula.Security.Contracts;
+    using Fibula.Security.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Logging;
 

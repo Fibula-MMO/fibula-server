@@ -17,18 +17,15 @@ namespace Fibula.Plugins.MapLoaders.CipSectorFiles
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using Fibula.Common.Contracts.Abstractions;
-    using Fibula.Common.Contracts.Structs;
-    using Fibula.Creatures.Contracts.Abstractions;
+    using Fibula.Definitions.Data.Structures;
     using Fibula.Definitions.Enumerations;
-    using Fibula.Items.Contracts;
-    using Fibula.Items.Contracts.Abstractions;
-    using Fibula.Map.Contracts.Abstractions;
-    using Fibula.Map.Contracts.Enumerations;
     using Fibula.Parsing.CipFiles;
     using Fibula.Parsing.CipFiles.Enumerations;
     using Fibula.Parsing.CipFiles.Extensions;
     using Fibula.Parsing.Contracts.Abstractions;
+    using Fibula.Server.Contracts;
+    using Fibula.Server.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Enumerations;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
@@ -243,7 +240,10 @@ namespace Fibula.Plugins.MapLoaders.CipSectorFiles
             var fromSectorY = fromY / SquareSectorSize;
             var toSectorY = toY / SquareSectorSize;
 
-            if (toSectorX < fromSectorX || toSectorY < fromSectorY || toZ < fromZ)
+            if (toSectorX < fromSectorX || toSectorY < fromSectorY || toZ < fromZ ||
+                fromSectorX < SectorXMin || toSectorX > SectorXMax ||
+                fromSectorY < SectorYMin || toSectorY > SectorYMax ||
+                fromZ < SectorZMin || toZ > SectorZMax)
             {
                 throw new InvalidOperationException("Bad range supplied.");
             }
@@ -414,7 +414,7 @@ namespace Fibula.Plugins.MapLoaders.CipSectorFiles
             {
                 if ("Content".Equals(attribute.Name) && item is IContainerItem containerItem)
                 {
-                    if (attribute.Value is not IEnumerable<IParsedElement> contentElements || !contentElements.Any())
+                    if (!(attribute.Value is IEnumerable<IParsedElement> contentElements) || !contentElements.Any())
                     {
                         continue;
                     }
@@ -440,7 +440,7 @@ namespace Fibula.Plugins.MapLoaders.CipSectorFiles
                 }
 
                 // These are safe to add as Attributes of the item.
-                if (!Enum.TryParse(attribute.Name, out CipItemAttribute cipAttr) || cipAttr.ToItemAttribute() is not ItemAttribute itemAttribute)
+                if (!Enum.TryParse(attribute.Name, out CipItemAttribute cipAttr) || !(cipAttr.ToItemAttribute() is ItemAttribute itemAttribute))
                 {
                     this.Logger.LogWarning($"Unsupported attribute {attribute.Name} on {item.Type.Name}, ignoring.");
 

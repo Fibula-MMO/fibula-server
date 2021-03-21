@@ -15,11 +15,10 @@ namespace Fibula.Plugins.MapLoaders.GrassOnly
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
-    using Fibula.Common.Contracts.Structs;
-    using Fibula.Items.Contracts;
-    using Fibula.Items.Contracts.Abstractions;
-    using Fibula.Map.Contracts.Abstractions;
-    using Fibula.Map.Contracts.Delegates;
+    using Fibula.Definitions.Data.Structures;
+    using Fibula.Server.Contracts;
+    using Fibula.Server.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Delegates;
     using Fibula.Utilities.Validation;
 
     /// <summary>

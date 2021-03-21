@@ -14,7 +14,7 @@ namespace Fibula.Communications.Packets.Outgoing
     using System.Collections.Generic;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Contracts.Enumerations;
-    using Fibula.Items.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Abstractions;
 
     /// <summary>
     /// Class that represents a packet for a container being opened.
