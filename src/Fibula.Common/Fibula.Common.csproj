@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Fibula.DataAccess" Version="1.0.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.WorkerService" Version="2.16.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="5.0.0" />
@@ -26,7 +27,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Fibula.Common.Contracts\Fibula.Common.Contracts.csproj" />
-    <ProjectReference Include="..\Fibula.Data\Fibula.Data.csproj" />
   </ItemGroup>
 
 </Project>

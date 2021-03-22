@@ -31,6 +31,8 @@
   </ItemGroup>
   
   <ItemGroup>
+    <PackageReference Include="Fibula.Plugins.ItemLoaders.CipObjectsFile" Version="1.0.0" />
+    <PackageReference Include="Fibula.Plugins.MonsterLoaders.CipMonFiles" Version="1.0.0" />
     <PackageReference Include="Fibula.Providers.Azure" Version="1.0.0" />
     <PackageReference Include="Fibula.Security" Version="1.0.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="3.8.0" />
@@ -60,10 +62,8 @@
     <ProjectReference Include="..\Fibula.Plugins.Database.CosmosDB\Fibula.Plugins.Database.CosmosDB.csproj" />
     <ProjectReference Include="..\Fibula.Plugins.Database.InMemoryOnly\Fibula.Plugins.Database.InMemoryOnly.csproj" />
     <ProjectReference Include="..\Fibula.Plugins.Database.SqlServer\Fibula.Plugins.Database.SqlServer.csproj" />
-    <ProjectReference Include="..\Fibula.Plugins.ItemLoaders.CipObjectsFile\Fibula.Plugins.ItemLoaders.CipObjectsFile.csproj" />
     <ProjectReference Include="..\Fibula.Plugins.MapLoaders.CipSectorFiles\Fibula.Plugins.MapLoaders.CipSectorFiles.csproj" />
     <ProjectReference Include="..\Fibula.Plugins.MapLoaders.GrassOnly\Fibula.Plugins.MapLoaders.GrassOnly.csproj" />
-    <ProjectReference Include="..\Fibula.Plugins.MonsterLoaders.CipMonFiles\Fibula.Plugins.MonsterLoaders.CipMonFiles.csproj" />
     <ProjectReference Include="..\Fibula.Plugins.PathFinding.AStar\Fibula.Plugins.PathFinding.AStar.csproj" />
     <ProjectReference Include="..\Fibula.Plugins.SpawnLoaders.CipMonstersDbFile\Fibula.Plugins.SpawnLoaders.CipMonstersDbFile.csproj" />
     <ProjectReference Include="..\Fibula.Protocol.V772\Fibula.Protocol.V772.csproj" />

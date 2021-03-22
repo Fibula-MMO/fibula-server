@@ -66,7 +66,7 @@ namespace Fibula.Standalone
         private static IHandlerSelector handlerSelector;
 
         /// <summary>
-        /// Stores a mapping of conenctions to their respective clients.
+        /// Stores a mapping of connections to their respective clients.
         /// </summary>
         private static IDictionary<IConnection, IClient> clientMap;
 
