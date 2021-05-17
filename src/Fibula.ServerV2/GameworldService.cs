@@ -19,6 +19,7 @@ namespace Fibula.ServerV2
     using System.Threading;
     using System.Threading.Tasks;
     using Fibula.Common.Contracts.Abstractions;
+    using Fibula.Definitions.Constants;
     using Fibula.Definitions.Data.Entities;
     using Fibula.Definitions.Data.Structures;
     using Fibula.Definitions.Enumerations;
@@ -31,6 +32,7 @@ namespace Fibula.ServerV2
     using Fibula.ServerV2.Contracts.Extensions;
     using Fibula.ServerV2.Creatures;
     using Fibula.ServerV2.Notifications;
+    using Fibula.ServerV2.Operations;
     using Fibula.Utilities.Common.Extensions;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Logging;
@@ -86,6 +88,11 @@ namespace Fibula.ServerV2
         private readonly IEnumerable<Spawn> monsterSpawns;
 
         /// <summary>
+        /// The predefined items used in the game.
+        /// </summary>
+        private readonly IPredefinedItemSet predefinedItems;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="GameworldService"/> class.
         /// </summary>
         /// <param name="applicationContext">A reference to the application context.</param>
@@ -95,6 +102,7 @@ namespace Fibula.ServerV2
         /// <param name="itemFactory">A reference to the item factory in use.</param>
         /// <param name="creatureFactory">A reference to the creature factory in use.</param>
         /// <param name="pathFinderAlgo">A reference to the path finding algorithm in use.</param>
+        /// <param name="predefinedItemSet">A reference to the predefined item set declared.</param>
         /// <param name="monsterSpawnsLoader">A reference to the monster spawns loader.</param>
         /// <param name="scheduler">A reference to the global scheduler instance.</param>
         public GameworldService(
@@ -105,6 +113,7 @@ namespace Fibula.ServerV2
             IItemFactory itemFactory,
             ICreatureFactory creatureFactory,
             IPathFinder pathFinderAlgo,
+            IPredefinedItemSet predefinedItemSet,
             IMonsterSpawnLoader monsterSpawnsLoader,
             IScheduler scheduler)
         {
@@ -115,6 +124,7 @@ namespace Fibula.ServerV2
             itemFactory.ThrowIfNull(nameof(itemFactory));
             creatureFactory.ThrowIfNull(nameof(creatureFactory));
             pathFinderAlgo.ThrowIfNull(nameof(pathFinderAlgo));
+            predefinedItemSet.ThrowIfNull(nameof(predefinedItemSet));
             monsterSpawnsLoader.ThrowIfNull(nameof(monsterSpawnsLoader));
             scheduler.ThrowIfNull(nameof(scheduler));
 
@@ -125,6 +135,7 @@ namespace Fibula.ServerV2
             this.itemFactory = itemFactory;
             this.creatureFactory = creatureFactory;
             this.pathFinder = pathFinderAlgo;
+            this.predefinedItems = predefinedItemSet;
             this.scheduler = scheduler;
 
             this.itemFactory.ItemCreated += this.AfterItemIsCreated;
@@ -140,6 +151,8 @@ namespace Fibula.ServerV2
             this.Port = applicationContext.Options.World.Port.GetValueOrDefault();
 
             this.State = WorldState.Loading;
+            this.LightColor = LightConstants.WhiteColor;
+            this.LightLevel = LightConstants.WorldDay;
         }
 
         /// <summary>
@@ -161,6 +174,16 @@ namespace Fibula.ServerV2
         /// Gets the state of the world.
         /// </summary>
         public WorldState State { get; private set; }
+
+        /// <summary>
+        /// Gets the current light color of the world.
+        /// </summary>
+        public byte LightColor { get; private set; }
+
+        /// <summary>
+        /// Gets the current light level of the world.
+        /// </summary>
+        public byte LightLevel { get; private set; }
 
         /// <summary>
         /// Runs the main game processing thread which begins advancing time on the game engine.
@@ -210,9 +233,10 @@ namespace Fibula.ServerV2
 
             var newPlayerId = Player.ReserveNewId();
 
-            // var loginOp = new LogInOperation(requestorId: 0, newPlayerId, characterMetadata, this.WorldInfo.LightLevel, this.WorldInfo.LightColor);
+            var loginOp = new LogInOperation(requestorId: 0, newPlayerId, characterMetadata, this.LightLevel, this.LightColor);
 
-            // this.DispatchOperation(loginOp);
+            this.DispatchOperation(loginOp);
+
             return newPlayerId;
         }
 
@@ -269,9 +293,9 @@ namespace Fibula.ServerV2
 
                 if (player != null)
                 {
-                    var loginNotification = new LogInNotification(player, creature.Location, this.map.DescribeAt(player, player.Location), AnimatedEffect.BubbleBlue);
+                    var loginNotification = new PlayerLogInNotification(player, creature.Location, this.map.DescribeAt(player, player.Location), AnimatedEffect.BubbleBlue);
 
-                    this.NotificationReady?.Invoke(this, loginNotification);
+                    this.SendNotification(loginNotification);
                 }
 
                 var spectators = player != null ? this.map.FindPlayersThatCanSee(creature.Location).Except(player.YieldSingleItem()) : this.map.FindPlayersThatCanSee(creature.Location);
@@ -280,7 +304,7 @@ namespace Fibula.ServerV2
                 {
                     var creatureAddedNotification = new CreatureAddedNotification(spectators, creature, creature.Location, placedAtIndex, AnimatedEffect.BubbleBlue);
 
-                    this.NotificationReady?.Invoke(this, creatureAddedNotification);
+                    this.SendNotification(creatureAddedNotification);
                 }
             }
 
@@ -313,9 +337,23 @@ namespace Fibula.ServerV2
             var spectators = (creature is IPlayer player) ? this.map.FindPlayersThatCanSee(creature.Location).Union(player.YieldSingleItem()) : this.map.FindPlayersThatCanSee(creature.Location);
             var notification = new CreatureRemovedNotification(spectators, creature, oldStackpos);
 
-            this.NotificationReady?.Invoke(this, notification);
+            this.SendNotification(notification);
 
             return true;
+        }
+
+        /// <summary>
+        /// Sends a notification.
+        /// </summary>
+        /// <param name="notification">The notification to send.</param>
+        public void SendNotification(INotification notification)
+        {
+            if (notification == null)
+            {
+                return;
+            }
+
+            this.NotificationReady?.Invoke(this, notification);
         }
 
         /// <summary>
@@ -358,6 +396,30 @@ namespace Fibula.ServerV2
 
             // Online player count.
             // this.applicationContext.TelemetryClient.GetMetric(TelemetryConstants.OnlinePlayersMetricName).TrackValue(this.creatureManager.PlayerCount);
+        }
+
+        /// <summary>
+        /// Dispatches an operation.
+        /// </summary>
+        /// <param name="operation">The operation to dispatch.</param>
+        /// <param name="withDelay">Optional. A delay to dispatch the operation with.</param>
+        private void DispatchOperation(IOperation operation, TimeSpan withDelay = default)
+        {
+            operation.ThrowIfNull(nameof(operation));
+
+            // Normalize delay to protect against negative time spans.
+            var operationDelay = withDelay < TimeSpan.Zero ? TimeSpan.Zero : withDelay;
+
+            /*
+            // Add delay if there is an associated exhaustion to this operation, if any.
+            if (operation.RequestorId > 0 && operation.ExhaustionInfo.Any() && this.creatureManager.FindCreatureById(operation.RequestorId) is ICreature requestor)
+            {
+                // Delay by the maximum of any conditions needed to cool down.
+                operationDelay += operation.ExhaustionInfo.Max(exhaustionInfo => requestor.RemainingExhaustionTime(exhaustionInfo.Key, this.scheduler.CurrentTime));
+            }
+            */
+
+            this.scheduler.ScheduleEvent(operation, operationDelay);
         }
 
         /// <summary>
@@ -407,22 +469,20 @@ namespace Fibula.ServerV2
 
             var eventType = evt.GetType();
 
-            // TODO: implement operations.
-            /*
             if (typeof(IOperation).IsAssignableFrom(eventType))
             {
                 return new OperationContext(
                     this.logger,
+                    this.applicationContext,
                     this.map,
                     this.creatureManager,
                     this.itemFactory,
                     this.creatureFactory,
                     this,
-                    this,
                     this.pathFinder,
+                    this.predefinedItems,
                     this.scheduler);
             }
-            */
 
             return new EventContext(this.logger, () => this.scheduler.CurrentTime);
         }

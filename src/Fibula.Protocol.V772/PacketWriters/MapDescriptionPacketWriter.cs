@@ -100,11 +100,11 @@ namespace Fibula.Protocol.V772.PacketWriters
                 {
                     lastSegment = lastSegment.Append(new byte[] { byte.MaxValue, byte.MaxValue });
                 }
+            }
 
-                if (++currentSkipCount < byte.MaxValue)
-                {
-                    lastSegment = lastSegment.Append(new byte[] { currentSkipCount, byte.MaxValue });
-                }
+            if (++currentSkipCount < byte.MaxValue)
+            {
+                lastSegment = lastSegment.Append(new byte[] { currentSkipCount, byte.MaxValue });
             }
 
             return new ReadOnlySequence<byte>(firstSegment, 0, lastSegment, lastSegment.Memory.Length);

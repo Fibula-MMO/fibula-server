@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------
-// <copyright file="LogInNotification.cs" company="2Dudes">
+// <copyright file="PlayerLogInNotification.cs" company="2Dudes">
 // Copyright (c) | Jose L. Nunez de Caceres et al.
 // https://linkedin.com/in/nunezdecaceres
 //
@@ -22,16 +22,16 @@ namespace Fibula.ServerV2.Notifications
     /// <summary>
     /// Class that represents a notification for when a player first logs in to the game.
     /// </summary>
-    public class LogInNotification : Notification
+    public class PlayerLogInNotification : Notification
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="LogInNotification"/> class.
+        /// Initializes a new instance of the <see cref="PlayerLogInNotification"/> class.
         /// </summary>
         /// <param name="player">The player that was logged in.</param>
         /// <param name="atLocation">The location to which the creature is being added.</param>
         /// <param name="descriptionTiles">The map tiles that are being sent as part of the description.</param>
         /// <param name="addEffect">Optional. An effect to add when removing the creature.</param>
-        public LogInNotification(
+        public PlayerLogInNotification(
             IPlayer player,
             Location atLocation,
             IEnumerable<ITile> descriptionTiles,
@@ -73,6 +73,7 @@ namespace Fibula.ServerV2.Notifications
         {
             var packets = new List<IOutboundPacket>
             {
+                new PlayerLoginPacket(this.Player.Id, this.Player),
                 new MapDescriptionPacket(this.Player, this.AtLocation, this.DescriptionTiles),
             };
 
@@ -80,6 +81,12 @@ namespace Fibula.ServerV2.Notifications
             {
                 packets.Add(new MagicEffectPacket(this.AtLocation, this.AddEffect));
             }
+
+            packets.Add(new CreatureLightPacket(player));
+
+            packets.Add(new PlayerStatsPacket(this.Player));
+            packets.Add(new PlayerSkillsPacket(this.Player));
+            packets.Add(new PlayerConditionsPacket(this.Player));
 
             return packets;
         }

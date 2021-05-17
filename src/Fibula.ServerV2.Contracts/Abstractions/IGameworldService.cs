@@ -19,7 +19,7 @@ namespace Fibula.ServerV2.Contracts.Abstractions
     /// <summary>
     /// Interface for the game world service.
     /// </summary>
-    public interface IGameworldService : IHostedService
+    public interface IGameworldService : IHostedService, IGameOperationsApi
     {
         /// <summary>
         /// Event fired when there is a notification ready to be broadcasted to the <see cref="IGameworldService"/>'s subscribers.

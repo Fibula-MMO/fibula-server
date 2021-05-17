@@ -231,7 +231,7 @@ namespace Fibula.Plugins.MapLoaders.CipSectorFiles
 
             lock (this.loadLock)
             {
-                Parallel.For(window.FromZ, window.ToZ + 1, sectorZ =>
+                for (int sectorZ = window.FromZ; sectorZ <= window.ToZ; sectorZ++)
                 {
                     Parallel.For(fromSectorY, toSectorY + 1, sectorY =>
                     {
@@ -259,7 +259,7 @@ namespace Fibula.Plugins.MapLoaders.CipSectorFiles
                             this.logger.LogDebug($"Loaded sector {sectorFileName} [{this.totalLoadedCount} out of {this.totalTileCount}].");
                         });
                     });
-                });
+                }
             }
 
             this.totalLoadedCount = this.totalTileCount;

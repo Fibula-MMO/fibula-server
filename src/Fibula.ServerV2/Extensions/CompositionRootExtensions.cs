@@ -14,6 +14,7 @@ namespace Fibula.ServerV2.Extensions
     using System;
     using Fibula.Data.Contracts.Abstractions;
     using Fibula.Plugins.Database.InMemoryOnly;
+    using Fibula.Plugins.Database.SqlServer;
     using Fibula.Plugins.ItemLoaders.CipObjectsFile;
     using Fibula.Plugins.MapLoaders.CipSectorFiles;
     using Fibula.Plugins.MonsterLoaders.CipMonFiles;
@@ -78,8 +79,8 @@ namespace Fibula.ServerV2.Extensions
             services.AddMonsterDbFileMonsterSpawnLoader(configuration);
 
             // Chose a type of Database context:
-            // services.AddCosmosDBDatabaseContext(hostingContext.Configuration);
-            // services.AddSqlServerDatabaseContext(hostingContext.Configuration);
+            // services.AddCosmosDBDatabaseContext(configuration);
+            // services.AddSqlServerDatabaseContext(configuration);
             services.AddInMemoryDatabaseContext(configuration);
 
             // IFibulaDbContext itself is added by the Add<DatabaseProvider>() call above.

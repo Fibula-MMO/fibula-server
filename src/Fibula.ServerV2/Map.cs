@@ -119,12 +119,12 @@ namespace Fibula.ServerV2
 
                 if (minXLoaded < int.MaxValue)
                 {
-                    this.loadedHashes.Add(hash);
-
                     this.logger.LogTrace($"Map window loaded: [{minXLoaded}->{maxXLoaded}, {minYLoaded}->{maxYLoaded}, {minZLoaded}->{maxZLoaded}].");
 
                     this.WindowLoaded?.Invoke(minXLoaded, maxXLoaded, minYLoaded, maxYLoaded, minZLoaded, maxZLoaded);
                 }
+
+                this.loadedHashes.Add(hash);
             }
 
             return this.tiles.TryGetValue(location, out tile);

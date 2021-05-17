@@ -172,7 +172,7 @@ namespace Fibula.Standalone
             {
                 responseError = "Your account is disabled.\nPlease contact us for more information.";
             }
-            else if (!(account.Characters.FirstOrDefault(c => c.Name.Equals(characterName)) is CharacterEntity character))
+            else if (!(unitOfWork.Characters.FindByName(characterName) is CharacterEntity character) || !character.AccountId.Equals(account.Id))
             {
                 responseError = "The character selected was not found in this account.";
             }
