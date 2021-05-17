@@ -16,7 +16,7 @@ namespace Fibula.Server.Mechanics.Operations
     using Fibula.Server.Contracts;
     using Fibula.Server.Contracts.Abstractions;
     using Fibula.Server.Contracts.Extensions;
-    using Fibula.Server.Mechanics.Notifications;
+    using Fibula.Server.Notifications;
 
     /// <summary>
     /// Class that represents an event for an item change.
@@ -96,7 +96,7 @@ namespace Fibula.Server.Mechanics.Operations
 
             if (!replaceSuccessful || replaceRemainder != null)
             {
-                context.GameApi.AddContentToContainerOrFallback(inThingContainer, ref replaceRemainder, FallbackIndex, includeTileAsFallback: true, this.GetRequestor(context.CreatureFinder));
+                context.GameApi.AddContentToContainerOrFallback(inThingContainer, ref replaceRemainder, FallbackIndex, includeTileAsFallback: true, this.GetRequestor(context.CreatureManager));
             }
 
             if (replaceSuccessful)

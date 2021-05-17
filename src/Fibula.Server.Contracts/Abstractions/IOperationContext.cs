@@ -11,6 +11,7 @@
 
 namespace Fibula.Server.Contracts.Abstractions
 {
+    using Fibula.Common.Contracts.Abstractions;
     using Fibula.Scheduling.Contracts.Abstractions;
 
     /// <summary>
@@ -29,9 +30,14 @@ namespace Fibula.Server.Contracts.Abstractions
         IMap Map { get; }
 
         /// <summary>
-        /// Gets the reference to the creature finder in use.
+        /// Gets the reference to the application context.
         /// </summary>
-        ICreatureFinder CreatureFinder { get; }
+        IApplicationContext ApplicationContext { get; }
+
+        /// <summary>
+        /// Gets the reference to the creature manager in use.
+        /// </summary>
+        ICreatureManager CreatureManager { get; }
 
         /// <summary>
         /// Gets a reference to the item factory in use.

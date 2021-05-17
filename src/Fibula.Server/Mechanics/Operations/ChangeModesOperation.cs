@@ -56,7 +56,7 @@ namespace Fibula.Server.Mechanics.Operations
         /// <param name="context">A reference to the operation context.</param>
         protected override void Execute(IOperationContext context)
         {
-            var onCreature = this.GetRequestor(context.CreatureFinder);
+            var onCreature = this.GetRequestor(context.CreatureManager);
 
             if (onCreature == null || !(onCreature is ICombatant combatantCreature))
             {

@@ -1,0 +1,77 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DebugType>full</DebugType>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>Fibula.Server.Contracts</PackageId>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <Copyright>2020</Copyright>
+    <Authors>Jose L. Nunez de Caceres et al.</Authors>
+    <Company>The Fibula Project</Company>
+    <Product>Fibula MMO</Product>
+    <PackageProjectUrl>https://fibula-mmo.github.io/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Fibula-MMO/fibula-server</RepositoryUrl>
+    <RepositoryType>GitHub</RepositoryType>
+    <Version>1.0.0</Version>
+    <NeutralLanguage>en</NeutralLanguage>
+    <Description>A library containing the server side contracts, abstractions and constants in the Fibula project.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Abstractions\IActionOperation.cs" />
+    <Compile Remove="Abstractions\ICollisionEventRule.cs" />
+    <Compile Remove="Abstractions\ICombatOperation.cs" />
+    <Compile Remove="Abstractions\ICreatureWithExhaustion.cs" />
+    <Compile Remove="Abstractions\IEventRule.cs" />
+    <Compile Remove="Abstractions\IEventRuleArguments.cs" />
+    <Compile Remove="Abstractions\IEventRuleContext.cs" />
+    <Compile Remove="Abstractions\IEventRuleCreationArguments.cs" />
+    <Compile Remove="Abstractions\IEventRuleFunction.cs" />
+    <Compile Remove="Abstractions\IEventRulesApi.cs" />
+    <Compile Remove="Abstractions\IEventRulesFactory.cs" />
+    <Compile Remove="Abstractions\IEventRulesLoader.cs" />
+    <Compile Remove="Abstractions\IMovementOperation.cs" />
+    <Compile Remove="Abstractions\ISeparationEventRule.cs" />
+    <Compile Remove="Abstractions\IThingMovementEventRule.cs" />
+    <Compile Remove="Abstractions\IUseItemEventRule.cs" />
+    <Compile Remove="Abstractions\IUseItemOnEventRule.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="stylecop.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="stylecop.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE" Link="LICENSE" Pack="true" Visible="false" PackagePath="" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Fibula.Definitions" Version="1.0.5" />
+    <PackageReference Include="Fibula.Utilities.Pathfinding" Version="1.1.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="5.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Fibula.Common.Contracts\Fibula.Common.Contracts.csproj" />
+    <ProjectReference Include="..\Fibula.Communications.Packets.Contracts\Fibula.Communications.Packets.Contracts.csproj" />
+  </ItemGroup>
+
+</Project>

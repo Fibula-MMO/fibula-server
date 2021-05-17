@@ -12,10 +12,8 @@
 namespace Fibula.Server.Mechanics.Operations
 {
     using System;
-    using Fibula.Communications.Packets.Outgoing;
     using Fibula.Server.Contracts.Abstractions;
-    using Fibula.Server.Contracts.Extensions;
-    using Fibula.Server.Mechanics.Notifications;
+    using Fibula.Server.Notifications;
     using Fibula.Utilities.Common.Extensions;
 
     /// <summary>
@@ -61,12 +59,8 @@ namespace Fibula.Server.Mechanics.Operations
                     playerAsCombatant.SetAttackTarget(null);
                 }
 
-                this.SendNotification(
-                    context,
-                    new GenericNotification(
-                        () => player.YieldSingleItem(),
-                        new PlayerCancelAttackPacket(),
-                        new PlayerCancelWalkPacket(this.Creature.Direction.GetClientSafeDirection())));
+                this.SendNotification(context, new PlayerCancelAttackNotification(() => player.YieldSingleItem(), player));
+                this.SendNotification(context, new PlayerCancelWalkNotification(() => player.YieldSingleItem(), player));
             }
         }
     }

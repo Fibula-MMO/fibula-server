@@ -94,7 +94,6 @@ namespace Fibula.Server.Creatures
                     }
 
                 case CreatureType.Player:
-
                     if (creatureCreationArguments == null ||
                         creatureCreationArguments.Metadata == null ||
                         !(creatureCreationArguments is PlayerCreationArguments playerCreationArguments))
@@ -102,9 +101,7 @@ namespace Fibula.Server.Creatures
                         throw new ArgumentException("Invalid creation arguments for a player.", nameof(creatureCreationArguments));
                     }
 
-                    return new Player(
-                        playerCreationArguments.Client,
-                        playerCreationArguments.CharacterMetadata);
+                    return new Player(playerCreationArguments.CharacterMetadata, playerCreationArguments.PreselectedId);
             }
 
             throw new NotSupportedException($"{nameof(CreatureFactory)} does not support creation of creatures with type {creatureCreationArguments.Type}.");

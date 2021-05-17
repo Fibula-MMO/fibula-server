@@ -20,7 +20,7 @@ namespace Fibula.Server.Mechanics.Operations
     using Fibula.Server.Contracts.Abstractions;
     using Fibula.Server.Contracts.Enumerations;
     using Fibula.Server.Mechanics.Conditions;
-    using Fibula.Server.Mechanics.Notifications;
+    using Fibula.Server.Notifications;
     using Fibula.Utilities.Common.Extensions;
     using Fibula.Utilities.Validation;
 
@@ -99,7 +99,7 @@ namespace Fibula.Server.Mechanics.Operations
             this.Execute(operationContext);
 
             // Add any associated exhaustion from this operation, the the requestor, if there was one.
-            if (this.ExhaustionInfo.Any() && this.GetRequestor(operationContext.CreatureFinder) is ICreature requestor)
+            if (this.ExhaustionInfo.Any() && this.GetRequestor(operationContext.CreatureManager) is ICreature requestor)
             {
                 foreach (var (exhaustionType, duration) in this.ExhaustionInfo)
                 {
@@ -123,7 +123,7 @@ namespace Fibula.Server.Mechanics.Operations
         /// <param name="message">Optional. The message to send. Defaults to <see cref="OperationMessage.NotPossible"/>.</param>
         protected void DispatchTextNotification(IOperationContext context, string message = OperationMessage.NotPossible)
         {
-            if (this.RequestorId == 0 || !(context.CreatureFinder.FindCreatureById(this.RequestorId) is IPlayer player))
+            if (this.RequestorId == 0 || !(context.CreatureManager.FindCreatureById(this.RequestorId) is IPlayer player))
             {
                 return;
             }
@@ -142,7 +142,7 @@ namespace Fibula.Server.Mechanics.Operations
         {
             notification.ThrowIfNull(nameof(notification));
 
-            notification.Send(new NotificationContext(context.Logger, context.MapDescriptor, context.CreatureFinder));
+            context.GameApi.SendNotification(notification);
         }
     }
 }

@@ -14,7 +14,8 @@ namespace Fibula.Protocol.V772.PacketWriters
     using System;
     using Fibula.Communications;
     using Fibula.Communications.Contracts.Abstractions;
-    using Fibula.Communications.Contracts.Enumerations;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Contracts.Enumerations;
     using Fibula.Communications.Packets.Outgoing;
     using Fibula.Protocol.V772.Extensions;
     using Microsoft.Extensions.Logging;
@@ -57,7 +58,7 @@ namespace Fibula.Protocol.V772.PacketWriters
 
             if (playerLoginPacket.Player.PermissionsLevel > 0)
             {
-                message.AddByte(OutgoingPacketType.GamemasterFlags.ToByte());
+                message.AddByte(OutboundPacketType.GamemasterFlags.ToByte());
 
                 for (var i = 0; i < 32; i++)
                 {

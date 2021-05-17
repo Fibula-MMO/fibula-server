@@ -16,6 +16,7 @@ namespace Fibula.Communications
     using System.Linq;
     using Fibula.Communications.Contracts;
     using Fibula.Communications.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
     using Fibula.Definitions.Enumerations;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Logging;
@@ -61,11 +62,8 @@ namespace Fibula.Communications
             this.knownCreaturesLock = new object();
 
             this.Connection = connection;
-            this.Information = new ClientInformation()
-            {
-                Type = AgentType.Undefined,
-                Version = "Unknown",
-            };
+            this.Type = AgentType.Undefined;
+            this.Version = "Unknown";
         }
 
         /// <summary>
@@ -79,9 +77,14 @@ namespace Fibula.Communications
         public IConnection Connection { get; }
 
         /// <summary>
-        /// Gets the information about the client on the other side of this connection.
+        /// Gets or sets the operating system.
         /// </summary>
-        public ClientInformation Information { get; }
+        public AgentType Type { get; set; }
+
+        /// <summary>
+        /// Gets or sets the version.
+        /// </summary>
+        public string Version { get; set; }
 
         /// <summary>
         /// Gets or sets the id of the player that this client is tied to.
@@ -112,7 +115,7 @@ namespace Fibula.Communications
                 return;
             }
 
-            this.Connection.Send(packetsToSend);
+            this.Connection.Send(packetsToSend, this.playerId);
         }
 
         /// <summary>

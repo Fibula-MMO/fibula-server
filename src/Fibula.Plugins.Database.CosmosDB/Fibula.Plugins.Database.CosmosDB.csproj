@@ -17,7 +17,7 @@
 
   <ItemGroup>
     <PackageReference Include="Fibula.DataAccess.Contracts" Version="1.0.0" />
-    <PackageReference Include="Fibula.Definitions" Version="1.0.3" />
+    <PackageReference Include="Fibula.Definitions" Version="1.0.5" />
     <PackageReference Include="Fibula.Providers.Contracts" Version="1.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Cosmos" Version="5.0.3" />

@@ -11,7 +11,7 @@
 
 namespace Fibula.Communications.Packets.Contracts.Abstractions
 {
-    using Fibula.Communications.Contracts.Enumerations;
+    using Fibula.Communications.Packets.Contracts.Enumerations;
 
     /// <summary>
     /// Interface for actions without any content to read.
@@ -21,6 +21,6 @@ namespace Fibula.Communications.Packets.Contracts.Abstractions
         /// <summary>
         /// Gets the action to do.
         /// </summary>
-        public IncomingPacketType Action { get; }
+        public InboundPacketType Action { get; }
     }
 }

@@ -72,11 +72,13 @@ namespace Fibula.Server.Creatures
         /// Bounded between [<see cref="CombatConstants.MinimumCombatSpeedFactor"/>, <see cref="CombatConstants.MaximumCombatSpeedFactor"/>] inclusive.
         /// Defaults to <see cref="CombatConstants.DefaultDefenseSpeedFactor"/>.
         /// </param>
+        /// <param name="preselectedId">Optional. A pre-selected id to use for the combatant. Picks a new id if none (or 0) is specified.</param>
         protected CombatantCreature(
             CreatureEntity creationMetadata,
             decimal baseAttackSpeed = CombatConstants.DefaultAttackSpeedFactor,
-            decimal baseDefenseSpeed = CombatConstants.DefaultDefenseSpeedFactor)
-            : base(creationMetadata)
+            decimal baseDefenseSpeed = CombatConstants.DefaultDefenseSpeedFactor,
+            uint preselectedId = 0)
+            : base(creationMetadata, preselectedId)
         {
             // Normalize combat speeds.
             this.baseAttackSpeed = Math.Min(CombatConstants.MaximumCombatSpeedFactor, Math.Max(CombatConstants.MinimumCombatSpeedFactor, baseAttackSpeed));

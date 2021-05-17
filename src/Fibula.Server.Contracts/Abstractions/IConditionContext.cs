@@ -29,6 +29,11 @@ namespace Fibula.Server.Contracts.Abstractions
         IMap Map { get; }
 
         /// <summary>
+        /// Gets a reference to the game's api.
+        /// </summary>
+        IGameOperationsApi GameApi { get; }
+
+        /// <summary>
         /// Gets the reference to the creature finder in use.
         /// </summary>
         ICreatureFinder CreatureFinder { get; }

@@ -12,9 +12,6 @@
 namespace Fibula.Server.Mechanics.Operations
 {
     using System;
-    using System.Collections.Generic;
-    using Fibula.Communications.Contracts.Abstractions;
-    using Fibula.Communications.Packets.Outgoing;
     using Fibula.Definitions.Enumerations;
     using Fibula.Definitions.Flags;
     using Fibula.Server.Contracts.Abstractions;
@@ -23,7 +20,7 @@ namespace Fibula.Server.Mechanics.Operations
     using Fibula.Server.Contracts.Extensions;
     using Fibula.Server.Contracts.Structs;
     using Fibula.Server.Mechanics.Conditions;
-    using Fibula.Server.Mechanics.Notifications;
+    using Fibula.Server.Notifications;
     using Fibula.Utilities.Common.Extensions;
     using Fibula.Utilities.Validation;
 
@@ -162,11 +159,7 @@ namespace Fibula.Server.Mechanics.Operations
             var damageDoneInfo = this.Target.ApplyDamage(damageToApplyInfo, this.Attacker?.Id ?? 0);
             var distanceOfAttack = (this.Target.Location - (this.Attacker?.Location ?? this.Target.Location)).MaxValueIn2D;
 
-            var packetsToSendToTargetPlayer = new List<IOutboundPacket>();
-            var packetsToSendToAllSpectators = new List<IOutboundPacket>
-            {
-                new MagicEffectPacket(this.Target.Location, damageDoneInfo.Effect),
-            };
+            this.SendNotification(context, new MagicEffectNotification(() => context.Map.FindPlayersThatCanSee(this.Target.Location), this.Target.Location, damageDoneInfo.Effect));
 
             if (damageDoneInfo.Damage != 0)
             {
@@ -182,7 +175,7 @@ namespace Fibula.Server.Mechanics.Operations
                 {
                     damageTextColor = TextColor.LightBlue;
                 }
-                else if (this.Target is IPlayer)
+                else if (this.Target is IPlayer tgtPlayer)
                 {
                     var hitpointsLostMessage = $"You lose {damageDoneInfo.Damage} hitpoints";
 
@@ -195,22 +188,23 @@ namespace Fibula.Server.Mechanics.Operations
 
                     hitpointsLostMessage += ".";
 
-                    packetsToSendToTargetPlayer.Add(new TextMessagePacket(MessageType.StatusDefault, hitpointsLostMessage));
+                    this.SendNotification(context, new TextMessageNotification(() => tgtPlayer.YieldSingleItem(), MessageType.StatusDefault, hitpointsLostMessage));
                 }
 
-                packetsToSendToAllSpectators.Add(new AnimatedTextPacket(this.Target.Location, damageTextColor, Math.Abs(damageDoneInfo.Damage).ToString()));
+                this.SendNotification(context, new AnimatedTextNotification(() => context.Map.FindPlayersThatCanSee(this.Target.Location), this.Target.Location, damageTextColor, Math.Abs(damageDoneInfo.Damage).ToString()));
             }
 
             if (distanceOfAttack > 1)
             {
                 // TODO: actual projectile value.
-                packetsToSendToAllSpectators.Add(new ProjectilePacket(this.Attacker.Location, this.Target.Location, ProjectileType.Bolt));
+                this.SendNotification(context, new ProjectileNotification(() => context.Map.FindPlayersThatCanSee(this.Target.Location), this.Attacker.Location, this.Target.Location, ProjectileType.Bolt));
             }
 
             if (this.Target.Stats[CreatureStat.DefensePoints].Decrease(1))
             {
                 this.Target.Skills[SkillType.Shield].IncreaseCounter(1);
 
+                // Restore the target's defense point.
                 context.Scheduler.ScheduleEvent(
                     new StatChangeOperation(this.Target, CreatureStat.DefensePoints),
                     TimeSpan.FromMilliseconds((int)Math.Round(CombatConstants.DefaultCombatRoundTimeInMs / this.Target.DefenseSpeed)));
@@ -223,13 +217,12 @@ namespace Fibula.Server.Mechanics.Operations
 
             if (this.Attacker != null)
             {
-                packetsToSendToTargetPlayer.Add(new SquarePacket(this.Attacker.Id, SquareColor.Black));
-
                 if (this.Attacker.Stats[CreatureStat.AttackPoints].Decrease(1))
                 {
                     // TODO: increase the actual skill.
                     this.Attacker.Skills[SkillType.NoWeapon].IncreaseCounter(1);
 
+                    // Restore the attacker's attack point.
                     context.Scheduler.ScheduleEvent(
                         new StatChangeOperation(this.Attacker, CreatureStat.AttackPoints),
                         TimeSpan.FromMilliseconds((int)Math.Round(CombatConstants.DefaultCombatRoundTimeInMs / this.Attacker.AttackSpeed)));
@@ -252,11 +245,12 @@ namespace Fibula.Server.Mechanics.Operations
                 }
             }
 
-            this.SendNotification(context, new GenericNotification(() => context.Map.FindPlayersThatCanSee(this.Target.Location), packetsToSendToAllSpectators.ToArray()));
-
             if (this.Target is IPlayer targetPlayer)
             {
-                this.SendNotification(context, new GenericNotification(() => targetPlayer.YieldSingleItem(), packetsToSendToTargetPlayer.ToArray()));
+                if (this.Attacker != null)
+                {
+                    this.SendNotification(context, new SquareNotification(() => targetPlayer.YieldSingleItem(), this.Attacker.Id, SquareColor.Black));
+                }
 
                 context.GameApi.AddOrAggregateCondition(
                     targetPlayer,

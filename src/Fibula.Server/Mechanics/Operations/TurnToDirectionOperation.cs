@@ -14,7 +14,7 @@ namespace Fibula.Server.Mechanics.Operations
     using Fibula.Definitions.Enumerations;
     using Fibula.Server.Contracts.Abstractions;
     using Fibula.Server.Contracts.Extensions;
-    using Fibula.Server.Mechanics.Notifications;
+    using Fibula.Server.Notifications;
 
     /// <summary>
     /// Class that represents an event for a creature turning.

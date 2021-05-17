@@ -11,9 +11,9 @@
 
 namespace Fibula.Protocol.V772.PacketReaders
 {
-    using Fibula.Common.Contracts.Abstractions;
     using Fibula.Communications;
     using Fibula.Communications.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
     using Fibula.Communications.Packets.Incoming;
     using Fibula.Security.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
@@ -28,25 +28,16 @@ namespace Fibula.Protocol.V772.PacketReaders
         /// Initializes a new instance of the <see cref="GameLogInPacketReader"/> class.
         /// </summary>
         /// <param name="logger">A reference to the logger in use.</param>
-        /// <param name="applicationContext">A reference to the application context.</param>
         /// <param name="rsaDecryptor">A reference to the RSA decryptor in use.</param>
         public GameLogInPacketReader(
             ILogger<GameLogInPacketReader> logger,
-            IApplicationContext applicationContext,
             IRsaDecryptor rsaDecryptor)
             : base(logger)
         {
-            applicationContext.ThrowIfNull(nameof(applicationContext));
             rsaDecryptor.ThrowIfNull(nameof(rsaDecryptor));
 
-            this.ApplicationContext = applicationContext;
             this.RsaDecryptor = rsaDecryptor;
         }
-
-        /// <summary>
-        /// Gets a reference to the application context.
-        /// </summary>
-        public IApplicationContext ApplicationContext { get; }
 
         /// <summary>
         /// Gets the RSA decryptor to use.
@@ -58,7 +49,7 @@ namespace Fibula.Protocol.V772.PacketReaders
         /// </summary>
         /// <param name="message">The message to read from.</param>
         /// <returns>The packet read from the message.</returns>
-        public override IIncomingPacket ReadFromMessage(INetworkMessage message)
+        public override IInboundPacket ReadFromMessage(INetworkMessage message)
         {
             message.ThrowIfNull(nameof(message));
 
@@ -82,7 +73,7 @@ namespace Fibula.Protocol.V772.PacketReaders
                 operatingSystem: operatingSystem,       // OS was only included in this packet before version 7.71
                 version: version,                       // Version was only included in this packet before version 7.71
                 isGamemaster: message.GetByte() > 0,
-                accountNumber: message.GetUInt32(),
+                accountIdentifier: message.GetUInt32().ToString(),
                 characterName: message.GetString(),
                 password: message.GetString());
         }

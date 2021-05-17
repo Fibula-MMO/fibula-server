@@ -21,6 +21,11 @@ namespace Fibula.Server.Creatures
     public class CreatureCreationArguments : IThingCreationArguments
     {
         /// <summary>
+        /// Gets or sets an id to use for the creature being created.
+        /// </summary>
+        public uint PreselectedId { get; set; }
+
+        /// <summary>
         /// Gets or sets the type of creature being created.
         /// </summary>
         public CreatureType Type { get; set; }

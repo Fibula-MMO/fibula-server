@@ -14,6 +14,7 @@ namespace Fibula.Protocol.V772.PacketWriters
     using System.Linq;
     using Fibula.Communications;
     using Fibula.Communications.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
     using Fibula.Communications.Packets.Outgoing;
     using Fibula.Protocol.V772.Extensions;
     using Microsoft.Extensions.Logging;

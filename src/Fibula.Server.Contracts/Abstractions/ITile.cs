@@ -19,7 +19,7 @@ namespace Fibula.Server.Contracts.Abstractions
     /// <summary>
     /// Interface for all tiles.
     /// </summary>
-    public interface ITile : IThingContainer
+    public interface ITile : IThingContainer, ILocatable
     {
         /// <summary>
         /// Gets the tile's creatures.

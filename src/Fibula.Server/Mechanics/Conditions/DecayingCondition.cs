@@ -16,8 +16,8 @@ namespace Fibula.Server.Mechanics.Conditions
     using Fibula.Server.Contracts;
     using Fibula.Server.Contracts.Abstractions;
     using Fibula.Server.Contracts.Extensions;
-    using Fibula.Server.Mechanics.Notifications;
     using Fibula.Server.Mechanics.Operations;
+    using Fibula.Server.Notifications;
     using Fibula.Utilities.Validation;
 
     /// <summary>

@@ -11,14 +11,11 @@
 
 namespace Fibula.Protocol.V772.PacketWriters
 {
-    using System;
     using Fibula.Communications;
     using Fibula.Communications.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
     using Fibula.Communications.Packets.Outgoing;
-    using Fibula.Definitions.Enumerations;
     using Fibula.Protocol.V772.Extensions;
-    using Fibula.Server.Contracts.Abstractions;
-    using Fibula.Server.Contracts.Enumerations;
     using Microsoft.Extensions.Logging;
 
     /// <summary>
@@ -49,23 +46,24 @@ namespace Fibula.Protocol.V772.PacketWriters
                 return;
             }
 
-            ushort hitpoints = Math.Min(ushort.MaxValue, (ushort)playerStatsPacket.Player.Stats[CreatureStat.HitPoints].Current);
-            ushort maxHitpoints = Math.Min(ushort.MaxValue, (ushort)playerStatsPacket.Player.Stats[CreatureStat.HitPoints].Maximum);
-            ushort manapoints = Math.Min(ushort.MaxValue, (ushort)playerStatsPacket.Player.Stats[CreatureStat.ManaPoints].Current);
-            ushort maxManapoints = Math.Min(ushort.MaxValue, (ushort)playerStatsPacket.Player.Stats[CreatureStat.ManaPoints].Maximum);
+            ushort hitpoints = 100; // Math.Min(ushort.MaxValue, (ushort)playerStatsPacket.Player.Stats[CreatureStat.HitPoints].Current);
+            ushort maxHitpoints = 100; // Math.Min(ushort.MaxValue, (ushort)playerStatsPacket.Player.Stats[CreatureStat.HitPoints].Maximum);
+            ushort manapoints = 50; //  Math.Min(ushort.MaxValue, (ushort)playerStatsPacket.Player.Stats[CreatureStat.ManaPoints].Current);
+            ushort maxManapoints = 50; // Math.Min(ushort.MaxValue, (ushort)playerStatsPacket.Player.Stats[CreatureStat.ManaPoints].Maximum);
 
-            ushort capacity = Convert.ToUInt16(Math.Min(ushort.MaxValue, (ushort)playerStatsPacket.Player.Stats[CreatureStat.CarryStrength].Current));
+            ushort capacity = 1500; // Convert.ToUInt16(Math.Min(ushort.MaxValue, (ushort)playerStatsPacket.Player.Stats[CreatureStat.CarryStrength].Current));
 
-            ICombatant combatantPlayer = playerStatsPacket.Player as ICombatant;
+            // ICombatant combatantPlayer = playerStatsPacket.Player as ICombatant;
 
             // Fail off by sending dummy data if the player for some reason is not a combatant.
             // Experience: 7.7x Client debugs after 0x7FFFFFFF (2,147,483,647) exp
-            uint experience = combatantPlayer != null ? (uint)Math.Min(0x7FFFFFFF, Convert.ToUInt64(combatantPlayer.Skills[SkillType.Experience].CurrentCount)) : 0;
-            ushort expLevel = (ushort)(combatantPlayer != null ? Math.Max(1, Math.Min(ushort.MaxValue, combatantPlayer.Skills[SkillType.Experience].CurrentLevel)) : 1);
-            byte expPercentage = (byte)(combatantPlayer != null ? combatantPlayer.Skills[SkillType.Experience].Percent : 0);
+            uint experience = 0; // combatantPlayer != null ? (uint)Math.Min(0x7FFFFFFF, Convert.ToUInt64(combatantPlayer.Skills[SkillType.Experience].CurrentCount)) : 0;
+            ushort expLevel = 1; // (ushort)(combatantPlayer != null ? Math.Max(1, Math.Min(ushort.MaxValue, combatantPlayer.Skills[SkillType.Experience].CurrentLevel)) : 1);
+            byte expPercentage = 0; // (byte)(combatantPlayer != null ? combatantPlayer.Skills[SkillType.Experience].Percent : 0);
 
-            byte magicLevel = (byte)(combatantPlayer != null ? Math.Min(byte.MaxValue, combatantPlayer.Skills[SkillType.Magic].CurrentLevel) : 0);
-            byte magicLevelPercentage = (byte)(combatantPlayer != null ? combatantPlayer.Skills[SkillType.Magic].Percent : 0);
+            byte magicLevel = 0; // (byte)(combatantPlayer != null ? Math.Min(byte.MaxValue, combatantPlayer.Skills[SkillType.Magic].CurrentLevel) : 0);
+            byte magicLevelPercentage = 0; // (byte)(combatantPlayer != null ? combatantPlayer.Skills[SkillType.Magic].Percent : 0);
+            byte soulPoints = 0;
 
             message.AddByte(playerStatsPacket.PacketType.ToByte());
 
@@ -82,7 +80,7 @@ namespace Fibula.Protocol.V772.PacketWriters
             message.AddByte(magicLevel);
             message.AddByte(magicLevelPercentage);
 
-            message.AddByte(playerStatsPacket.Player.SoulPoints);
+            message.AddByte(soulPoints);
         }
     }
 }

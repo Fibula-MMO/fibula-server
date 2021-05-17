@@ -11,13 +11,12 @@
 
 namespace Fibula.Communications.Packets.Incoming
 {
-    using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Packets.Contracts.Abstractions;
 
     /// <summary>
     /// Class that represents a follow packet.
     /// </summary>
-    public class FollowPacket : IIncomingPacket, IFollowInfo
+    public class FollowPacket : IInboundPacket, IFollowInfo
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="FollowPacket"/> class.

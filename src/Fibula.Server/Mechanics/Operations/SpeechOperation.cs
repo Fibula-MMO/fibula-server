@@ -11,10 +11,10 @@
 
 namespace Fibula.Server.Mechanics.Operations
 {
+    using Fibula.Definitions.Enumerations;
     using Fibula.Server.Contracts.Abstractions;
-    using Fibula.Server.Contracts.Enumerations;
     using Fibula.Server.Contracts.Extensions;
-    using Fibula.Server.Mechanics.Notifications;
+    using Fibula.Server.Notifications;
     using Microsoft.Extensions.Logging;
 
     /// <summary>
@@ -66,7 +66,7 @@ namespace Fibula.Server.Mechanics.Operations
         /// <param name="context">A reference to the operation context.</param>
         protected override void Execute(IOperationContext context)
         {
-            var requestor = this.GetRequestor(context.CreatureFinder);
+            var requestor = this.GetRequestor(context.CreatureManager);
 
             if (requestor == null)
             {

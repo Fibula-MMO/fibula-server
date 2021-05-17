@@ -12,19 +12,18 @@
 namespace Fibula.Server.Mechanics.Operations
 {
     using System;
-    using Fibula.Communications.Packets.Outgoing;
     using Fibula.Definitions.Data.Entities;
     using Fibula.Definitions.Enumerations;
     using Fibula.Server.Contracts.Abstractions;
     using Fibula.Server.Contracts.Enumerations;
     using Fibula.Server.Contracts.Extensions;
-    using Fibula.Server.Mechanics.Notifications;
+    using Fibula.Server.Notifications;
     using Fibula.Utilities.Common.Extensions;
 
     /// <summary>
     /// Class that represents a logout operation.
     /// </summary>
-    public class LogOutOperation : ElevatedOperation
+    public class LogOutOperation : Operation
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="LogOutOperation"/> class.
@@ -46,7 +45,7 @@ namespace Fibula.Server.Mechanics.Operations
         /// Executes the operation's logic.
         /// </summary>
         /// <param name="context">A reference to the operation context.</param>
-        protected override void Execute(IElevatedOperationContext context)
+        protected override void Execute(IOperationContext context)
         {
             if (!this.Player.IsDead && this.Player.HasCondition(ConditionType.InFight))
             {
@@ -82,13 +81,10 @@ namespace Fibula.Server.Mechanics.Operations
             {
                 if (!this.Player.IsDead)
                 {
-                    this.SendNotification(context, new GenericNotification(() => context.Map.FindPlayersThatCanSee(playerLocation), new MagicEffectPacket(playerLocation, AnimatedEffect.Puff)));
+                    this.SendNotification(context, new MagicEffectNotification(() => context.Map.FindPlayersThatCanSee(playerLocation), playerLocation, AnimatedEffect.Puff));
                 }
 
-                if (this.Player.Client.Connection != null && !this.Player.Client.Connection.IsOrphaned)
-                {
-                    this.Player.Client.Connection.Close();
-                }
+                this.SendNotification(context, new PlayerLogoutNotification(() => this.Player.YieldSingleItem(), this.Player));
 
                 context.CreatureManager.UnregisterCreature(this.Player);
 

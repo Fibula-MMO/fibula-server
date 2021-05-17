@@ -20,6 +20,26 @@ namespace Fibula.Server.Mechanics
     public class WorldInformation : IWorldInformation
     {
         /// <summary>
+        /// Gets or sets the id of the game world.
+        /// </summary>
+        public string Id { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name of the world.
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Gets or sets the IP address to connect to this world.
+        /// </summary>
+        public string IpAddress { get; set; }
+
+        /// <summary>
+        /// Gets or sets the port to connect to this world.
+        /// </summary>
+        public ushort? Port { get; set; }
+
+        /// <summary>
         /// Gets or sets the game world's light color.
         /// </summary>
         public byte LightColor { get; set; }

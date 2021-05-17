@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Fibula.Server.Contracts\Fibula.Server.Contracts.csproj" />
+    <ProjectReference Include="..\Fibula.ServerV2.Contracts\Fibula.ServerV2.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

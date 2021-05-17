@@ -11,9 +11,9 @@
 
 namespace Fibula.Communications.Packets.Outgoing
 {
-    using Fibula.Communications.Contracts.Abstractions;
-    using Fibula.Communications.Contracts.Enumerations;
-    using Fibula.Server.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Contracts.Enumerations;
+    using Fibula.ServerV2.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
 
     /// <summary>
@@ -24,36 +24,30 @@ namespace Fibula.Communications.Packets.Outgoing
         /// <summary>
         /// Initializes a new instance of the <see cref="AddCreaturePacket"/> class.
         /// </summary>
+        /// <param name="player">The player that observed the creature addition.</param>
         /// <param name="creature">The creature that was added.</param>
-        /// <param name="asKnown">A value indicating whether the creature was added as a known creature or not.</param>
-        /// <param name="removeThisCreatureId">An id of another creature to remove from the known list, and replace with this new creature.</param>
-        public AddCreaturePacket(ICreature creature, bool asKnown, uint removeThisCreatureId)
+        public AddCreaturePacket(IPlayer player, ICreature creature)
         {
+            player.ThrowIfNull(nameof(player));
             creature.ThrowIfNull(nameof(creature));
 
+            this.Player = player;
             this.Creature = creature;
-            this.AsKnown = asKnown;
-            this.RemoveThisCreatureId = removeThisCreatureId;
         }
 
         /// <summary>
         /// Gets the type of this packet.
         /// </summary>
-        public OutgoingPacketType PacketType => OutgoingPacketType.AddThing;
+        public OutboundPacketType PacketType => OutboundPacketType.AddThing;
+
+        /// <summary>
+        /// Gets the reference to the player which observed the creature being added.
+        /// </summary>
+        public IPlayer Player { get; }
 
         /// <summary>
         /// Gets a reference to the creature added.
         /// </summary>
         public ICreature Creature { get; }
-
-        /// <summary>
-        /// Gets a value indicating whether the creature was added as a known creature or not.
-        /// </summary>
-        public bool AsKnown { get; }
-
-        /// <summary>
-        /// Gets an id of another creature to remove from the known list, and replace with this new creature.
-        /// </summary>
-        public uint RemoveThisCreatureId { get; }
     }
 }

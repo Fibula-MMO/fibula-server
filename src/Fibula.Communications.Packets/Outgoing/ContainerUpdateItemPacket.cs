@@ -11,9 +11,9 @@
 
 namespace Fibula.Communications.Packets.Outgoing
 {
-    using Fibula.Communications.Contracts.Abstractions;
-    using Fibula.Communications.Contracts.Enumerations;
-    using Fibula.Server.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Contracts.Enumerations;
+    using Fibula.ServerV2.Contracts.Abstractions;
 
     /// <summary>
     /// Class that represents a packet for an item being updated within a container.
@@ -36,7 +36,7 @@ namespace Fibula.Communications.Packets.Outgoing
         /// <summary>
         /// Gets the type of this packet.
         /// </summary>
-        public OutgoingPacketType PacketType => OutgoingPacketType.ContainerUpdateItem;
+        public OutboundPacketType PacketType => OutboundPacketType.ContainerUpdateItem;
 
         /// <summary>
         /// Gets the index within the container, at which the item being updated is.

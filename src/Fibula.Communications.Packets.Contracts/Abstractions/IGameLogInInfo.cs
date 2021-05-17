@@ -38,9 +38,9 @@ namespace Fibula.Communications.Packets.Contracts.Abstractions
         bool IsGamemaster { get; }
 
         /// <summary>
-        /// Gets the account number of the character.
+        /// Gets the identifier for the account of the character.
         /// </summary>
-        uint AccountNumber { get; }
+        string AccountIdentifier { get; }
 
         /// <summary>
         /// Gets the character's name.

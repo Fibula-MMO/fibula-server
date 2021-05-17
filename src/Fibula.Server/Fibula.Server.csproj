@@ -8,28 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Mechanics\Handlers\AutoMoveCancelHandler.cs" />
-    <Compile Remove="Mechanics\Handlers\ContainerCloseHandler.cs" />
-    <Compile Remove="Mechanics\Handlers\ContainerMoveUpHandler.cs" />
-    <Compile Remove="Mechanics\Handlers\KeepAliveRequestHandler.cs" />
-    <Compile Remove="Mechanics\Handlers\MoveThingHandler.cs" />
-    <Compile Remove="Mechanics\Handlers\RotateItemHandler.cs" />
-    <Compile Remove="Mechanics\Handlers\SetModeHandler.cs" />
-    <Compile Remove="Mechanics\Handlers\StopAllActionsHandler.cs" />
-    <Compile Remove="Mechanics\Handlers\TurnEastHandler.cs" />
-    <Compile Remove="Mechanics\Handlers\TurnNorthHandler.cs" />
-    <Compile Remove="Mechanics\Handlers\TurnSouthHandler.cs" />
-    <Compile Remove="Mechanics\Handlers\TurnWestHandler.cs" />
-    <Compile Remove="Mechanics\Handlers\UseItemHandler.cs" />
-    <Compile Remove="Mechanics\Handlers\UseItemOnHandler.cs" />
-    <Compile Remove="Mechanics\Handlers\WalkEastHandler.cs" />
-    <Compile Remove="Mechanics\Handlers\WalkNortheastHandler.cs" />
-    <Compile Remove="Mechanics\Handlers\WalkNorthHandler.cs" />
-    <Compile Remove="Mechanics\Handlers\WalkNorthWestHandler.cs" />
-    <Compile Remove="Mechanics\Handlers\WalkSoutheastHandler.cs" />
-    <Compile Remove="Mechanics\Handlers\WalkSouthHandler.cs" />
-    <Compile Remove="Mechanics\Handlers\WalkSouthwestHandler.cs" />
-    <Compile Remove="Mechanics\Handlers\WalkWestHandler.cs" />
     <Compile Remove="Mechanics\Operations\Unused\AutoAttackCombatOperation.cs" />
     <Compile Remove="Mechanics\Operations\Unused\AutoWalkOperation.cs" />
     <Compile Remove="Mechanics\Operations\Unused\BaseActionOperation.cs" />
@@ -68,8 +46,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Fibula.Communications.Packets\Fibula.Communications.Packets.csproj" />
-    <ProjectReference Include="..\Fibula.Communications\Fibula.Communications.csproj" />
     <ProjectReference Include="..\Fibula.Scripting.Formulae\Fibula.Scripting.Formulae.csproj" />
     <ProjectReference Include="..\Fibula.Server.Contracts\Fibula.Server.Contracts.csproj" />
   </ItemGroup>

@@ -11,6 +11,7 @@
 
 namespace Fibula.Server.Mechanics.Operations
 {
+    using Fibula.Common.Contracts.Abstractions;
     using Fibula.Scheduling;
     using Fibula.Scheduling.Contracts.Abstractions;
     using Fibula.Server.Contracts.Abstractions;
@@ -26,9 +27,10 @@ namespace Fibula.Server.Mechanics.Operations
         /// Initializes a new instance of the <see cref="OperationContext"/> class.
         /// </summary>
         /// <param name="logger">A reference to the logger in use.</param>
+        /// <param name="applicationContext">A reference to the application context.</param>
         /// <param name="mapDescriptor">A reference to the map descriptor in use.</param>
         /// <param name="map">A reference to the map in use.</param>
-        /// <param name="creatureFinder">A reference to the creature finder in use.</param>
+        /// <param name="creatureManager">A reference to the creature finder in use.</param>
         /// <param name="itemFactory">A reference to the item factory in use.</param>
         /// <param name="creatureFactory">A reference to the creature factory in use.</param>
         /// <param name="containerManager">A reference to the container manager in use.</param>
@@ -39,9 +41,10 @@ namespace Fibula.Server.Mechanics.Operations
         /// <param name="scheduler">A reference to the scheduler instance.</param>
         public OperationContext(
             ILogger logger,
+            IApplicationContext applicationContext,
             IMapDescriptor mapDescriptor,
             IMap map,
-            ICreatureFinder creatureFinder,
+            ICreatureManager creatureManager,
             IItemFactory itemFactory,
             ICreatureFactory creatureFactory,
             IContainerManager containerManager,
@@ -52,9 +55,10 @@ namespace Fibula.Server.Mechanics.Operations
             IScheduler scheduler)
             : base(logger, () => scheduler.CurrentTime)
         {
+            applicationContext.ThrowIfNull(nameof(applicationContext));
             mapDescriptor.ThrowIfNull(nameof(mapDescriptor));
             map.ThrowIfNull(nameof(map));
-            creatureFinder.ThrowIfNull(nameof(creatureFinder));
+            creatureManager.ThrowIfNull(nameof(creatureManager));
             itemFactory.ThrowIfNull(nameof(itemFactory));
             creatureFactory.ThrowIfNull(nameof(creatureFactory));
             containerManager.ThrowIfNull(nameof(containerManager));
@@ -64,9 +68,10 @@ namespace Fibula.Server.Mechanics.Operations
             predefinedItemSet.ThrowIfNull(nameof(predefinedItemSet));
             scheduler.ThrowIfNull(nameof(scheduler));
 
+            this.ApplicationContext = applicationContext;
             this.MapDescriptor = mapDescriptor;
             this.Map = map;
-            this.CreatureFinder = creatureFinder;
+            this.CreatureManager = creatureManager;
             this.ItemFactory = itemFactory;
             this.CreatureFactory = creatureFactory;
             this.ContainerManager = containerManager;
@@ -76,6 +81,11 @@ namespace Fibula.Server.Mechanics.Operations
             this.PredefinedItemSet = predefinedItemSet;
             this.Scheduler = scheduler;
         }
+
+        /// <summary>
+        /// Gets the reference to the application context.
+        /// </summary>
+        public IApplicationContext ApplicationContext { get; }
 
         /// <summary>
         /// Gets a reference to the map descriptor in use.
@@ -88,9 +98,9 @@ namespace Fibula.Server.Mechanics.Operations
         public IMap Map { get; }
 
         /// <summary>
-        /// Gets the reference to the creature finder in use.
+        /// Gets the reference to the creature manager in use.
         /// </summary>
-        public ICreatureFinder CreatureFinder { get; }
+        public ICreatureManager CreatureManager { get; }
 
         /// <summary>
         /// Gets a reference to the item factory in use.

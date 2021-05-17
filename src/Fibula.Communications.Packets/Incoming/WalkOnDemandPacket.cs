@@ -11,14 +11,13 @@
 
 namespace Fibula.Communications.Packets.Incoming
 {
-    using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Packets.Contracts.Abstractions;
     using Fibula.Definitions.Enumerations;
 
     /// <summary>
     /// Class that represents a walk packet routed to the game server.
     /// </summary>
-    public sealed class WalkOnDemandPacket : IIncomingPacket, IWalkOnDemandInfo
+    public sealed class WalkOnDemandPacket : IInboundPacket, IWalkOnDemandInfo
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="WalkOnDemandPacket"/> class.

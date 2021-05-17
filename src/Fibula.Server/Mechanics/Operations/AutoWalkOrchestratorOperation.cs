@@ -14,14 +14,13 @@ namespace Fibula.Server.Mechanics.Operations
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Fibula.Communications.Packets.Outgoing;
     using Fibula.Definitions.Enumerations;
     using Fibula.Definitions.Flags;
     using Fibula.Server.Contracts.Abstractions;
     using Fibula.Server.Contracts.Constants;
     using Fibula.Server.Contracts.Extensions;
     using Fibula.Server.Creatures;
-    using Fibula.Server.Mechanics.Notifications;
+    using Fibula.Server.Notifications;
     using Fibula.Utilities.Common.Extensions;
     using Fibula.Utilities.Pathfinding;
     using Fibula.Utilities.Validation;
@@ -67,11 +66,7 @@ namespace Fibula.Server.Mechanics.Operations
             {
                 if (this.Creature is IPlayer player)
                 {
-                    this.SendNotification(
-                        context,
-                        new GenericNotification(
-                            () => player.YieldSingleItem(),
-                            new PlayerCancelWalkPacket(player.Direction.GetClientSafeDirection())));
+                    this.SendNotification(context, new PlayerCancelWalkNotification(() => player.YieldSingleItem(), player));
                 }
             }
 

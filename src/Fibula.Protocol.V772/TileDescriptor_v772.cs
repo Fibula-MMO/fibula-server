@@ -15,14 +15,15 @@ namespace Fibula.Protocol.V772
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
-    using Fibula.Communications.Contracts.Enumerations;
+    using Fibula.Communications.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Contracts.Enumerations;
     using Fibula.Definitions.Data.Structures;
+    using Fibula.Protocol.Contracts;
+    using Fibula.Protocol.Contracts.Abstractions;
     using Fibula.Protocol.V772.Extensions;
-    using Fibula.Server.Contracts;
-    using Fibula.Server.Contracts.Abstractions;
-    using Fibula.Server.Contracts.Constants;
-    using Fibula.Server.Contracts.Enumerations;
-    using Fibula.Server.Contracts.Extensions;
+    using Fibula.ServerV2.Contracts.Abstractions;
+    using Fibula.ServerV2.Contracts.Constants;
+    using Fibula.ServerV2.Contracts.Extensions;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Logging;
 
@@ -42,53 +43,48 @@ namespace Fibula.Protocol.V772
         private readonly object tilesCacheLock;
 
         /// <summary>
+        /// The logger in use for this descriptor.
+        /// </summary>
+        private readonly ILogger logger;
+
+        /// <summary>
+        /// The clients map in use.
+        /// </summary>
+        private readonly IClientsManager clientsMap;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="TileDescriptor_v772"/> class.
         /// </summary>
         /// <param name="logger">A reference to the logger in use.</param>
-        /// <param name="creatureFinder">A reference to the creature finder in use.</param>
-        public TileDescriptor_v772(ILogger<TileDescriptor_v772> logger, ICreatureFinder creatureFinder)
+        /// <param name="clientsMap">A reference to the map of player ids to their clients.</param>
+        public TileDescriptor_v772(ILogger<TileDescriptor_v772> logger, IClientsManager clientsMap)
         {
             logger.ThrowIfNull(nameof(logger));
-            creatureFinder.ThrowIfNull(nameof(creatureFinder));
+            clientsMap.ThrowIfNull(nameof(clientsMap));
 
             this.tileDescriptionCache = new Dictionary<Location, (DateTimeOffset, ReadOnlyMemory<byte>, ReadOnlyMemory<byte>, int[])>();
             this.tilesCacheLock = new object();
 
-            this.Logger = logger;
-            this.CreatureFinder = creatureFinder;
+            this.logger = logger;
+            this.clientsMap = clientsMap;
         }
-
-        /// <summary>
-        /// Gets the logger in use.
-        /// </summary>
-        public ILogger Logger { get; }
-
-        /// <summary>
-        /// Gets the creature finder in use.
-        /// </summary>
-        public ICreatureFinder CreatureFinder { get; }
 
         /// <summary>
         /// Gets the description segments of a tile as seen by the given <paramref name="player"/>.
         /// </summary>
         /// <param name="player">The player for which the tile is being described.</param>
         /// <param name="tile">The tile being described.</param>
-        /// <param name="creatureIdsToLearn">A set of ids of creatures to learn if this description is sent.</param>
-        /// <param name="creatureIdsToForget">A set of ids of creatures to forget if this description is sent.</param>
         /// <returns>A collection of description segments from the tile.</returns>
-        public IEnumerable<MapDescriptionSegment> DescribeTileForPlayer(IPlayer player, ITile tile, out ISet<uint> creatureIdsToLearn, out ISet<uint> creatureIdsToForget)
+        public IEnumerable<BytesSegment> DescribeTileForPlayer(IPlayer player, ITile tile)
         {
             player.ThrowIfNull(nameof(player));
 
-            creatureIdsToLearn = new HashSet<uint>();
-            creatureIdsToForget = new HashSet<uint>();
-
             if (tile == null)
             {
-                return Enumerable.Empty<MapDescriptionSegment>();
+                return Enumerable.Empty<BytesSegment>();
             }
 
-            var segments = new List<MapDescriptionSegment>();
+            var segments = new List<BytesSegment>();
 
             lock (this.tilesCacheLock)
             {
@@ -101,7 +97,7 @@ namespace Fibula.Protocol.V772
                 }
 
                 // Add a slice of the bytes, using the pointer that corresponds to the location in the memory of the number of items to describe.
-                segments.Add(new MapDescriptionSegment(cachedTileData.preCreatureData.Slice(0, cachedTileData.dataPointers[Math.Max(MapConstants.MaximumNumberOfThingsToDescribePerTile - 1 - tile.Creatures.Count(), 0)])));
+                segments.Add(new BytesSegment(cachedTileData.preCreatureData.Slice(0, cachedTileData.dataPointers[Math.Max(MapConstants.MaximumNumberOfThingsToDescribePerTile - 1 - tile.Creatures.Count(), 0)])));
 
                 // TODO: The creatures part is more dynamic, figure out how/if we can cache it.
                 // Add creatures in the tile.
@@ -111,27 +107,32 @@ namespace Fibula.Protocol.V772
 
                     foreach (var creature in tile.Creatures)
                     {
-                        if (player.Client.KnowsCreatureWithId(creature.Id))
+                        var client = this.clientsMap.FindByPlayerId(player.Id);
+
+                        if (client == null)
                         {
-                            creatureBytes.Add(OutgoingPacketType.AddKnownCreature.ToByte());
+                            throw new InvalidOperationException($"Unable to find a client mapped to player {player.Name}.");
+                        }
+
+                        if (client.KnowsCreatureWithId(creature.Id))
+                        {
+                            creatureBytes.Add(OutboundPacketType.AddKnownCreature.ToByte());
                             creatureBytes.Add(0x00);
                             creatureBytes.AddRange(BitConverter.GetBytes(creature.Id));
                         }
                         else
                         {
-                            var creatureIdToForget = player.Client.ChooseCreatureToRemoveFromKnownSet(creatureIdsToForget.Count);
+                            var creatureIdToForget = client.ChooseCreatureToRemoveFromKnownSet();
 
-                            creatureBytes.Add(OutgoingPacketType.AddUnknownCreature.ToByte());
+                            if (creatureIdToForget > 0)
+                            {
+                                client.RemoveKnownCreature(creatureIdToForget);
+                            }
+
+                            creatureBytes.Add(OutboundPacketType.AddUnknownCreature.ToByte());
                             creatureBytes.Add(0x00);
                             creatureBytes.AddRange(BitConverter.GetBytes(creatureIdToForget));
                             creatureBytes.AddRange(BitConverter.GetBytes(creature.Id));
-
-                            if (creatureIdToForget > uint.MinValue)
-                            {
-                                creatureIdsToForget.Add(creatureIdToForget);
-                            }
-
-                            creatureIdsToLearn.Add(creature.Id);
 
                             var creatureNameBytes = Encoding.Default.GetBytes(creature.Name);
 
@@ -139,7 +140,8 @@ namespace Fibula.Protocol.V772
                             creatureBytes.AddRange(creatureNameBytes);
                         }
 
-                        creatureBytes.Add(creature.Stats[CreatureStat.HitPoints].Percent);
+                        byte healthPercent = 100; // creature.Stats[CreatureStat.HitPoints].Percent;
+                        creatureBytes.Add(healthPercent);
                         creatureBytes.Add(Convert.ToByte(creature.Direction.GetClientSafeDirection()));
 
                         if (player.CanSee(creature))
@@ -174,11 +176,11 @@ namespace Fibula.Protocol.V772
                         creatureBytes.Add(0x00); // Shield
                     }
 
-                    segments.Add(new MapDescriptionSegment(creatureBytes.ToArray()));
+                    segments.Add(new BytesSegment(creatureBytes.ToArray()));
                 }
 
                 // Add a slice of the bytes, using the pointer that corresponds to the location in the memory of the number of items to describe.
-                segments.Add(new MapDescriptionSegment(cachedTileData.postCreatureData.Slice(0, cachedTileData.dataPointers[(cachedTileData.dataPointers.Length / 2) + Math.Max(MapConstants.MaximumNumberOfThingsToDescribePerTile - 1 - tile.Creatures.Count(), 0)])));
+                segments.Add(new BytesSegment(cachedTileData.postCreatureData.Slice(0, cachedTileData.dataPointers[(cachedTileData.dataPointers.Length / 2) + Math.Max(MapConstants.MaximumNumberOfThingsToDescribePerTile - 1 - tile.Creatures.Count(), 0)])));
 
                 return segments;
             }
@@ -270,7 +272,7 @@ namespace Fibula.Protocol.V772
 
             this.tileDescriptionCache[tile.Location] = (tile.LastModified, preCreatureDataBytes.ToArray(), postCreatureDataBytes.ToArray(), dataPointers);
 
-            this.Logger.LogTrace($"Regenerated description for tile at {tile.Location}.");
+            this.logger.LogTrace($"Regenerated description for tile at {tile.Location}.");
         }
     }
 }

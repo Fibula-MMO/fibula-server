@@ -11,19 +11,13 @@
 
 namespace Fibula.Server.Contracts.Abstractions
 {
-    using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Definitions.Enumerations;
 
     /// <summary>
     /// Interface for character players in the game.
     /// </summary>
-    public interface IPlayer : ICreature
+    public interface IPlayer : ICreatureWithSkills
     {
-        /// <summary>
-        /// Gets this player's client.
-        /// </summary>
-        IClient Client { get; }
-
         /// <summary>
         /// Gets the player's character id.
         /// </summary>

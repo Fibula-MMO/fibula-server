@@ -124,8 +124,8 @@ namespace Fibula.Server
                 this.Logger.LogWarning($"{nameof(this.DescribeWindow)} {nameof(windowSizeY)} is over {nameof(MapConstants.DefaultWindowSizeY)} ({MapConstants.DefaultWindowSizeY}).");
             }
 
-            var allCreatureIdsToLearn = new List<uint>();
-            var allCreatureIdsToForget = new List<uint>();
+            var allCreatureIdsToLearn = new HashSet<uint>();
+            var allCreatureIdsToForget = new HashSet<uint>();
 
             for (sbyte currentZ = fromZ; currentZ != toZ + stepZ; currentZ += stepZ)
             {
@@ -144,8 +144,15 @@ namespace Fibula.Server
 
                         var segmentsFromTile = this.tileDescriptor.DescribeTileForPlayer(player, this.map.GetTileAt(targetLocation), out ISet<uint> creatureIdsToLearn, out ISet<uint> creatureIdsToForget);
 
-                        allCreatureIdsToLearn.AddRange(creatureIdsToLearn);
-                        allCreatureIdsToForget.AddRange(creatureIdsToForget);
+                        foreach (var id in creatureIdsToLearn)
+                        {
+                            allCreatureIdsToLearn.Add(id);
+                        }
+
+                        foreach (var id in creatureIdsToForget)
+                        {
+                            allCreatureIdsToForget.Add(id);
+                        }
 
                         // See if we actually have segments to append.
                         if (segmentsFromTile != null && segmentsFromTile.Any())

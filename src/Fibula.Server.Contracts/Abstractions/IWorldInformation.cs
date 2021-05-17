@@ -19,6 +19,11 @@ namespace Fibula.Server.Contracts.Abstractions
     public interface IWorldInformation
     {
         /// <summary>
+        /// Gets the id of the game world.
+        /// </summary>
+        string Id { get; }
+
+        /// <summary>
         /// Gets the game world's light color.
         /// </summary>
         byte LightColor { get; }
@@ -32,5 +37,20 @@ namespace Fibula.Server.Contracts.Abstractions
         /// Gets the game world's state.
         /// </summary>
         WorldState Status { get; }
+
+        /// <summary>
+        /// Gets the name of the world.
+        /// </summary>
+        string Name { get; }
+
+        /// <summary>
+        /// Gets the IP address to connect to this world.
+        /// </summary>
+        string IpAddress { get; }
+
+        /// <summary>
+        /// Gets the port to connect to this world.
+        /// </summary>
+        ushort? Port { get; }
     }
 }

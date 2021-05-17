@@ -48,6 +48,7 @@
     <Compile Remove="Delegates\CombatStarted.cs" />
     <Compile Remove="Delegates\EventRulesEvaluationTriggered.cs" />
     <Compile Remove="Delegates\FightModeChanged.cs" />
+    <Compile Remove="Delegates\NotificationSentHandler.cs" />
     <Compile Remove="Delegates\OnInventorySlotChanged.cs" />
     <Compile Remove="Delegates\SkillLevelAdvance.cs" />
     <Compile Remove="Enumerations\AttackType.cs" />
@@ -73,6 +74,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Fibula.Definitions" Version="1.0.5" />
     <PackageReference Include="Fibula.Utilities.Pathfinding" Version="1.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.3" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="5.0.0" />
@@ -86,7 +88,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Fibula.Common.Contracts\Fibula.Common.Contracts.csproj" />
-    <ProjectReference Include="..\Fibula.Communications.Contracts\Fibula.Communications.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

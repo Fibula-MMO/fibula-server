@@ -15,13 +15,13 @@ namespace Fibula.Communications.Packets.Tests
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;
-    using Fibula.Communications.Contracts.Abstractions;
-    using Fibula.Communications.Contracts.Enumerations;
-    using Fibula.Communications.Packets.Contracts.Structures;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Contracts.Enumerations;
     using Fibula.Communications.Packets.Outgoing;
     using Fibula.Definitions.Data.Structures;
-    using Fibula.Server.Contracts.Abstractions;
-    using Fibula.Server.Contracts.Enumerations;
+    using Fibula.Definitions.Enumerations;
+    using Fibula.ServerV2.Contracts.Abstractions;
+    using Fibula.ServerV2.Contracts.Structures;
     using Fibula.Utilities.Testing;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
@@ -38,20 +38,17 @@ namespace Fibula.Communications.Packets.Tests
         [TestMethod]
         public void AddCreaturePacket_Initialization()
         {
-            const OutgoingPacketType ExpectedPacketType = OutgoingPacketType.AddThing;
-            const bool ExpectedAsKnownValue = true;
-            const uint ExpectedCreatureIdToRemove = 1;
-
-            ExceptionAssert.Throws<ArgumentException>(() => new AddCreaturePacket(null, ExpectedAsKnownValue, ExpectedCreatureIdToRemove), "Value cannot be null. (Parameter 'creature')");
-
+            const OutboundPacketType ExpectedPacketType = OutboundPacketType.AddThing;
             var creatureMock = new Mock<ICreature>();
+            var playerMock = new Mock<IPlayer>();
 
-            var packet = new AddCreaturePacket(creatureMock.Object, ExpectedAsKnownValue, ExpectedCreatureIdToRemove);
+            ExceptionAssert.Throws<ArgumentException>(() => new AddCreaturePacket(null, creatureMock.Object), "Value cannot be null. (Parameter 'player')");
+            ExceptionAssert.Throws<ArgumentException>(() => new AddCreaturePacket(playerMock.Object, null), "Value cannot be null. (Parameter 'creature')");
+
+            var packet = new AddCreaturePacket(playerMock.Object, creatureMock.Object);
 
             Assert.AreEqual(ExpectedPacketType, packet.PacketType, $"Expected {nameof(packet.PacketType)} to match {ExpectedPacketType}.");
             Assert.AreSame(creatureMock.Object, packet.Creature, $"Expected {nameof(packet.Creature)} to be the same instance as {creatureMock.Object}.");
-            Assert.AreEqual(ExpectedAsKnownValue, packet.AsKnown, $"Expected {nameof(packet.AsKnown)} to match {ExpectedAsKnownValue}.");
-            Assert.AreEqual(ExpectedCreatureIdToRemove, packet.RemoveThisCreatureId, $"Expected {nameof(packet.RemoveThisCreatureId)} to match {ExpectedCreatureIdToRemove}.");
         }
 
         /// <summary>
@@ -60,7 +57,7 @@ namespace Fibula.Communications.Packets.Tests
         [TestMethod]
         public void AnimatedTextPacket_Initialization()
         {
-            const OutgoingPacketType ExpectedPacketType = OutgoingPacketType.AnimatedText;
+            const OutboundPacketType ExpectedPacketType = OutboundPacketType.AnimatedText;
             const TextColor ExpectedTextColor = TextColor.Green;
             const string ExpectedText = "this is a test!";
 
@@ -80,15 +77,15 @@ namespace Fibula.Communications.Packets.Tests
         [TestMethod]
         public void CharacterListPacket_Initialization()
         {
-            const OutgoingPacketType ExpectedPacketType = OutgoingPacketType.CharacterList;
+            const OutboundPacketType ExpectedPacketType = OutboundPacketType.CharacterList;
             const ushort ExpectedPremiumDays = 7;
 
             ExceptionAssert.Throws<ArgumentException>(() => new CharacterListPacket(null, ExpectedPremiumDays), "Value cannot be null. (Parameter 'characters')");
 
-            var expectedCharList = new List<CharacterInfo>()
+            var expectedCharList = new List<CharacterLoginInformation>()
             {
-                new CharacterInfo() { Name = "Char 1", Ip = IPAddress.Loopback.GetAddressBytes(), Port = 123, World = "Fibula" },
-                new CharacterInfo() { Name = "Char 2", Ip = IPAddress.Any.GetAddressBytes(), Port = 321, World = "Fibula 2" },
+                new CharacterLoginInformation() { Name = "Char 1", Ip = IPAddress.Loopback.GetAddressBytes(), Port = 123, World = "Fibula" },
+                new CharacterLoginInformation() { Name = "Char 2", Ip = IPAddress.Any.GetAddressBytes(), Port = 321, World = "Fibula 2" },
             };
 
             var packet = new CharacterListPacket(expectedCharList, ExpectedPremiumDays);

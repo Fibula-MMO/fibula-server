@@ -21,7 +21,7 @@ namespace Fibula.Server.Mechanics.Operations
     /// <summary>
     /// Class that represents a monsters spawn operation.
     /// </summary>
-    public class SpawnMonstersOperation : ElevatedOperation
+    public class SpawnMonstersOperation : Operation
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SpawnMonstersOperation"/> class.
@@ -43,7 +43,7 @@ namespace Fibula.Server.Mechanics.Operations
         /// Executes the operation's logic.
         /// </summary>
         /// <param name="context">A reference to the operation context.</param>
-        protected override void Execute(IElevatedOperationContext context)
+        protected override void Execute(IOperationContext context)
         {
             var rng = new Random();
 

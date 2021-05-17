@@ -13,6 +13,7 @@ namespace Fibula.Protocol.V772.PacketWriters
 {
     using Fibula.Communications;
     using Fibula.Communications.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
     using Fibula.Communications.Packets.Outgoing;
     using Fibula.Protocol.V772.Extensions;
     using Microsoft.Extensions.Logging;
@@ -59,6 +60,7 @@ namespace Fibula.Protocol.V772.PacketWriters
                 message.AddByte(0x01); // skip count
             }
 
+            // marks the end.
             message.AddByte(byte.MaxValue);
         }
     }

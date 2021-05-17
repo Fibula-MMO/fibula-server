@@ -11,7 +11,6 @@
 
 namespace Fibula.Server.Creatures
 {
-    using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Definitions.Data.Entities;
 
     /// <summary>
@@ -19,11 +18,6 @@ namespace Fibula.Server.Creatures
     /// </summary>
     public class PlayerCreationArguments : CreatureCreationArguments
     {
-        /// <summary>
-        /// Gets or sets the client to initialize the player with.
-        /// </summary>
-        public IClient Client { get; set; }
-
         /// <summary>
         /// Gets the character's metadata.
         /// </summary>

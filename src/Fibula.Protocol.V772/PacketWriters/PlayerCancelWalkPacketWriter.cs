@@ -13,8 +13,10 @@ namespace Fibula.Protocol.V772.PacketWriters
 {
     using Fibula.Communications;
     using Fibula.Communications.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
     using Fibula.Communications.Packets.Outgoing;
     using Fibula.Protocol.V772.Extensions;
+    using Fibula.ServerV2.Contracts.Extensions;
     using Microsoft.Extensions.Logging;
 
     /// <summary>
@@ -47,7 +49,7 @@ namespace Fibula.Protocol.V772.PacketWriters
 
             message.AddByte(playerCancelWalkPacket.PacketType.ToByte());
 
-            message.AddByte((byte)playerCancelWalkPacket.ResultingDirection);
+            message.AddByte((byte)playerCancelWalkPacket.ResultingDirection.GetClientSafeDirection());
         }
     }
 }

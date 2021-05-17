@@ -11,16 +11,14 @@
 
 namespace Fibula.Server.Mechanics.Operations
 {
-    using System.Collections.Generic;
-    using Fibula.Communications.Contracts.Abstractions;
-    using Fibula.Communications.Packets.Outgoing;
     using Fibula.Definitions.Data.Entities;
     using Fibula.Definitions.Enumerations;
     using Fibula.Server.Contracts.Abstractions;
     using Fibula.Server.Contracts.Enumerations;
     using Fibula.Server.Creatures;
-    using Fibula.Server.Mechanics.Notifications;
+    using Fibula.Server.Notifications;
     using Fibula.Utilities.Common.Extensions;
+    using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Logging;
 
     /// <summary>
@@ -32,24 +30,21 @@ namespace Fibula.Server.Mechanics.Operations
         /// Initializes a new instance of the <see cref="LogInOperation"/> class.
         /// </summary>
         /// <param name="requestorId">The id of the creature requesting the action.</param>
-        /// <param name="client">The client requesting the log in.</param>
+        /// <param name="reservedId">The id reserved by the game for this player logging in.</param>
         /// <param name="playerMetadata">The creation metadata of the player that is logging in.</param>
         /// <param name="worldLightLevel">The level of the world light to send to the player.</param>
         /// <param name="worldLightColor">The color of the world light to send to the player.</param>
-        public LogInOperation(uint requestorId, IClient client, CharacterEntity playerMetadata, byte worldLightLevel, byte worldLightColor)
+        public LogInOperation(uint requestorId, uint reservedId, CharacterEntity playerMetadata, byte worldLightLevel, byte worldLightColor)
             : base(requestorId)
         {
-            this.Client = client;
+            reservedId.ThrowIfDefaultValue(nameof(reservedId));
+
             this.CurrentWorldLightLevel = worldLightLevel;
             this.CurrentWorldLightColor = worldLightColor;
 
             this.PlayerMetadata = playerMetadata;
+            this.PreselectedId = reservedId;
         }
-
-        /// <summary>
-        /// Gets the client requesting the log in.
-        /// </summary>
-        public IClient Client { get; }
 
         /// <summary>
         /// Gets the current light level of the world, to send with the login information.
@@ -67,6 +62,11 @@ namespace Fibula.Server.Mechanics.Operations
         public CharacterEntity PlayerMetadata { get; }
 
         /// <summary>
+        /// Gets the preselected id for the player.
+        /// </summary>
+        public uint PreselectedId { get; }
+
+        /// <summary>
         /// Executes the operation's logic.
         /// </summary>
         /// <param name="context">A reference to the operation context.</param>
@@ -81,9 +81,9 @@ namespace Fibula.Server.Mechanics.Operations
 
             var creationArguments = new PlayerCreationArguments()
             {
-                Client = this.Client,
                 Type = CreatureType.Player,
                 Metadata = this.PlayerMetadata,
+                PreselectedId = this.PreselectedId,
             };
 
             if (!(context.CreatureFactory.CreateCreature(creationArguments) is IPlayer player))
@@ -96,11 +96,11 @@ namespace Fibula.Server.Mechanics.Operations
             if (!context.GameApi.AddCreatureToGame(targetLoginLocation, player))
             {
                 // Unable to place the player in the map.
-                var disconnectNotification = new GenericNotification(
+                var disconnectNotification = new DisconnectNotification(
                         () => player.YieldSingleItem(),
-                        new GameServerDisconnectPacket("Your character could not be placed on the map.\nPlease try again, or contact an administrator if the issue persists."));
+                        "Your character could not be placed on the map.\nPlease try again, or contact an administrator if the issue persists.");
 
-                context.Scheduler.ScheduleEvent(disconnectNotification);
+                context.GameApi.SendNotification(disconnectNotification);
 
                 return;
             }
@@ -109,37 +109,15 @@ namespace Fibula.Server.Mechanics.Operations
 
             // TODO: In addition, we need to send the player's inventory, the first time login message + outfit window here if applicable.
             // And any VIP records here.
-            var notification = new GenericNotification(
-                () => player.YieldSingleItem(),
-                new PlayerLoginPacket(player.Id, player),
-                new MapDescriptionPacket(player.Location, descriptionBytes),
-                new MagicEffectPacket(player.Location, AnimatedEffect.BubbleBlue),
-                new PlayerStatsPacket(player),
-                new PlayerSkillsPacket(player),
-                new WorldLightPacket(this.CurrentWorldLightLevel, this.CurrentWorldLightColor),
-                new CreatureLightPacket(player),
-                new TextMessagePacket(MessageType.StatusDefault, "This is a test message"),
-                new PlayerConditionsPacket(player));
-
-            if (descriptionMetadata.TryGetValue(IMapDescriptor.CreatureIdsToLearnMetadataKeyName, out object creatureIdsToLearnBoxed) &&
-                descriptionMetadata.TryGetValue(IMapDescriptor.CreatureIdsToForgetMetadataKeyName, out object creatureIdsToForgetBoxed) &&
-                creatureIdsToLearnBoxed is IEnumerable<uint> creatureIdsToLearn && creatureIdsToForgetBoxed is IEnumerable<uint> creatureIdsToForget)
-            {
-                notification.Sent += (client) =>
-                {
-                    foreach (var creatureId in creatureIdsToLearn)
-                    {
-                        client.AddKnownCreature(creatureId);
-                    }
-
-                    foreach (var creatureId in creatureIdsToForget)
-                    {
-                        client.RemoveKnownCreature(creatureId);
-                    }
-                };
-            }
-
-            this.SendNotification(context, notification);
+            this.SendNotification(context, new PlayerLoginNotification(() => player.YieldSingleItem(), player));
+            this.SendNotification(context, new MapFullDescriptionNotification(() => player.YieldSingleItem(), player.Location, descriptionBytes));
+            this.SendNotification(context, new MagicEffectNotification(() => player.YieldSingleItem(), player.Location, AnimatedEffect.BubbleBlue));
+            this.SendNotification(context, new PlayerStatsUpdateNotification(() => player.YieldSingleItem(), player));
+            this.SendNotification(context, new PlayerSkillsUpdateNotification(() => player.YieldSingleItem(), player));
+            this.SendNotification(context, new WorldLightChangedNotification(() => player.YieldSingleItem(), this.CurrentWorldLightLevel, this.CurrentWorldLightColor));
+            this.SendNotification(context, new CreatureLightUpdateNotification(() => player.YieldSingleItem(), player));
+            this.SendNotification(context, new TextMessageNotification(() => player.YieldSingleItem(), MessageType.StatusDefault, "This is a test message"));
+            this.SendNotification(context, new PlayerConditionsUpdateNotification(() => player.YieldSingleItem(), player));
         }
     }
 }

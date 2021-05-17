@@ -13,8 +13,10 @@ namespace Fibula.Protocol.V772.PacketWriters
 {
     using Fibula.Communications;
     using Fibula.Communications.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
     using Fibula.Communications.Packets.Outgoing;
     using Fibula.Protocol.V772.Extensions;
+    using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Logging;
 
     /// <summary>
@@ -22,13 +24,19 @@ namespace Fibula.Protocol.V772.PacketWriters
     /// </summary>
     public class AddCreaturePacketWriter : BasePacketWriter
     {
+        private readonly IClientsManager clientsManager;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="AddCreaturePacketWriter"/> class.
         /// </summary>
         /// <param name="logger">A reference to the logger in use.</param>
-        public AddCreaturePacketWriter(ILogger<AddCreaturePacketWriter> logger)
+        /// <param name="clientsManager">A reference to the manager of clients.</param>
+        public AddCreaturePacketWriter(ILogger<AddCreaturePacketWriter> logger, IClientsManager clientsManager)
             : base(logger)
         {
+            clientsManager.ThrowIfNull(nameof(clientsManager));
+
+            this.clientsManager = clientsManager;
         }
 
         /// <summary>
@@ -45,10 +53,19 @@ namespace Fibula.Protocol.V772.PacketWriters
                 return;
             }
 
+            var client = this.clientsManager.FindByPlayerId(addCreaturePacket.Player.Id);
+            var isCreatureKnown = client != null && client.KnowsCreatureWithId(addCreaturePacket.Creature.Id);
+            var creatureIdToForget = client == null || isCreatureKnown ? 0 : client.ChooseCreatureToRemoveFromKnownSet();
+
+            if (creatureIdToForget > 0)
+            {
+                client.RemoveKnownCreature(creatureIdToForget);
+            }
+
             message.AddByte(addCreaturePacket.PacketType.ToByte());
 
             message.AddLocation(addCreaturePacket.Creature.Location);
-            message.AddCreature(addCreaturePacket.Creature, addCreaturePacket.AsKnown, addCreaturePacket.RemoveThisCreatureId);
+            message.AddCreature(addCreaturePacket.Creature, isCreatureKnown, creatureIdToForget);
         }
     }
 }

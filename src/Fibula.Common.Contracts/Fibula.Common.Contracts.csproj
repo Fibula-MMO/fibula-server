@@ -29,4 +29,16 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Protos\common.proto">
+      <GrpcServices>Server</GrpcServices>
+    </None>
+    <None Update="Protos\packets.proto">
+      <GrpcServices>Server</GrpcServices>
+    </None>
+    <None Update="Protos\game.proto">
+      <GrpcServices>Server</GrpcServices>
+    </None>
+  </ItemGroup>
+
 </Project>

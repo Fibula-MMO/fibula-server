@@ -29,12 +29,14 @@ namespace Fibula.Server.Mechanics.Conditions
         /// <param name="mapDescriptor">A reference to the map descriptor in use.</param>
         /// <param name="map">A reference to the map in use.</param>
         /// <param name="creatureFinder">A reference to the creature finder in use.</param>
+        /// <param name="gameOperationsApi">A reference to the game operations api.</param>
         /// <param name="itemFactory">A reference to the item factory in use.</param>
         /// <param name="scheduler">A reference to the scheduler instance.</param>
         public ConditionContext(
             ILogger logger,
             IMapDescriptor mapDescriptor,
             IMap map,
+            IGameOperationsApi gameOperationsApi,
             ICreatureFinder creatureFinder,
             IItemFactory itemFactory,
             IScheduler scheduler)
@@ -42,12 +44,14 @@ namespace Fibula.Server.Mechanics.Conditions
         {
             mapDescriptor.ThrowIfNull(nameof(mapDescriptor));
             map.ThrowIfNull(nameof(map));
+            gameOperationsApi.ThrowIfNull(nameof(gameOperationsApi));
             creatureFinder.ThrowIfNull(nameof(creatureFinder));
             itemFactory.ThrowIfNull(nameof(itemFactory));
             scheduler.ThrowIfNull(nameof(scheduler));
 
             this.MapDescriptor = mapDescriptor;
             this.Map = map;
+            this.GameApi = gameOperationsApi;
             this.CreatureFinder = creatureFinder;
             this.ItemFactory = itemFactory;
             this.Scheduler = scheduler;
@@ -62,6 +66,11 @@ namespace Fibula.Server.Mechanics.Conditions
         /// Gets the reference to the map.
         /// </summary>
         public IMap Map { get; }
+
+        /// <summary>
+        /// Gets a reference to the game's api.
+        /// </summary>
+        public IGameOperationsApi GameApi { get; }
 
         /// <summary>
         /// Gets the reference to the creature finder in use.

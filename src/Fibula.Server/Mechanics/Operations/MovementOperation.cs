@@ -12,14 +12,13 @@
 namespace Fibula.Server.Mechanics.Operations
 {
     using System;
-    using Fibula.Communications.Packets.Outgoing;
     using Fibula.Definitions.Data.Structures;
     using Fibula.Definitions.Enumerations;
     using Fibula.Definitions.Flags;
     using Fibula.Server.Contracts.Abstractions;
     using Fibula.Server.Contracts.Constants;
     using Fibula.Server.Contracts.Extensions;
-    using Fibula.Server.Mechanics.Notifications;
+    using Fibula.Server.Notifications;
     using Fibula.Utilities.Common.Extensions;
     using Microsoft.Extensions.Logging;
 
@@ -131,7 +130,7 @@ namespace Fibula.Server.Mechanics.Operations
 
                             break;
                         case LocationType.InventorySlot:
-                            var toCreature = context.CreatureFinder.FindCreatureById(this.ToCreatureId);
+                            var toCreature = context.CreatureManager.FindCreatureById(this.ToCreatureId);
 
                             this.MapToBody(context, fromTile, toCreature?.Inventory[(byte)this.ToLocation.Slot] as IContainerItem);
 
@@ -154,7 +153,7 @@ namespace Fibula.Server.Mechanics.Operations
 
                             break;
                         case LocationType.InventorySlot:
-                            var toCreature = context.CreatureFinder.FindCreatureById(this.ToCreatureId);
+                            var toCreature = context.CreatureManager.FindCreatureById(this.ToCreatureId);
 
                             this.ContainerToBody(context, sourceContainer, toCreature?.Inventory[(byte)this.ToLocation.Slot] as IContainerItem);
 
@@ -163,7 +162,7 @@ namespace Fibula.Server.Mechanics.Operations
 
                     break;
                 case LocationType.InventorySlot:
-                    var fromCreature = context.CreatureFinder.FindCreatureById(this.FromCreatureId);
+                    var fromCreature = context.CreatureManager.FindCreatureById(this.FromCreatureId);
 
                     if (fromCreature == null)
                     {
@@ -186,7 +185,7 @@ namespace Fibula.Server.Mechanics.Operations
 
                             break;
                         case LocationType.InventorySlot:
-                            var toCreature = context.CreatureFinder.FindCreatureById(this.ToCreatureId);
+                            var toCreature = context.CreatureManager.FindCreatureById(this.ToCreatureId);
 
                             this.BodyToBody(context, sourceBodyContainer, toCreature?.Inventory[(byte)this.ToLocation.Slot] as IContainerItem);
 
@@ -205,7 +204,7 @@ namespace Fibula.Server.Mechanics.Operations
             {
                 this.DispatchTextNotification(context, OperationMessage.MayNotMoveThis);
             }
-            else if (!this.PerformItemMovement(context, item, sourceContainer, destinationContainer, 0, 0, this.Amount, this.GetRequestor(context.CreatureFinder)))
+            else if (!this.PerformItemMovement(context, item, sourceContainer, destinationContainer, 0, 0, this.Amount, this.GetRequestor(context.CreatureManager)))
             {
                 // Something else went wrong.
                 this.DispatchTextNotification(context);
@@ -227,7 +226,7 @@ namespace Fibula.Server.Mechanics.Operations
             {
                 this.DispatchTextNotification(context, OperationMessage.MustFirstOpenThatContainer);
             }
-            else if (!this.PerformItemMovement(context, item, sourceContainer, destinationContainer, 0, this.ToLocation.ContainerIndex, this.Amount, this.GetRequestor(context.CreatureFinder)))
+            else if (!this.PerformItemMovement(context, item, sourceContainer, destinationContainer, 0, this.ToLocation.ContainerIndex, this.Amount, this.GetRequestor(context.CreatureManager)))
             {
                 // Something else went wrong.
                 this.DispatchTextNotification(context);
@@ -258,12 +257,12 @@ namespace Fibula.Server.Mechanics.Operations
             {
                 this.DispatchTextNotification(context, OperationMessage.NotEnoughRoom);
             }
-            else if (!this.PerformItemMovement(context, item, sourceContainer, destinationTile, 0, amountToMove: this.Amount, requestorCreature: this.GetRequestor(context.CreatureFinder)))
+            else if (!this.PerformItemMovement(context, item, sourceContainer, destinationTile, 0, amountToMove: this.Amount, requestorCreature: this.GetRequestor(context.CreatureManager)))
             {
                 // Something else went wrong.
                 this.DispatchTextNotification(context);
             }
-            else if (this.GetRequestor(context.CreatureFinder) is IPlayer player && this.ToLocation != player.Location && player != thingMoving)
+            else if (this.GetRequestor(context.CreatureManager) is IPlayer player && this.ToLocation != player.Location && player != thingMoving)
             {
                 var directionToDestination = player.Location.DirectionTo(this.ToLocation);
 
@@ -286,7 +285,7 @@ namespace Fibula.Server.Mechanics.Operations
             {
                 this.DispatchTextNotification(context, OperationMessage.MustFirstOpenThatContainer);
             }
-            else if (!this.PerformItemMovement(context, item, sourceContainer, destinationContainer, this.FromLocation.ContainerIndex, 0, this.Amount, this.GetRequestor(context.CreatureFinder)))
+            else if (!this.PerformItemMovement(context, item, sourceContainer, destinationContainer, this.FromLocation.ContainerIndex, 0, this.Amount, this.GetRequestor(context.CreatureManager)))
             {
                 // Something else went wrong.
                 this.DispatchTextNotification(context);
@@ -313,7 +312,7 @@ namespace Fibula.Server.Mechanics.Operations
             {
                 this.DispatchTextNotification(context, OperationMessage.MustFirstOpenThatContainer);
             }
-            else if (!this.PerformItemMovement(context, item, sourceContainer, destinationContainer, this.FromLocation.ContainerIndex, this.ToLocation.ContainerIndex, this.Amount, this.GetRequestor(context.CreatureFinder)))
+            else if (!this.PerformItemMovement(context, item, sourceContainer, destinationContainer, this.FromLocation.ContainerIndex, this.ToLocation.ContainerIndex, this.Amount, this.GetRequestor(context.CreatureManager)))
             {
                 // Something else went wrong.
                 this.DispatchTextNotification(context);
@@ -349,12 +348,12 @@ namespace Fibula.Server.Mechanics.Operations
             {
                 this.DispatchTextNotification(context, OperationMessage.MustFirstOpenThatContainer);
             }
-            else if (!this.PerformItemMovement(context, item, sourceContainer, destinationTile, fromIndex: this.FromLocation.ContainerIndex, amountToMove: this.Amount, requestorCreature: this.GetRequestor(context.CreatureFinder)))
+            else if (!this.PerformItemMovement(context, item, sourceContainer, destinationTile, fromIndex: this.FromLocation.ContainerIndex, amountToMove: this.Amount, requestorCreature: this.GetRequestor(context.CreatureManager)))
             {
                 // Something else went wrong.
                 this.DispatchTextNotification(context);
             }
-            else if (this.GetRequestor(context.CreatureFinder) is IPlayer player && this.ToLocation != player.Location && player != thingMoving)
+            else if (this.GetRequestor(context.CreatureManager) is IPlayer player && this.ToLocation != player.Location && player != thingMoving)
             {
                 var directionToDestination = player.Location.DirectionTo(this.ToLocation);
 
@@ -364,7 +363,7 @@ namespace Fibula.Server.Mechanics.Operations
 
         private void MapToBody(IOperationContext context, ITile sourceTile, IContainerItem destinationContainer)
         {
-            var requestor = this.GetRequestor(context.CreatureFinder);
+            var requestor = this.GetRequestor(context.CreatureManager);
             var itemMoving = sourceTile.TopItem;
 
             // Declare some pre-conditions.
@@ -400,7 +399,7 @@ namespace Fibula.Server.Mechanics.Operations
 
         private void MapToContainer(IOperationContext context, ITile sourceTile, IContainerItem destinationContainer)
         {
-            var requestor = this.GetRequestor(context.CreatureFinder);
+            var requestor = this.GetRequestor(context.CreatureManager);
             var itemMoving = sourceTile.TopItem;
 
             // Declare some pre-conditions.
@@ -441,7 +440,7 @@ namespace Fibula.Server.Mechanics.Operations
 
         private void MapToMapMovement(IOperationContext context, ITile sourceTile, ITile destinationTile, bool isTeleport)
         {
-            var requestor = this.GetRequestor(context.CreatureFinder);
+            var requestor = this.GetRequestor(context.CreatureManager);
 
             IThing thingMoving = this.ThingMovingId == CreatureConstants.CreatureTypeId ? sourceTile.TopCreature as IThing : sourceTile.TopItem as IThing;
 
@@ -484,7 +483,7 @@ namespace Fibula.Server.Mechanics.Operations
                 {
                     if (requestor != null && creature.Id == this.RequestorId && creature is IPlayer player)
                     {
-                        this.SendNotification(context, new GenericNotification(() => player.YieldSingleItem(), new PlayerCancelWalkPacket(player.Direction.GetClientSafeDirection())));
+                        this.SendNotification(context, new PlayerCancelWalkNotification(() => player.YieldSingleItem(), player));
                     }
 
                     this.DispatchTextNotification(context, OperationMessage.NotEnoughRoom);
@@ -693,7 +692,7 @@ namespace Fibula.Server.Mechanics.Operations
             }
 
             // Then deal with the consequences of the move.
-            creature.Direction = moveDirection.GetClientSafeDirection();
+            creature.Direction = moveDirection;
             creature.LastMovementCostModifier = (fromTile.Location - toLocation).Z != 0 ? 2 : moveDirection.IsDiagonal() ? 3 : 1;
 
             this.ExhaustionInfo[ExhaustionFlag.Movement] = creature.CalculateStepDuration(fromTile);

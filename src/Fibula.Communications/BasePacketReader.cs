@@ -12,6 +12,8 @@
 namespace Fibula.Communications
 {
     using Fibula.Communications.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
+    using Fibula.Protocol.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Logging;
 
@@ -41,6 +43,6 @@ namespace Fibula.Communications
         /// </summary>
         /// <param name="message">The message to read from.</param>
         /// <returns>The packet read from the message.</returns>
-        public abstract IIncomingPacket ReadFromMessage(INetworkMessage message);
+        public abstract IInboundPacket ReadFromMessage(INetworkMessage message);
     }
 }

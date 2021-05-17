@@ -13,6 +13,7 @@ namespace Fibula.Protocol.V772.PacketReaders
 {
     using Fibula.Communications;
     using Fibula.Communications.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
     using Fibula.Communications.Packets.Incoming;
     using Fibula.Definitions.Enumerations;
     using Fibula.Utilities.Validation;
@@ -37,7 +38,7 @@ namespace Fibula.Protocol.V772.PacketReaders
         /// </summary>
         /// <param name="message">The message to read from.</param>
         /// <returns>The packet read from the message.</returns>
-        public override IIncomingPacket ReadFromMessage(INetworkMessage message)
+        public override IInboundPacket ReadFromMessage(INetworkMessage message)
         {
             message.ThrowIfNull(nameof(message));
 

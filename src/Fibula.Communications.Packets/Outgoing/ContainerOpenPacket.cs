@@ -12,9 +12,9 @@
 namespace Fibula.Communications.Packets.Outgoing
 {
     using System.Collections.Generic;
-    using Fibula.Communications.Contracts.Abstractions;
-    using Fibula.Communications.Contracts.Enumerations;
-    using Fibula.Server.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Contracts.Enumerations;
+    using Fibula.ServerV2.Contracts.Abstractions;
 
     /// <summary>
     /// Class that represents a packet for a container being opened.
@@ -43,7 +43,7 @@ namespace Fibula.Communications.Packets.Outgoing
         /// <summary>
         /// Gets the type of this packet.
         /// </summary>
-        public OutgoingPacketType PacketType => OutgoingPacketType.ContainerOpen;
+        public OutboundPacketType PacketType => OutboundPacketType.ContainerOpen;
 
         /// <summary>
         /// Gets the id of the container, as seen by the target player.

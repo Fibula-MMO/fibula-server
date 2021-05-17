@@ -18,7 +18,9 @@ namespace Fibula.Protocol.V772
     using Fibula.Communications;
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Contracts.Delegates;
-    using Fibula.Communications.Contracts.Enumerations;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Contracts.Enumerations;
+    using Fibula.Protocol.Contracts.Abstractions;
     using Fibula.Protocol.V772.Extensions;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Logging;
@@ -95,17 +97,17 @@ namespace Fibula.Protocol.V772
         /// <summary>
         /// Event fired when this connection has been closed.
         /// </summary>
-        public event ConnectionClosedDelegate Closed;
+        public event ConnectionClosedHandler Closed;
 
         /// <summary>
-        /// Event fired right after this connection has proccessed an <see cref="IIncomingPacket"/> by any subscriber of the <see cref="PacketReady"/> event.
+        /// Event fired right after this connection has proccessed an <see cref="IInboundPacket"/> by any subscriber of the <see cref="PacketReady"/> event.
         /// </summary>
-        public event ConnectionPacketProccessedDelegate PacketProcessed;
+        public event ConnectionPacketProccessedHandler PacketProcessed;
 
         /// <summary>
-        /// Event fired when a <see cref="IIncomingPacket"/> picked up by this connection is ready to be processed.
+        /// Event fired when a <see cref="IInboundPacket"/> picked up by this connection is ready to be processed.
         /// </summary>
-        public event ConnectionPacketReadyDelegate PacketReady;
+        public event ConnectionPacketReadyHandler PacketReady;
 
         /// <summary>
         /// Gets the Socket IP address of this connection, if it is open.
@@ -158,7 +160,8 @@ namespace Fibula.Protocol.V772
         /// Prepares a <see cref="INetworkMessage"/> with the reponse packets supplied and sends it.
         /// </summary>
         /// <param name="responsePackets">The packets that compose that response.</param>
-        public void Send(IEnumerable<IOutboundPacket> responsePackets)
+        /// <param name="playerId">Optional. The id of the player attached to the connection, for context.</param>
+        public void Send(IEnumerable<IOutboundPacket> responsePackets, uint playerId = 0)
         {
             if (responsePackets == null || !responsePackets.Any() || this.IsOrphaned)
             {
@@ -240,9 +243,9 @@ namespace Fibula.Protocol.V772
 
                         if (reader == null)
                         {
-                            if (Enum.IsDefined(typeof(IncomingPacketType), packetType))
+                            if (Enum.IsDefined(typeof(InboundPacketType), packetType))
                             {
-                                this.logger.LogWarning($"No reader found that supports type '{(IncomingPacketType)packetType}' of packets. Selecting default reader...");
+                                this.logger.LogWarning($"No reader found that supports type '{(InboundPacketType)packetType}' of packets. Selecting default reader...");
                             }
                             else
                             {
@@ -252,15 +255,15 @@ namespace Fibula.Protocol.V772
                             reader = new DefaultPacketReader(this.logger);
                         }
 
-                        var dataRead = reader.ReadFromMessage(this.inboundMessage);
+                        var packetRead = reader.ReadFromMessage(this.inboundMessage);
 
-                        if (dataRead == null)
+                        if (packetRead == null)
                         {
                             this.logger.LogError($"Could not read data using reader '{reader.GetType().Name}'.");
                         }
                         else
                         {
-                            var responsePackets = this.PacketReady?.Invoke(this, dataRead);
+                            var responsePackets = this.PacketReady?.Invoke(this, packetRead);
 
                             if (responsePackets != null && responsePackets.Any())
                             {

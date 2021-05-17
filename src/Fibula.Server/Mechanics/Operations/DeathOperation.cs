@@ -13,11 +13,10 @@ namespace Fibula.Server.Mechanics.Operations
 {
     using System;
     using System.Linq;
-    using Fibula.Communications.Packets.Outgoing;
     using Fibula.Server.Contracts;
     using Fibula.Server.Contracts.Abstractions;
     using Fibula.Server.Contracts.Enumerations;
-    using Fibula.Server.Mechanics.Notifications;
+    using Fibula.Server.Notifications;
     using Fibula.Utilities.Common.Extensions;
 
     /// <summary>
@@ -50,8 +49,8 @@ namespace Fibula.Server.Mechanics.Operations
             if (this.Creature is IPlayer player)
             {
                 this.SendNotification(context, new TextMessageNotification(() => player.YieldSingleItem(), MessageType.EventAdvance, "You are dead."));
-
-                this.SendNotification(context, new GenericNotification(() => player.YieldSingleItem(), new PlayerCancelWalkPacket(player.Direction), new PlayerDeathPacket()));
+                this.SendNotification(context, new PlayerCancelWalkNotification(() => player.YieldSingleItem(), player));
+                this.SendNotification(context, new PlayerDeathNotification(() => player.YieldSingleItem(), player));
             }
 
             // Give out the experience if this is a monster
@@ -74,7 +73,7 @@ namespace Fibula.Server.Mechanics.Operations
                         continue;
                     }
 
-                    if (context.CreatureFinder.FindCreatureById(combatantId) is ICombatant combatantGainingExp)
+                    if (context.CreatureManager.FindCreatureById(combatantId) is ICombatant combatantGainingExp)
                     {
                         combatantGainingExp.AddExperience(expToGive);
                     }

@@ -53,7 +53,8 @@ namespace Fibula.Server.Creatures
         /// Initializes a new instance of the <see cref="Creature"/> class.
         /// </summary>
         /// <param name="creationMetadata">The metadata for this player.</param>
-        protected Creature(CreatureEntity creationMetadata)
+        /// <param name="preselectedId">Optional. A pre-selected id to use for this creature. Defaults to 0 which picks a new id.</param>
+        protected Creature(CreatureEntity creationMetadata, uint preselectedId = 0)
         {
             creationMetadata.ThrowIfNull(nameof(creationMetadata));
             creationMetadata.Name.ThrowIfNullOrWhiteSpace(nameof(creationMetadata.Name));
@@ -63,10 +64,7 @@ namespace Fibula.Server.Creatures
                 throw new ArgumentException($"{nameof(creationMetadata.MaxHitpoints)} must be positive.", nameof(creationMetadata.MaxHitpoints));
             }
 
-            lock (Creature.IdLock)
-            {
-                this.Id = idCounter++;
-            }
+            this.Id = preselectedId == 0 ? Creature.NewCreatureId() : preselectedId;
 
             this.Name = creationMetadata.Name;
             this.Article = creationMetadata.Article;
@@ -406,6 +404,18 @@ namespace Fibula.Server.Creatures
         public bool Equals([AllowNull] ICreature other)
         {
             return this.Id == other?.Id;
+        }
+
+        /// <summary>
+        /// Selects and returns a new in-game id for a creature.
+        /// </summary>
+        /// <returns>The picked id.</returns>
+        protected static uint NewCreatureId()
+        {
+            lock (Creature.IdLock)
+            {
+                return idCounter++;
+            }
         }
 
         /// <summary>

@@ -14,7 +14,7 @@ namespace Fibula.Plugins.PathFinding.AStar
     using System;
     using System.Collections.Generic;
     using Fibula.Definitions.Data.Structures;
-    using Fibula.Server.Contracts.Abstractions;
+    using Fibula.ServerV2.Contracts.Abstractions;
     using Fibula.Utilities.Pathfinding.Abstractions;
     using Fibula.Utilities.Validation;
 
@@ -75,7 +75,7 @@ namespace Fibula.Plugins.PathFinding.AStar
                     this.nodesDictionary.Add(searchContext.SearchId, new Dictionary<Location, TileNode>());
                 }
 
-                if (!this.nodesDictionary[searchContext.SearchId].ContainsKey(locToSearch) && this.map.GetTileAt(tileNodeArguments.Location, out ITile tile, loadAsNeeded: true))
+                if (!this.nodesDictionary[searchContext.SearchId].ContainsKey(locToSearch) && this.map.HasTileAt(tileNodeArguments.Location, out ITile tile, loadAsNeeded: true))
                 {
                     this.nodesDictionary[searchContext.SearchId].Add(locToSearch, new TileNode(searchContext, tile));
                 }

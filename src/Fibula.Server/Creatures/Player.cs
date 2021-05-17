@@ -14,7 +14,6 @@ namespace Fibula.Server.Creatures
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Definitions.Constants;
     using Fibula.Definitions.Data.Entities;
     using Fibula.Definitions.Enumerations;
@@ -32,18 +31,12 @@ namespace Fibula.Server.Creatures
         /// <summary>
         /// Initializes a new instance of the <see cref="Player"/> class.
         /// </summary>
-        /// <param name="client">The client to associate this player to.</param>
         /// <param name="characterEntity">The player's corresponding character entity lodaded from storage.</param>
-        public Player(
-            IClient client,
-            CharacterEntity characterEntity)
-            : base(characterEntity)
+        /// <param name="preselectedId">Optinal. A pre-selected id for the player.</param>
+        public Player(CharacterEntity characterEntity, uint preselectedId = 0)
+            : base(characterEntity, preselectedId)
         {
-            client.ThrowIfNull(nameof(client));
             characterEntity.ThrowIfNull(nameof(characterEntity));
-
-            this.Client = client;
-            this.Client.PlayerId = this.Id;
 
             this.CharacterId = characterEntity.Id;
 
@@ -105,16 +98,20 @@ namespace Fibula.Server.Creatures
         public override byte AutoAttackRange => 1;
 
         /// <summary>
-        /// Gets the client associated to this player.
-        /// </summary>
-        public IClient Client { get; }
-
-        /// <summary>
         /// Gets this player's speed.
         /// </summary>
         public override ushort Speed
         {
             get => (ushort)(this.Stats[CreatureStat.BaseSpeed].Current + (2 * this.VariableSpeed));
+        }
+
+        /// <summary>
+        /// Selects and returns a new in-game id for a player.
+        /// </summary>
+        /// <returns>The picked id.</returns>
+        public static uint ReserveNewId()
+        {
+            return Creature.NewCreatureId();
         }
 
         /// <summary>

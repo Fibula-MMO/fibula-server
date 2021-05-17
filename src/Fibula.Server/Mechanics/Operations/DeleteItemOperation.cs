@@ -13,7 +13,7 @@ namespace Fibula.Server.Mechanics.Operations
 {
     using Fibula.Server.Contracts.Abstractions;
     using Fibula.Server.Contracts.Extensions;
-    using Fibula.Server.Mechanics.Notifications;
+    using Fibula.Server.Notifications;
 
     /// <summary>
     /// Class that represents an event for an item deletion.
@@ -42,7 +42,7 @@ namespace Fibula.Server.Mechanics.Operations
         /// <param name="context">A reference to the operation context.</param>
         protected override void Execute(IOperationContext context)
         {
-            var requestor = this.GetRequestor(context.CreatureFinder);
+            var requestor = this.GetRequestor(context.CreatureManager);
             var inThingContainer = this.Item.ParentContainer;
 
             if (inThingContainer == null || !(this.Item is IThing existingThing))

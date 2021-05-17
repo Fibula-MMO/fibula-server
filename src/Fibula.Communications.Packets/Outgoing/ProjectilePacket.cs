@@ -11,8 +11,8 @@
 
 namespace Fibula.Communications.Packets.Outgoing
 {
-    using Fibula.Communications.Contracts.Abstractions;
-    using Fibula.Communications.Contracts.Enumerations;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Contracts.Enumerations;
     using Fibula.Definitions.Data.Structures;
     using Fibula.Definitions.Enumerations;
 
@@ -37,7 +37,7 @@ namespace Fibula.Communications.Packets.Outgoing
         /// <summary>
         /// Gets the type of this packet.
         /// </summary>
-        public OutgoingPacketType PacketType => OutgoingPacketType.ProjectileEffect;
+        public OutboundPacketType PacketType => OutboundPacketType.ProjectileEffect;
 
         /// <summary>
         /// Gets the location of origin.

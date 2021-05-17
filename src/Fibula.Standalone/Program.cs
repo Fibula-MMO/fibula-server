@@ -11,41 +11,19 @@
 
 namespace Fibula.Standalone
 {
-    using System;
-    using System.Collections.Generic;
     using System.IO;
     using System.Threading;
     using System.Threading.Tasks;
     using Fibula.Common;
     using Fibula.Common.Contracts;
     using Fibula.Common.Contracts.Abstractions;
-    using Fibula.Communications;
-    using Fibula.Communications.Contracts.Abstractions;
-    using Fibula.Communications.Packets.Contracts.Abstractions;
-    using Fibula.Data.Contracts.Abstractions;
-    using Fibula.Plugins.Database.InMemoryOnly;
-    using Fibula.Plugins.ItemLoaders.CipObjectsFile;
-    using Fibula.Plugins.MapLoaders.CipSectorFiles;
-    using Fibula.Plugins.MonsterLoaders.CipMonFiles;
-    using Fibula.Plugins.PathFinding.AStar.Extensions;
-    using Fibula.Plugins.SpawnLoaders.CipMonstersDbFile;
-    using Fibula.Protocol.V772.Extensions;
-    using Fibula.Providers.Azure.Extensions;
-    using Fibula.Scheduling;
-    using Fibula.Scheduling.Contracts.Abstractions;
-    using Fibula.Security.Extensions;
-    using Fibula.Server;
-    using Fibula.Server.Contracts.Abstractions;
-    using Fibula.Server.Creatures;
-    using Fibula.Server.Items;
-    using Fibula.Server.Mechanics;
-    using Fibula.Server.Mechanics.Handlers;
-    using Fibula.Server.Mechanics.Operations;
+    using Fibula.ServerV2.Extensions;
+    using Fibula.TcpServer.Contracts.Abstractions;
+    using Fibula.TcpServer.Extensions;
     using Fibula.Utilities.Validation;
     using Microsoft.ApplicationInsights.Extensibility;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.DependencyInjection.Extensions;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Options;
     using Serilog;
@@ -56,19 +34,14 @@ namespace Fibula.Standalone
     public static class Program
     {
         /// <summary>
+        /// The prefix used to identify enviroment variables loaded on configuration.
+        /// </summary>
+        private const string EnvironmentVariablesPrefix = "FIBULA_";
+
+        /// <summary>
         /// The cancellation token source for the entire application.
         /// </summary>
-        private static readonly CancellationTokenSource MasterCancellationTokenSource = new CancellationTokenSource();
-
-        /// <summary>
-        /// The handler selector used to bind incoming packets to handlers, and process them.
-        /// </summary>
-        private static IHandlerSelector handlerSelector;
-
-        /// <summary>
-        /// Stores a mapping of connections to their respective clients.
-        /// </summary>
-        private static IDictionary<IConnection, IClient> clientMap;
+        private static readonly CancellationTokenSource MasterCancellationTokenSource = new ();
 
         /// <summary>
         /// The main entry point for the program.
@@ -81,12 +54,12 @@ namespace Fibula.Standalone
                 .AddJsonFile("logsettings.json")
                 .Build();
 
-            var host = new HostBuilder()
+            var serverHost = new HostBuilder()
                 .ConfigureHostConfiguration(configHost =>
                 {
                     configHost.SetBasePath(Directory.GetCurrentDirectory());
                     configHost.AddJsonFile("hostsettings.json", optional: true, reloadOnChange: true);
-                    configHost.AddEnvironmentVariables(prefix: "OTS_");
+                    configHost.AddEnvironmentVariables(prefix: EnvironmentVariablesPrefix);
                     configHost.AddCommandLine(args);
                 })
                 .ConfigureAppConfiguration((hostContext, configApp) =>
@@ -94,7 +67,7 @@ namespace Fibula.Standalone
                     configApp.SetBasePath(Directory.GetCurrentDirectory());
                     configApp.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
                     configApp.AddJsonFile($"appsettings.{hostContext.HostingEnvironment.EnvironmentName}.json", optional: true, reloadOnChange: true);
-                    configApp.AddEnvironmentVariables(prefix: "OTS_");
+                    configApp.AddEnvironmentVariables(prefix: EnvironmentVariablesPrefix);
                     configApp.AddCommandLine(args);
                 })
                 .ConfigureServices(ConfigureServices)
@@ -108,61 +81,9 @@ namespace Fibula.Standalone
                 })
                 .Build();
 
-            // Bind the TCP listener events with handler picking.
-            // This is needed for now because we don't have a separate listening pipeline for generic (non TCP client requests).
-            handlerSelector = host.Services.GetRequiredService<IHandlerSelector>();
-            clientMap = new Dictionary<IConnection, IClient>();
-
-            static IEnumerable<IOutboundPacket> OnPacketReady(IConnection connection, IIncomingPacket packet)
-            {
-                var handler = handlerSelector.SelectForPacket(packet);
-
-                if (handler != null && clientMap.TryGetValue(connection, out IClient client))
-                {
-                    return handler.HandleRequest(packet, client);
-                }
-
-                return null;
-            }
-
-            static void OnConnectionClosed(IConnection connection)
-            {
-                // Clean up the event listeners we set up here.
-                connection.PacketReady -= OnPacketReady;
-                connection.Closed -= OnConnectionClosed;
-
-                if (!clientMap.ContainsKey(connection))
-                {
-                    return;
-                }
-
-                clientMap.Remove(connection);
-            }
-
-            void OnNewConnection(IConnection connection)
-            {
-                if (clientMap.ContainsKey(connection))
-                {
-                    return;
-                }
-
-                var clientLogger = host.Services.GetRequiredService<Microsoft.Extensions.Logging.ILogger<ConnectedClient>>();
-
-                clientMap.Add(connection, new ConnectedClient(clientLogger, connection));
-
-                connection.PacketReady += OnPacketReady;
-
-                connection.Closed += OnConnectionClosed;
-            }
-
-            foreach (var tcpListener in host.Services.GetServices<IListener>())
-            {
-                tcpListener.NewConnection += OnNewConnection;
-            }
-
             TaskScheduler.UnobservedTaskException += HandleUnobservedTaskException;
 
-            await host.RunAsync(Program.MasterCancellationTokenSource.Token).ConfigureAwait(false);
+            await serverHost.RunAsync(Program.MasterCancellationTokenSource.Token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -186,167 +107,20 @@ namespace Fibula.Standalone
 
             // Configure options here
             services.Configure<ApplicationContextOptions>(hostingContext.Configuration.GetSection(nameof(ApplicationContextOptions)));
-
-            // Add the master cancellation token source of the entire service.
-            services.AddSingleton(Program.MasterCancellationTokenSource);
+            services.Configure<TelemetryConfiguration>(hostingContext.Configuration.GetSection(nameof(TelemetryConfiguration)));
 
             services.AddApplicationInsightsTelemetryWorkerService();
 
-            // Add known instances of configuration and logger.
-            services.AddSingleton(hostingContext.Configuration);
-
             services.AddSingleton<IApplicationContext, ApplicationContext>();
-            services.AddSingleton<IScheduler, Scheduler>();
 
-            services.AddSingleton<IGame, Game>();
+            // The master cancellation token source for the entire application.
+            services.AddSingleton(Program.MasterCancellationTokenSource);
 
-            services.AddSimpleDosDefender(hostingContext.Configuration);
-            services.AddLocalPemFileRsaDecryptor(hostingContext.Configuration);
+            services.AddGameworldServer(hostingContext.Configuration);
 
-            services.AddHandlers();
+            services.AddTcpServer(hostingContext.Configuration);
 
-            ConfigureMap(hostingContext, services);
-
-            ConfigureItems(hostingContext, services);
-
-            ConfigureCreatures(hostingContext, services);
-
-            ConfigureDatabaseContext(hostingContext, services);
-
-            ConfigureOperations(services);
-
-            ConfigureHostedServices(services);
-
-            // ConfigureEventRules(hostingContext, services);
-            ConfigurePathFindingAlgorithm(hostingContext, services);
-            ConfigureExtraServices(hostingContext, services);
-
-            // Choose a server version here.
-            services.AddProtocol772GameServerComponents(hostingContext.Configuration);
-            services.AddProtocol772GatewayServerComponents(hostingContext.Configuration);
+            services.AddSingleton<ITcpServerToGameworldAdapter, TcpServerToGameworldAdapter>();
         }
-
-        private static void AddHandlers(this IServiceCollection services)
-        {
-            var packetTypeToHandlersMap = new Dictionary<Type, Type>()
-            {
-                { typeof(IAttackInfo), typeof(AttackHandler) },
-                { typeof(IAutoMovementInfo), typeof(AutoMoveHandler) },
-                { typeof(IActionWithoutContentInfo), typeof(ActionWithoutContentHandler) },
-                { typeof(IBytesInfo), typeof(DefaultRequestHandler) },
-                { typeof(IFollowInfo), typeof(FollowHandler) },
-                { typeof(IGameLogInInfo), typeof(GameLogInHandler) },
-                { typeof(IGatewayLoginInfo), typeof(GatewayLogInHandler) },
-                { typeof(ILookAtInfo), typeof(LookAtHandler) },
-                { typeof(IModesInfo), typeof(ModesHandler) },
-                { typeof(ISpeechInfo), typeof(SpeechHandler) },
-                { typeof(ITurnOnDemandInfo), typeof(TurnOnDemandHandler) },
-                { typeof(IWalkOnDemandInfo), typeof(WalkOnDemandHandler) },
-            };
-
-            foreach (var (packetType, type) in packetTypeToHandlersMap)
-            {
-                services.TryAddSingleton(type);
-            }
-
-            services.AddSingleton<IHandlerSelector>(s =>
-            {
-                var handlerSelector = new HandlerSelector(s.GetRequiredService<Microsoft.Extensions.Logging.ILogger<HandlerSelector>>());
-
-                foreach (var (packetType, type) in packetTypeToHandlersMap)
-                {
-                    handlerSelector.RegisterForPacketType(packetType, s.GetRequiredService(type) as IHandler);
-                }
-
-                return handlerSelector;
-            });
-        }
-
-        private static void ConfigureOperations(IServiceCollection services)
-        {
-            services.AddSingleton<IOperationContext, OperationContext>();
-            services.AddSingleton<IElevatedOperationContext, ElevatedOperationContext>();
-        }
-
-        private static void ConfigureHostedServices(IServiceCollection services)
-        {
-            services.AddSingleton<Game>();
-            services.AddSingleton<IGame>(s => s.GetService<Game>());
-
-            // Those executing should derive from IHostedService and be added using AddHostedService.
-            services.AddHostedService(s => s.GetService<Game>());
-        }
-
-        private static void ConfigureDatabaseContext(HostBuilderContext hostingContext, IServiceCollection services)
-        {
-            // Chose a type of Database context:
-            // services.AddCosmosDBDatabaseContext(hostingContext.Configuration);
-            // services.AddSqlServerDatabaseContext(hostingContext.Configuration);
-            services.AddInMemoryDatabaseContext(hostingContext.Configuration);
-
-            // IFibulaDbContext itself is added by the Add<DatabaseProvider>() call above.
-            // We add Func<IFibulaDbContext> to let callers retrieve a transient instance of this from the Application context,
-            // rather than save an actual copy of the DB context in the app context.
-            services.AddSingleton<Func<IFibulaDbContext>>(s => s.GetService<IFibulaDbContext>);
-        }
-
-        private static void ConfigurePathFindingAlgorithm(HostBuilderContext hostingContext, IServiceCollection services)
-        {
-            services.AddAStarPathFinder(hostingContext.Configuration);
-        }
-
-        private static void ConfigureCreatures(HostBuilderContext hostingContext, IServiceCollection services)
-        {
-            services.AddSingleton<ICreatureFactory, CreatureFactory>();
-            services.AddSingleton<ICreatureManager, CreatureManager>();
-            services.AddSingleton<ICreatureFinder>(s => s.GetService<ICreatureManager>());
-
-            // Chose a type of monster types (catalog) loader:
-            services.AddMonFilesMonsterTypeLoader(hostingContext.Configuration);
-
-            // Chose a type of monster spawns loader:
-            services.AddMonsterDbFileMonsterSpawnLoader(hostingContext.Configuration);
-        }
-
-        private static void ConfigureItems(HostBuilderContext hostingContext, IServiceCollection services)
-        {
-            // Note: A IPredefinedItemSet component must be registered by the protocol version.
-            services.AddSingleton<IItemFactory, ItemFactory>();
-
-            services.AddSingleton<IContainerManager, ContainerManager>();
-
-            // Chose a type of item types (catalog) loader:
-            services.AddObjectsFileItemTypeLoader(hostingContext.Configuration);
-        }
-
-        private static void ConfigureMap(HostBuilderContext hostingContext, IServiceCollection services)
-        {
-            // Note that IProtocolTileDescriptor implementations are, by definition, protocol specific and
-            // should be injected by the protocol library selected.
-            services.AddSingleton<IMap, Map>();
-            services.AddSingleton<IMapDescriptor, MapDescriptor>();
-            services.AddSingleton<ITileFactory, TileFactory>();
-
-            // Choose a type of map loader:
-            // services.AddGrassOnlyDummyMapLoader(hostingContext.Configuration);
-            // services.AddOtbmMapLoader(hostingContext.Configuration);
-            services.AddSectorFilesMapLoader(hostingContext.Configuration);
-        }
-
-        private static void ConfigureExtraServices(HostBuilderContext hostingContext, IServiceCollection services)
-        {
-            // Azure providers for Azure VM hosting and storing secrets in KeyVault.
-            services.AddAzureProviders(hostingContext.Configuration);
-
-            services.Configure<TelemetryConfiguration>(hostingContext.Configuration.GetSection(nameof(TelemetryConfiguration)));
-        }
-
-        // private static void ConfigureEventRules(HostBuilderContext hostingContext, IServiceCollection services)
-        // {
-        //    services.AddSingleton<IEventRulesApi>(s => s.GetService<Game>());
-
-        //// Chose a type of event rules loader:
-        //    services.AddMoveUseEventRulesLoader(hostingContext.Configuration);
-        // }
     }
 }

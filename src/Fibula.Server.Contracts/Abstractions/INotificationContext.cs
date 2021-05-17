@@ -11,13 +11,19 @@
 
 namespace Fibula.Server.Contracts.Abstractions
 {
-    using Fibula.Scheduling.Contracts.Abstractions;
+    using System.Threading.Tasks.Dataflow;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Interface for a notification context.
     /// </summary>
-    public interface INotificationContext : IEventContext
+    public interface INotificationContext
     {
+        /// <summary>
+        /// Gets a reference to the logger in use.
+        /// </summary>
+        ILogger Logger { get; }
+
         /// <summary>
         /// Gets a reference to the map descriptor in use.
         /// </summary>
@@ -27,5 +33,10 @@ namespace Fibula.Server.Contracts.Abstractions
         /// Gets the reference to the creature finder in use.
         /// </summary>
         ICreatureFinder CreatureFinder { get; }
+
+        /// <summary>
+        /// Gets the buffer to which to post the notifications to.
+        /// </summary>
+        IDataflowBlock Buffer { get; }
     }
 }

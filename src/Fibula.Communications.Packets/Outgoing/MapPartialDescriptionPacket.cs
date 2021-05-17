@@ -13,8 +13,8 @@ namespace Fibula.Communications.Packets.Outgoing
 {
     using System;
     using System.Buffers;
-    using Fibula.Communications.Contracts.Abstractions;
-    using Fibula.Communications.Contracts.Enumerations;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Contracts.Enumerations;
 
     /// <summary>
     /// Class that represents a partial map description packet.
@@ -26,16 +26,16 @@ namespace Fibula.Communications.Packets.Outgoing
         /// </summary>
         /// <param name="mapDescriptionType">The type of map description.</param>
         /// <param name="descriptionBytes">The description bytes.</param>
-        public MapPartialDescriptionPacket(OutgoingPacketType mapDescriptionType, ReadOnlySequence<byte> descriptionBytes)
+        public MapPartialDescriptionPacket(OutboundPacketType mapDescriptionType, ReadOnlySequence<byte> descriptionBytes)
         {
-            if (mapDescriptionType != OutgoingPacketType.MapSliceEast &&
-                mapDescriptionType != OutgoingPacketType.MapSliceNorth &&
-                mapDescriptionType != OutgoingPacketType.MapSliceSouth &&
-                mapDescriptionType != OutgoingPacketType.MapSliceWest &&
-                mapDescriptionType != OutgoingPacketType.FloorChangeUp &&
-                mapDescriptionType != OutgoingPacketType.FloorChangeDown)
+            if (mapDescriptionType != OutboundPacketType.MapSliceEast &&
+                mapDescriptionType != OutboundPacketType.MapSliceNorth &&
+                mapDescriptionType != OutboundPacketType.MapSliceSouth &&
+                mapDescriptionType != OutboundPacketType.MapSliceWest &&
+                mapDescriptionType != OutboundPacketType.FloorChangeUp &&
+                mapDescriptionType != OutboundPacketType.FloorChangeDown)
             {
-                throw new ArgumentException(nameof(mapDescriptionType));
+                throw new ArgumentException($"Unsupported partial description type {mapDescriptionType}.", nameof(mapDescriptionType));
             }
 
             this.PacketType = mapDescriptionType;
@@ -45,7 +45,7 @@ namespace Fibula.Communications.Packets.Outgoing
         /// <summary>
         /// Gets the type of this packet.
         /// </summary>
-        public OutgoingPacketType PacketType { get; }
+        public OutboundPacketType PacketType { get; }
 
         /// <summary>
         /// Gets the description bytes.

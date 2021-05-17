@@ -11,14 +11,13 @@
 
 namespace Fibula.Communications.Packets.Incoming
 {
-    using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Packets.Contracts.Abstractions;
     using Fibula.Definitions.Data.Structures;
 
     /// <summary>
     /// Class that represents a look at packet.
     /// </summary>
-    public class LookAtPacket : IIncomingPacket, ILookAtInfo
+    public class LookAtPacket : IInboundPacket, ILookAtInfo
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="LookAtPacket"/> class.

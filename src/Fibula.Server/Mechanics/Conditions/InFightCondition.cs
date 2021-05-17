@@ -11,10 +11,9 @@
 
 namespace Fibula.Server.Mechanics.Conditions
 {
-    using Fibula.Communications.Packets.Outgoing;
     using Fibula.Definitions.Enumerations;
     using Fibula.Server.Contracts.Abstractions;
-    using Fibula.Server.Mechanics.Notifications;
+    using Fibula.Server.Notifications;
     using Fibula.Utilities.Common.Extensions;
     using Fibula.Utilities.Validation;
 
@@ -68,7 +67,7 @@ namespace Fibula.Server.Mechanics.Conditions
         protected override void Execute(IConditionContext context)
         {
             // For InFight, we just send the updated flags.
-            this.SendNotificationAsync(context, new GenericNotification(() => this.Player.YieldSingleItem(), new PlayerConditionsPacket(this.Player)));
+            this.SendNotification(context, new PlayerConditionsUpdateNotification(() => this.Player.YieldSingleItem(), this.Player));
         }
     }
 }

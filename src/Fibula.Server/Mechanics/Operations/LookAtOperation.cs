@@ -19,7 +19,7 @@ namespace Fibula.Server.Mechanics.Operations
     using Fibula.Definitions.Flags;
     using Fibula.Server.Contracts.Abstractions;
     using Fibula.Server.Contracts.Enumerations;
-    using Fibula.Server.Mechanics.Notifications;
+    using Fibula.Server.Notifications;
     using Fibula.Utilities.Common.Extensions;
     using Microsoft.Extensions.Logging;
 

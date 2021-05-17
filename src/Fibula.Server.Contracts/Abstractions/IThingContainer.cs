@@ -14,7 +14,7 @@ namespace Fibula.Server.Contracts.Abstractions
     /// <summary>
     /// Interface for all containers of <see cref="IThing"/>s.
     /// </summary>
-    public interface IThingContainer : ILocatable
+    public interface IThingContainer
     {
         /// <summary>
         /// Attempts to find a <see cref="IThing"/> whitin this container.

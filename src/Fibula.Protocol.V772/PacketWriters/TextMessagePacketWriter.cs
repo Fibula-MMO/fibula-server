@@ -13,7 +13,9 @@ namespace Fibula.Protocol.V772.PacketWriters
 {
     using Fibula.Communications;
     using Fibula.Communications.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
     using Fibula.Communications.Packets.Outgoing;
+    using Fibula.Definitions.Enumerations;
     using Fibula.Protocol.V772.Extensions;
     using Microsoft.Extensions.Logging;
 
@@ -47,7 +49,22 @@ namespace Fibula.Protocol.V772.PacketWriters
 
             message.AddByte(textMessagePacket.PacketType.ToByte());
 
-            message.AddByte((byte)textMessagePacket.Type);
+            byte valueToSend = textMessagePacket.Type switch
+            {
+                MessageType.CenterWhite => 0x13,
+                MessageType.CenterGreen => 0x16,
+                MessageType.CenterRed => 0x12,
+                MessageType.Status => 0x15,
+                MessageType.StatusNoConsole => 0x17,
+                MessageType.ConsoleOnlyBlue => 0x18,
+                MessageType.ConsoleOnlyRed => 0x19,
+                MessageType.ConsoleOnlyYellow => 0x01,
+                MessageType.ConsoleOnlyLightBlue => 0x04,
+                MessageType.ConsoleOnlyOrange => 0x11,
+                _ => 0x14,
+            };
+
+            message.AddByte(valueToSend);
             message.AddString(textMessagePacket.Message);
         }
     }

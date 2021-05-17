@@ -11,23 +11,25 @@
 
 namespace Fibula.Server.Contracts.Abstractions
 {
-    using Fibula.Scheduling.Contracts.Abstractions;
-    using Fibula.Server.Contracts.Delegates;
+    using System;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Interface for all notifications.
     /// </summary>
-    public interface INotification : IEvent
+    public interface INotification
     {
         /// <summary>
-        /// Event to call when the notification is sent.
+        /// Gets the function for determining target players for this notification.
         /// </summary>
-        event OnSent Sent;
+        Func<IEnumerable<IPlayer>> FindTargetPlayers { get; }
 
         /// <summary>
-        /// Sends the notification to the players intented.
+        /// Finalizes the notification in preparation to it being sent.
         /// </summary>
-        /// <param name="context">The context for this notification.</param>
-        void Send(INotificationContext context);
+        /// <param name="context">The context of this notification.</param>
+        /// <param name="player">The player which this notification is being prepared for.</param>
+        /// <returns>True if the notification was posted successfuly, and false otherwise.</returns>
+        bool Post(INotificationContext context, IPlayer player);
     }
 }

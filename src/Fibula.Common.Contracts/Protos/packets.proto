@@ -1,0 +1,195 @@
+syntax = "proto3";
+
+option csharp_namespace = "Fibula.Common.Contracts.Grpc.Packets";
+
+package packets;
+
+import "protos/common.proto";
+
+message Contentless {
+	enum Action {
+		CANCELATTACK = 0;
+		LOGOUT = 1;
+		DEATH = 2;
+	}
+
+	Action action = 1;
+}
+
+message AddCreature {
+	uint32 creatureId = 1;
+	common.Location atLocation = 2;
+	string name = 3;
+	uint32 direction = 4;
+	common.Stat hitpointsStat = 5;
+	common.Outfit outfit = 6;
+	uint32 speed = 7;
+	CreatureLight light = 8;
+}
+
+message AnimatedText {
+	common.Location location = 1;
+	uint32 color = 2;
+	string text = 3;
+}
+
+message CharacterList {
+	repeated common.CharacterInfo characters = 1;
+	uint32 premiumDaysLeft = 2;
+}
+
+message ContainerAddItem {
+	uint32 containerId = 1;
+	common.Item item = 2;
+}
+
+message ContainerClose {
+	uint32 containerId = 1;
+}
+
+message ContainerOpen {
+	uint32 containerId = 1;
+	uint32 itemTypeId = 2;
+	string name = 3;
+	uint32 volume = 4;
+	bool hasParent = 5;
+	repeated common.Item items = 6;
+}
+
+message ContainerRemoveItem {
+	uint32 containerId = 1;
+	uint32 index = 2;
+}
+
+message ContainerUpdateItem {
+	uint32 containerId = 1;
+	uint32 index = 2;
+	common.Item item = 3;
+}
+
+message CreatureHealthUpdate {
+	uint32 creatureId = 1;
+	common.Stat hitpointsStat = 2;
+}
+
+message CreatureLight {
+	uint32 creatureId = 1;
+	uint32 level = 2;
+	uint32 color = 3;
+}
+
+message CreatureMoved {
+	common.Location fromLocation = 1;
+	uint32 fromIndex = 2;
+	common.Location toLocation = 3;
+}
+
+message CreatureSpeech {
+	uint32 senderId = 1;
+	string senderName = 2;
+	uint32 speechType = 3;
+	common.Location atLocation = 4;
+	uint32 channel = 5;
+	string message = 6;
+	uint32 unixTimestamp = 7;
+}
+
+message CreatureSpeedChange {
+	uint32 creatureId = 1;
+	uint32 speed = 2;
+}
+
+message CreatureTurned {
+	common.Location atLocation = 1;
+	uint32 index = 2;
+	uint32 thingId = 3;
+	uint32 creatureId = 4;
+	uint32 direction = 5;
+}
+
+message Disconnect {
+	string reason = 1;
+}
+
+message MagicEffect {
+	uint32 effect = 1;
+	common.Location location = 2;
+}
+
+message MapDescriptionFull {
+	common.Location origin = 1;
+	common.MapDescription description = 2;
+}
+
+message MapDescriptionPartial {
+	uint32 type = 1;
+	common.MapDescription description = 2;
+}
+
+message MessageOfTheDay {
+	string message = 1;
+}
+
+message PlayerCancelWalk {
+	uint32 lastDirection = 1;
+}
+
+message PlayerConditions {
+	uint64 flags = 1;
+}
+
+message PlayerInventoryClearSlot {
+	uint32 slot = 1;
+}
+
+message PlayerInventorySetSlot {
+	uint32 slot = 1;
+	common.Item item = 2;
+}
+
+message PlayerLogin {
+	uint32 playerId = 1;
+	bool canReportBugs = 2;
+	uint32 permissions = 3;
+	bytes permissionsFlags = 4;
+}
+
+message PlayerSkills {
+	repeated common.Skill skills = 1;
+}
+
+message PlayerStats {
+	repeated common.Stat stats = 1;
+}
+
+message Projectile {
+	common.Location fromLocation = 1;
+	common.Location toLocation = 2;
+	uint32 type = 3;
+}
+
+message RemoveAtLocation {
+	common.Location location = 1;
+	uint32 index = 2;
+}
+
+message Square {
+	uint32 creatureId = 1;
+	uint32 color = 2;
+}
+
+message TextMessage {
+	uint32 type = 1;
+	string message = 2;
+}
+
+message TileUpdate {
+	common.Location location = 1;
+	bool deletingTile = 2;
+	bytes description = 3;
+}
+
+message WorldLight {
+	uint32 level = 1;
+	uint32 color = 2;
+}

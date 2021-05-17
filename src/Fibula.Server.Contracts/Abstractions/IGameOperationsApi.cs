@@ -12,11 +12,9 @@
 namespace Fibula.Server.Contracts.Abstractions
 {
     using System;
-    using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Definitions.Data.Entities;
     using Fibula.Definitions.Data.Structures;
     using Fibula.Definitions.Enumerations;
-    using Fibula.Server.Contracts.Enumerations;
 
     /// <summary>
     /// Interface for the operations available in the game API.
@@ -170,9 +168,9 @@ namespace Fibula.Server.Contracts.Abstractions
         /// <summary>
         /// Logs a player into the game.
         /// </summary>
-        /// <param name="client">The client from which the player is connecting.</param>
         /// <param name="playerCreationMetadata">The metadata for the player's creation.</param>
-        void LogPlayerIn(IClient client, CharacterEntity playerCreationMetadata);
+        /// <returns>The id reserved for the player logging in.</returns>
+        uint LogPlayerIn(CharacterEntity playerCreationMetadata);
 
         /// <summary>
         /// Logs a player out of the game.
@@ -237,17 +235,9 @@ namespace Fibula.Server.Contracts.Abstractions
         void ResetCreatureWalkPlan(ICreature creature, ICreature targetCreature, WalkPlanStrategy strategy = WalkPlanStrategy.ConservativeRecalculation, int targetDistance = 1, bool excludeCurrentPosition = false);
 
         /// <summary>
-        /// Sends a heartbeat to the player's client.
+        /// Sends a notification.
         /// </summary>
-        /// <param name="player">The player which to send the heartbeat to.</param>
-        /// <returns>The notification that was scheduled, or null if nothing happened.</returns>
-        INotification SendHeartbeatAsync(IPlayer player);
-
-        /// <summary>
-        /// Sends a heartbeat response to the player's client.
-        /// </summary>
-        /// <param name="player">The player which to send the heartbeat response to.</param>
-        /// <returns>The notification that was scheduled, or null if nothing happened.</returns>
-        INotification SendHeartbeatResponseAsync(IPlayer player);
+        /// <param name="notification">The notification to send.</param>
+        void SendNotification(INotification notification);
     }
 }

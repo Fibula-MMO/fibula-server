@@ -16,7 +16,6 @@ namespace Fibula.Server.Mechanics.Conditions
     using Fibula.Scheduling;
     using Fibula.Scheduling.Contracts.Abstractions;
     using Fibula.Server.Contracts.Abstractions;
-    using Fibula.Server.Mechanics.Notifications;
     using Fibula.Utilities.Validation;
 
     /// <summary>
@@ -64,7 +63,7 @@ namespace Fibula.Server.Mechanics.Conditions
             }
 
             // Reset the condition's Repeat property, to avoid implementations running perpetually.
-            // It's the responsability of the implementation to extend or repeat duration by modifiying
+            // It's the responsibility of the implementation to extend or repeat duration by modifiying
             // this property each time the condition executes.
             this.RepeatAfter = TimeSpan.MinValue;
 
@@ -88,28 +87,13 @@ namespace Fibula.Server.Mechanics.Conditions
         /// <summary>
         /// Sends a notification synchronously.
         /// </summary>
-        /// <param name="context">A reference to the condition context.</param>
+        /// <param name="context">A reference to the condition's context.</param>
         /// <param name="notification">The notification to send.</param>
         protected void SendNotification(IConditionContext context, INotification notification)
         {
-            context.ThrowIfNull(nameof(context));
             notification.ThrowIfNull(nameof(notification));
 
-            notification.Send(new NotificationContext(context.Logger, context.MapDescriptor, context.CreatureFinder));
-        }
-
-        /// <summary>
-        /// Sends a notification asynchronously.
-        /// </summary>
-        /// <param name="context">A reference to the condition context.</param>
-        /// <param name="notification">The notification to send.</param>
-        /// <param name="delayTime">Optional. The time delay after which the notification should be sent. If left null, the notificaion is scheduled to be sent ASAP.</param>
-        protected void SendNotificationAsync(IConditionContext context, INotification notification, TimeSpan? delayTime = null)
-        {
-            context.ThrowIfNull(nameof(context));
-            notification.ThrowIfNull(nameof(notification));
-
-            context.Scheduler.ScheduleEvent(notification, delayTime);
+            context.GameApi.SendNotification(notification);
         }
     }
 }

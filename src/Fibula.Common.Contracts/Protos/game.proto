@@ -1,0 +1,163 @@
+syntax = "proto3";
+
+option csharp_namespace = "Fibula.Common.Contracts.Grpc.Game";
+
+package game;
+
+import "google/protobuf/empty.proto";
+import "protos/packets.proto";
+import "protos/common.proto";
+
+// The Game service definition.
+service Gameworld {
+	// Subscriptions to game notifications.
+	rpc Subscribe (SubscriptionRequest) returns (stream GameNotification);
+	rpc Unsubscribe (UnsubscriptionRequest) returns (UnsubscriptionResponse);
+	
+	// Common Game API
+	rpc CancelPlayerOperations (CancelPlayerOperationsRequest) returns (google.protobuf.Empty);
+	rpc RequestCharacterLogin (CharacterLoginRequest) returns (CharacterLoginResponse);
+	rpc RequestPlayerLogOutAsync (PlayerLogOutRequest) returns (google.protobuf.Empty);	
+	rpc RequestToFollowCreatureAsync (FollowCreatureRequest) returns (google.protobuf.Empty);	
+	rpc RequestToAttackCreatureAsync (AttackCreatureRequest) returns (google.protobuf.Empty);
+	rpc RequestToTurnCreatureAsync (TurnCreatureRequest) returns (google.protobuf.Empty);	
+	rpc RequestToUpdateModesAsync (UpdateModesRequest) returns (google.protobuf.Empty);	
+	rpc RequestToUpdateWalkPlanAsync (UpdateWalkPlanRequest) returns (google.protobuf.Empty);	
+	rpc RequestTextDescriptionAtAsync (TextDescriptionRequest) returns (google.protobuf.Empty);
+	rpc RequestSendMessageAsync (SendMessageRequest) returns (google.protobuf.Empty);
+
+	// Management API
+	rpc MgmtGetCharacterList (AccountLoginRequest) returns (AccountLoginResponse);
+}
+
+// The message containing the subscription request details.
+message SubscriptionRequest {
+	string subscriberId = 1;
+	string worldId = 2;
+}
+
+// The message containing the unsubscription request details.
+message UnsubscriptionRequest {
+	string subscriberId = 1;
+}
+
+// The message containing the unsubscription response details.
+message UnsubscriptionResponse {
+	string message = 1;
+}
+
+// The message containing the game notification information.
+message GameNotification {
+	string worldId = 1;
+
+	oneof packet {
+		packets.AddCreature AddCreature = 2;
+		packets.AnimatedText AnimatedText = 3;
+		packets.CharacterList CharacterList = 4;
+		packets.ContainerAddItem ContainerAddItem = 5;
+		packets.ContainerClose ContainerClose = 6;
+		packets.ContainerOpen ContainerOpen = 7;
+		packets.ContainerRemoveItem ContainerRemoveItem = 8;
+		packets.ContainerUpdateItem ContainerUpdateItem = 9;
+		packets.CreatureHealthUpdate CreatureHealthUpdate = 10;
+		packets.CreatureLight CreatureLight = 11;
+		packets.CreatureMoved CreatureMoved = 12;
+		packets.CreatureSpeech CreatureSpeech = 13;
+		packets.CreatureSpeedChange CreatureSpeedChange = 14;
+		packets.CreatureTurned CreatureTurned = 15;
+		packets.Disconnect Disconnect = 16;
+		packets.MagicEffect MagicEffect = 17;
+		packets.MapDescriptionFull MapDescriptionFull = 18;
+		packets.MapDescriptionPartial MapDescriptionPartial = 19;
+		packets.MessageOfTheDay MessageOfTheDay = 20;
+		packets.PlayerCancelWalk PlayerCancelWalk = 21;
+		packets.PlayerConditions PlayerConditions = 22;
+		packets.PlayerInventoryClearSlot PlayerInventoryClearSlot = 23;
+		packets.PlayerInventorySetSlot PlayerInventorySetSlot = 24;
+		packets.PlayerLogin PlayerLogin = 25;
+		packets.Contentless PlayerLogout = 26;
+		packets.PlayerSkills PlayerSkills = 27;
+		packets.PlayerStats PlayerStats = 28;
+		packets.Projectile Projectile = 29;
+		packets.RemoveAtLocation RemoveAtLocation = 30;
+		packets.Square Square = 31;
+		packets.TextMessage TextMessage = 32;
+		packets.TileUpdate TileUpdate = 33;
+		packets.WorldLight WorldLight = 34;		
+		packets.Contentless PlayerCancelAttack = 35;
+	}
+}
+
+message CancelPlayerOperationsRequest {
+	uint32 playerId = 1;
+	string category = 2;
+}
+
+message PlayerLogOutRequest {
+	uint32 playerId = 1;
+}
+
+message FollowCreatureRequest {
+	uint32 creautreId = 1;
+	uint32 targetId = 2;
+}
+
+message AttackCreatureRequest {
+	uint32 creautreId = 1;
+	uint32 targetId = 2;
+}
+
+message TurnCreatureRequest {
+	uint32 creautreId = 1;
+	uint32 direction = 2;
+}
+
+message UpdateModesRequest {
+	uint32 playerId = 1;
+	uint32 fightMode = 2;
+	uint32 chaseMode = 3;
+	bool isSafetyOn = 4;
+}
+
+message UpdateWalkPlanRequest {
+	uint32 creautreId = 1;
+	repeated uint32 directions = 2;
+}
+
+message TextDescriptionRequest {
+	uint32 playerId = 1;
+	common.Location location = 2;
+	uint32 indexHint = 3;
+	uint32 idHint = 4;
+}
+
+message SendMessageRequest {
+	uint32 playerId = 1;
+	uint32 type = 2;
+	uint32 channel = 3;
+	string content = 4;
+	string receiver = 5;
+}
+
+message CharacterLoginRequest {
+	string account = 1;
+	string password = 2;
+	string characterName = 3;
+}
+
+message CharacterLoginResponse {
+	string error = 1;
+	uint32 playerId = 2;
+}
+
+// Management server messages
+message AccountLoginRequest {
+	string account = 1;
+	string password = 2;
+}
+
+message AccountLoginResponse {
+	string error = 1;
+	uint32 premiumDays = 2;
+	repeated common.CharacterInfo characters = 3;
+}

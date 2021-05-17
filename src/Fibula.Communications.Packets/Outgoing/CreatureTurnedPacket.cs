@@ -11,9 +11,9 @@
 
 namespace Fibula.Communications.Packets.Outgoing
 {
-    using Fibula.Communications.Contracts.Abstractions;
-    using Fibula.Communications.Contracts.Enumerations;
-    using Fibula.Server.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Contracts.Enumerations;
+    using Fibula.ServerV2.Contracts.Abstractions;
 
     /// <summary>
     /// Class that represents a packet for when a creature has turned.
@@ -34,7 +34,7 @@ namespace Fibula.Communications.Packets.Outgoing
         /// <summary>
         /// Gets the type of this packet.
         /// </summary>
-        public OutgoingPacketType PacketType => OutgoingPacketType.UpdateThing;
+        public OutboundPacketType PacketType => OutboundPacketType.UpdateThing;
 
         /// <summary>
         /// Gets the creature that turned.

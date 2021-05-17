@@ -12,7 +12,8 @@
 namespace Fibula.Communications.Contracts.Abstractions
 {
     using System.Collections.Generic;
-    using Fibula.Communications.Contracts;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
+    using Fibula.Definitions.Enumerations;
 
     /// <summary>
     /// Interface for service clients.
@@ -40,9 +41,14 @@ namespace Fibula.Communications.Contracts.Abstractions
         IConnection Connection { get; }
 
         /// <summary>
-        /// Gets the information about the client on the other side of this connection.
+        /// Gets or sets the operating system.
         /// </summary>
-        ClientInformation Information { get; }
+        AgentType Type { get; set; }
+
+        /// <summary>
+        /// Gets or sets the version.
+        /// </summary>
+        string Version { get; set; }
 
         /// <summary>
         /// Sends the packets supplied over the <see cref="Connection"/>.

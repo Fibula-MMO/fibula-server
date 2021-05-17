@@ -11,10 +11,11 @@
 
 namespace Fibula.Communications.Packets.Outgoing
 {
-    using System.Buffers;
-    using Fibula.Communications.Contracts.Abstractions;
-    using Fibula.Communications.Contracts.Enumerations;
+    using System.Collections.Generic;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Contracts.Enumerations;
     using Fibula.Definitions.Data.Structures;
+    using Fibula.ServerV2.Contracts.Abstractions;
 
     /// <summary>
     /// Class that represents a map description packet.
@@ -24,18 +25,25 @@ namespace Fibula.Communications.Packets.Outgoing
         /// <summary>
         /// Initializes a new instance of the <see cref="MapDescriptionPacket"/> class.
         /// </summary>
+        /// <param name="player">The player that will be receiving the description.</param>
         /// <param name="origin">The origin location.</param>
-        /// <param name="descriptionBytes">The description bytes.</param>
-        public MapDescriptionPacket(Location origin, ReadOnlySequence<byte> descriptionBytes)
+        /// <param name="descriptionTiles">The description tiles.</param>
+        public MapDescriptionPacket(IPlayer player, Location origin, IEnumerable<ITile> descriptionTiles)
         {
+            this.Player = player;
             this.Origin = origin;
-            this.DescriptionBytes = descriptionBytes;
+            this.DescriptionTiles = descriptionTiles;
         }
 
         /// <summary>
         /// Gets the type of this packet.
         /// </summary>
-        public OutgoingPacketType PacketType => OutgoingPacketType.MapDescription;
+        public OutboundPacketType PacketType => OutboundPacketType.MapDescription;
+
+        /// <summary>
+        /// Gets the player that will be receiving the description.
+        /// </summary>
+        public IPlayer Player { get; }
 
         /// <summary>
         /// Gets the origin location.
@@ -43,8 +51,8 @@ namespace Fibula.Communications.Packets.Outgoing
         public Location Origin { get; }
 
         /// <summary>
-        /// Gets the description bytes.
+        /// Gets the description tiles.
         /// </summary>
-        public ReadOnlySequence<byte> DescriptionBytes { get; }
+        public IEnumerable<ITile> DescriptionTiles { get; }
     }
 }

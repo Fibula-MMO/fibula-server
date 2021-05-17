@@ -60,7 +60,7 @@ namespace Fibula.Server.Mechanics.Operations
         /// <param name="context">A reference to the operation context.</param>
         protected override void Execute(IOperationContext context)
         {
-            var requestor = this.GetRequestor(context.CreatureFinder);
+            var requestor = this.GetRequestor(context.CreatureManager);
             var inThingContainer = this.AtLocation.DecodeContainer(context.Map, context.ContainerManager, out byte index, requestor);
 
             var creationArguments = new ItemCreationArguments()
