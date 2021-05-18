@@ -11,10 +11,9 @@
 
 namespace Fibula.Communications.Packets.Outgoing
 {
-    using System.Buffers;
-    using Fibula.Communications.Contracts.Abstractions;
-    using Fibula.Communications.Contracts.Enumerations;
-    using Fibula.Definitions.Data.Structures;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Contracts.Enumerations;
+    using Fibula.Server.Contracts.Abstractions;
 
     /// <summary>
     /// Class that represents a tile update packet.
@@ -24,27 +23,27 @@ namespace Fibula.Communications.Packets.Outgoing
         /// <summary>
         /// Initializes a new instance of the <see cref="TileUpdatePacket"/> class.
         /// </summary>
-        /// <param name="location">The location of the tile.</param>
-        /// <param name="descriptionBytes">The description bytes of the tile.</param>
-        public TileUpdatePacket(Location location, ReadOnlySequence<byte> descriptionBytes)
+        /// <param name="player">The player that will be receiving the updated tile description.</param>
+        /// <param name="tile">The tile that was updated.</param>
+        public TileUpdatePacket(IPlayer player, ITile tile)
         {
-            this.Location = location;
-            this.DescriptionBytes = descriptionBytes;
+            this.Player = player;
+            this.UpdatedTile = tile;
         }
 
         /// <summary>
         /// Gets the type of this packet.
         /// </summary>
-        public OutgoingPacketType PacketType => OutgoingPacketType.TileUpdate;
+        public OutboundPacketType PacketType => OutboundPacketType.TileUpdate;
 
         /// <summary>
-        /// Gets the tile location.
+        /// Gets the player that will be receiving the description.
         /// </summary>
-        public Location Location { get; }
+        public IPlayer Player { get; }
 
         /// <summary>
-        /// Gets the description bytes.
+        /// Gets the tile that was updated.
         /// </summary>
-        public ReadOnlySequence<byte> DescriptionBytes { get; }
+        public ITile UpdatedTile { get; }
     }
 }

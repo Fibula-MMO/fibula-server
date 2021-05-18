@@ -16,7 +16,7 @@ namespace Fibula.Communications.Listeners
     /// <summary>
     /// Class that represents options for the gateway listener.
     /// </summary>
-    public class GatewayListenerOptions : BaseListenerOptions
+    public class GatewayListenerOptions : BaseTcpListenerOptions
     {
         /// <summary>
         /// Gets or sets the port to listen to.

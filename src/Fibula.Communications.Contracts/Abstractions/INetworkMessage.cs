@@ -14,6 +14,7 @@ namespace Fibula.Communications.Contracts.Abstractions
     using System;
     using System.Buffers;
     using System.Net.Sockets;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
 
     /// <summary>
     /// Interface that represents a network message.

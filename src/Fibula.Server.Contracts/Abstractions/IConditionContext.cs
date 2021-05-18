@@ -19,14 +19,14 @@ namespace Fibula.Server.Contracts.Abstractions
     public interface IConditionContext : IEventContext
     {
         /// <summary>
-        /// Gets a reference to the map descriptor in use.
-        /// </summary>
-        IMapDescriptor MapDescriptor { get; }
-
-        /// <summary>
         /// Gets the reference to the map.
         /// </summary>
         IMap Map { get; }
+
+        /// <summary>
+        /// Gets a reference to the game's api.
+        /// </summary>
+        IGameOperationsApi GameApi { get; }
 
         /// <summary>
         /// Gets the reference to the creature finder in use.

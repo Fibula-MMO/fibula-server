@@ -9,20 +9,16 @@
 // </copyright>
 // -----------------------------------------------------------------
 
-namespace Fibula.Server.Mechanics
+namespace Fibula.Server
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Fibula.Communications.Packets.Outgoing;
     using Fibula.Definitions.Data.Structures;
     using Fibula.Definitions.Enumerations;
-    using Fibula.Scheduling.Contracts.Abstractions;
     using Fibula.Server.Contracts.Abstractions;
     using Fibula.Server.Contracts.Constants;
-    using Fibula.Server.Contracts.Extensions;
-    using Fibula.Server.Mechanics.Notifications;
-    using Fibula.Utilities.Common.Extensions;
+    using Fibula.Server.Contracts.Delegates;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Logging;
 
@@ -33,7 +29,6 @@ namespace Fibula.Server.Mechanics
     {
         private readonly ILogger logger;
         private readonly ICreatureFinder creatureFinder;
-        private readonly IScheduler scheduler;
 
         private readonly object internalDictionariesLock;
         private readonly IDictionary<uint, IContainerItem[]> creaturesToContainers;
@@ -44,17 +39,40 @@ namespace Fibula.Server.Mechanics
         /// </summary>
         /// <param name="logger">A reference to the logger in use.</param>
         /// <param name="creatureFinder">A reference to the creature finder in use.</param>
-        /// <param name="scheduler">A reference to the scheduler in use.</param>
-        public ContainerManager(ILogger<ContainerManager> logger, ICreatureFinder creatureFinder, IScheduler scheduler)
+        public ContainerManager(ILogger<ContainerManager> logger, ICreatureFinder creatureFinder)
         {
             this.logger = logger;
             this.creatureFinder = creatureFinder;
-            this.scheduler = scheduler;
 
             this.internalDictionariesLock = new object();
             this.creaturesToContainers = new Dictionary<uint, IContainerItem[]>();
             this.containersToCreatureIds = new Dictionary<Guid, IDictionary<byte, uint>>();
         }
+
+        /// <summary>
+        /// Event fired when a container is closed.
+        /// </summary>
+        public event ContainerManagerClosedContainerHandler ContainerClosed;
+
+        /// <summary>
+        /// Event fired when a container is opened.
+        /// </summary>
+        public event ContainerManagerOpenedContainerHandler ContainerOpened;
+
+        /// <summary>
+        /// Event fired when an item is added to a container.
+        /// </summary>
+        public event ContainerManagerItemAddedHandler ItemAdded;
+
+        /// <summary>
+        /// Event fired when an item is updated in a container.
+        /// </summary>
+        public event ContainerManagerItemUpdatedHandler ItemUpdated;
+
+        /// <summary>
+        /// Event fired when an item is removed from a container.
+        /// </summary>
+        public event ContainerManagerItemRemovedHandler ItemRemoved;
 
         /// <summary>
         /// Performs a container open action for a player.
@@ -87,17 +105,7 @@ namespace Fibula.Server.Mechanics
 
             if (this.creatureFinder.FindPlayerById(forCreatureId) is IPlayer player)
             {
-                var notification = new GenericNotification(
-                        () => player.YieldSingleItem(),
-                        new ContainerOpenPacket(
-                            containerId,
-                            container.TypeId,
-                            container.Type.Name,
-                            container.Capacity,
-                            container.ParentContainer is IContainerItem parentContainer && parentContainer.Type.TypeId != 0,
-                            container.Content));
-
-                this.scheduler.ScheduleEvent(notification);
+                this.ContainerOpened?.Invoke(player, containerId, container);
             }
         }
 
@@ -121,9 +129,8 @@ namespace Fibula.Server.Mechanics
 
             if (this.creatureFinder.FindPlayerById(forCreatureId) is IPlayer player)
             {
-                var notification = new GenericNotification(() => player.YieldSingleItem(), new ContainerClosePacket(atPosition));
-
-                this.scheduler.ScheduleEvent(notification);
+                // var notification = new GenericNotification(() => player.YieldSingleItem(), new ContainerClosePacket(atPosition));
+                this.ContainerClosed?.Invoke(player, atPosition);
             }
         }
 
@@ -279,9 +286,9 @@ namespace Fibula.Server.Mechanics
                         this.containersToCreatureIds.Remove(container.UniqueId);
 
                         // Clean up events because no one else cares about this container.
-                        container.ContentAdded -= this.OnContainerContentAdded;
-                        container.ContentRemoved -= this.OnContainerContentRemoved;
-                        container.ContentUpdated -= this.OnContainerContentUpdated;
+                        container.ItemAdded -= this.OnContainerContentAdded;
+                        container.ItemRemoved -= this.OnContainerContentRemoved;
+                        container.ItemUpdated -= this.OnContainerContentUpdated;
                         container.LocationChanged -= this.OnContainerLocationChanged;
                     }
                 }
@@ -336,9 +343,9 @@ namespace Fibula.Server.Mechanics
                     this.containersToCreatureIds.Add(container.UniqueId, new Dictionary<byte, uint>());
 
                     // This container is not being tracked at all, let's start tracking it.
-                    container.ContentAdded += this.OnContainerContentAdded;
-                    container.ContentRemoved += this.OnContainerContentRemoved;
-                    container.ContentUpdated += this.OnContainerContentUpdated;
+                    container.ItemAdded += this.OnContainerContentAdded;
+                    container.ItemRemoved += this.OnContainerContentRemoved;
+                    container.ItemUpdated += this.OnContainerContentUpdated;
                     container.LocationChanged += this.OnContainerLocationChanged;
                 }
 
@@ -355,26 +362,29 @@ namespace Fibula.Server.Mechanics
         /// </summary>
         /// <param name="container">The container.</param>
         /// <param name="addedItem">The item that was added.</param>
-        private void OnContainerContentAdded(IContainerItem container, IItem addedItem)
+        private void OnContainerContentAdded(IItemsContainer container, IItem addedItem)
         {
+            if (!(container is IContainerItem containerItem))
+            {
+                return;
+            }
+
             lock (this.internalDictionariesLock)
             {
-                if (!this.containersToCreatureIds.ContainsKey(container.UniqueId))
+                if (!this.containersToCreatureIds.ContainsKey(containerItem.UniqueId))
                 {
                     return;
                 }
 
                 // The request has to be sent this way since the container id may be different for each player.
-                foreach (var (containerPosition, creatureId) in this.containersToCreatureIds[container.UniqueId].ToList())
+                foreach (var (containerPosition, creatureId) in this.containersToCreatureIds[containerItem.UniqueId].ToList())
                 {
                     if (!(this.creatureFinder.FindPlayerById(creatureId) is IPlayer player))
                     {
                         continue;
                     }
 
-                    var notification = new GenericNotification(() => player.YieldSingleItem(), new ContainerAddItemPacket(containerPosition, addedItem));
-
-                    this.scheduler.ScheduleEvent(notification);
+                    this.ItemAdded?.Invoke(player, containerPosition, addedItem);
                 }
             }
         }
@@ -384,26 +394,29 @@ namespace Fibula.Server.Mechanics
         /// </summary>
         /// <param name="container">The container.</param>
         /// <param name="indexRemoved">The index that was removed.</param>
-        private void OnContainerContentRemoved(IContainerItem container, byte indexRemoved)
+        private void OnContainerContentRemoved(IItemsContainer container, byte indexRemoved)
         {
+            if (!(container is IContainerItem containerItem))
+            {
+                return;
+            }
+
             lock (this.internalDictionariesLock)
             {
-                if (!this.containersToCreatureIds.ContainsKey(container.UniqueId))
+                if (!this.containersToCreatureIds.ContainsKey(containerItem.UniqueId))
                 {
                     return;
                 }
 
                 // The request has to be sent this way since the container id may be different for each player.
-                foreach (var (containerId, creatureId) in this.containersToCreatureIds[container.UniqueId].ToList())
+                foreach (var (containerId, creatureId) in this.containersToCreatureIds[containerItem.UniqueId].ToList())
                 {
                     if (!(this.creatureFinder.FindPlayerById(creatureId) is IPlayer player))
                     {
                         continue;
                     }
 
-                    var notification = new GenericNotification(() => player.YieldSingleItem(), new ContainerRemoveItemPacket(indexRemoved, containerId));
-
-                    this.scheduler.ScheduleEvent(notification);
+                    this.ItemRemoved?.Invoke(player, containerId, indexRemoved);
                 }
             }
         }
@@ -414,8 +427,13 @@ namespace Fibula.Server.Mechanics
         /// <param name="container">The container.</param>
         /// <param name="indexOfUpdated">The index that was updated.</param>
         /// <param name="updatedItem">The updated item.</param>
-        private void OnContainerContentUpdated(IContainerItem container, byte indexOfUpdated, IItem updatedItem)
+        private void OnContainerContentUpdated(IItemsContainer container, byte indexOfUpdated, IItem updatedItem)
         {
+            if (!(container is IContainerItem containerItem))
+            {
+                return;
+            }
+
             if (updatedItem == null)
             {
                 return;
@@ -423,22 +441,21 @@ namespace Fibula.Server.Mechanics
 
             lock (this.internalDictionariesLock)
             {
-                if (!this.containersToCreatureIds.ContainsKey(container.UniqueId))
+                if (!this.containersToCreatureIds.ContainsKey(containerItem.UniqueId))
                 {
                     return;
                 }
 
                 // The request has to be sent this way since the container id may be different for each player.
-                foreach (var (containerId, creatureId) in this.containersToCreatureIds[container.UniqueId].ToList())
+                foreach (var (containerId, creatureId) in this.containersToCreatureIds[containerItem.UniqueId].ToList())
                 {
                     if (!(this.creatureFinder.FindPlayerById(creatureId) is IPlayer player))
                     {
                         continue;
                     }
 
-                    var notification = new GenericNotification(() => player.YieldSingleItem(), new ContainerUpdateItemPacket(indexOfUpdated, containerId, updatedItem));
-
-                    this.scheduler.ScheduleEvent(notification);
+                    // var notification = new GenericNotification(() => player.YieldSingleItem(), new ContainerUpdateItemPacket(indexOfUpdated, containerId, updatedItem));
+                    this.ItemUpdated?.Invoke(player, containerId, updatedItem);
                 }
             }
         }
@@ -461,7 +478,7 @@ namespace Fibula.Server.Mechanics
                 if (containerItem.CarryLocation != null)
                 {
                     // Container is held by a creature, which is the only one that should have access now.
-                    var creatureHoldingTheContainer = containerItem.GetCarrier();
+                    var creatureHoldingTheContainer = containerItem.ParentContainer as ICreature;
 
                     if (creatureHoldingTheContainer != null && this.containersToCreatureIds.ContainsKey(containerItem.UniqueId))
                     {

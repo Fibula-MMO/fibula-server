@@ -20,14 +20,19 @@ namespace Fibula.Server.Contracts.Abstractions
     public interface ISkill
     {
         /// <summary>
-        /// Event triggered when this skill changes.
+        /// Event triggered when this skill level changes.
         /// </summary>
-        event OnSkillChanged Changed;
+        event SkillLevelChangedHandler LevelChanged;
 
         /// <summary>
-        /// Gets the creature that has this skill.
+        /// Event triggered when this skill count changes.
         /// </summary>
-        ICreatureWithSkills OwnerCreature { get; }
+        event SkillCountChangedHandler CountChanged;
+
+        /// <summary>
+        /// Event triggered when this skill percent changes.
+        /// </summary>
+        event SkillPercentChangedHandler PercentChanged;
 
         /// <summary>
         /// Gets this skill's type.

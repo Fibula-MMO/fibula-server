@@ -13,12 +13,11 @@ namespace Fibula.Protocol.V772.Extensions
 {
     using System;
     using Fibula.Communications.Contracts.Abstractions;
-    using Fibula.Communications.Contracts.Enumerations;
+    using Fibula.Communications.Packets.Contracts.Enumerations;
     using Fibula.Definitions.Data.Structures;
     using Fibula.Definitions.Enumerations;
     using Fibula.Security.Extensions;
     using Fibula.Server.Contracts.Abstractions;
-    using Fibula.Server.Contracts.Enumerations;
     using Fibula.Server.Contracts.Extensions;
     using Fibula.Utilities.Validation;
 
@@ -114,18 +113,20 @@ namespace Fibula.Protocol.V772.Extensions
         {
             if (asKnown)
             {
-                message.AddUInt16(OutgoingPacketType.AddKnownCreature.ToByte());
+                message.AddUInt16(OutboundPacketType.AddKnownCreature.ToByte());
                 message.AddUInt32(creature.Id);
             }
             else
             {
-                message.AddUInt16(OutgoingPacketType.AddUnknownCreature.ToByte());
+                message.AddUInt16(OutboundPacketType.AddUnknownCreature.ToByte());
                 message.AddUInt32(creatureToRemoveId);
                 message.AddUInt32(creature.Id);
                 message.AddString(creature.Name);
             }
 
-            message.AddByte(creature.Stats[CreatureStat.HitPoints].Percent);
+            byte healthPercent = 100; // creature.Stats[CreatureStat.HitPoints].Percent;
+
+            message.AddByte(healthPercent);
             message.AddByte(Convert.ToByte(creature.Direction.GetClientSafeDirection()));
 
             /* if (creature.IsInvisible)

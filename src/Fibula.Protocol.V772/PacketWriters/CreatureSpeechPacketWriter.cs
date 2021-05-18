@@ -13,9 +13,10 @@ namespace Fibula.Protocol.V772.PacketWriters
 {
     using Fibula.Communications;
     using Fibula.Communications.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
     using Fibula.Communications.Packets.Outgoing;
+    using Fibula.Definitions.Enumerations;
     using Fibula.Protocol.V772.Extensions;
-    using Fibula.Server.Contracts.Enumerations;
     using Microsoft.Extensions.Logging;
 
     /// <summary>
@@ -50,14 +51,33 @@ namespace Fibula.Protocol.V772.PacketWriters
 
             message.AddUInt32(0);
             message.AddString(creatureSpeechPacket.SenderName);
-            message.AddByte((byte)creatureSpeechPacket.SpeechType);
+
+            message.AddByte(creatureSpeechPacket.SpeechType switch
+            {
+                // ChannelRed = 0x05,   //Talk red on chat - #c
+                // PrivateRed = 0x04,   //Red private - @name@ text
+                // ChannelOrange = 0x05,    //Talk orange on text
+                // ChannelRedAnonymous = 0x05,  //Talk red anonymously on chat - #d
+                // MonsterYell = 0x0E,  //Yell orange
+                SpeechType.Normal => 0x01,
+                SpeechType.Whisper => 0x02,
+                SpeechType.Yell => 0x03,
+                SpeechType.Private => 0x04,
+                SpeechType.ChannelYellow => 0x05,
+                SpeechType.RuleViolationReport => 0x06,
+                SpeechType.RuleViolationAnswer => 0x07,
+                SpeechType.RuleViolationContinue => 0x08,
+                SpeechType.Broadcast => 0x09,
+                SpeechType.MonsterNormal => 0x0E,
+                _ => 0x01,
+            });
 
             switch (creatureSpeechPacket.SpeechType)
             {
-                case SpeechType.Say:
+                case SpeechType.Normal:
                 case SpeechType.Whisper:
                 case SpeechType.Yell:
-                case SpeechType.MonsterSay:
+                case SpeechType.MonsterNormal:
                 // case SpeechType.MonsterYell:
                     message.AddLocation(creatureSpeechPacket.Location);
                     break;
@@ -65,9 +85,17 @@ namespace Fibula.Protocol.V772.PacketWriters
                 // case SpeechType.ChannelRed:
                 // case SpeechType.ChannelRedAnonymous:
                 // case SpeechType.ChannelOrange:
+                // case SpeechType.ChannelWhite:
                 case SpeechType.ChannelYellow:
-                    // case SpeechType.ChannelWhite:
-                    message.AddUInt16((ushort)creatureSpeechPacket.Channel);
+                    message.AddUInt16(creatureSpeechPacket.Channel switch
+                    {
+                        ChatChannelType.RuleViolations => 0x03,
+                        ChatChannelType.Default => 0x04,
+                        ChatChannelType.Trade => 0x05,
+                        ChatChannelType.RealLife => 0x06,
+                        ChatChannelType.Help => 0x08,
+                        _ => 0x04,
+                    });
                     break;
 
                 case SpeechType.RuleViolationReport:

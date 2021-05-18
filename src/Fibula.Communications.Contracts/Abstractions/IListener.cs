@@ -22,6 +22,6 @@ namespace Fibula.Communications.Contracts.Abstractions
         /// <summary>
         /// Event fired when a new connection is enstablished.
         /// </summary>
-        event NewConnectionDelegate NewConnection;
+        event ListenerNewConnectionHandler NewConnection;
     }
 }

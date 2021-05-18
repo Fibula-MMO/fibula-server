@@ -13,8 +13,9 @@ namespace Fibula.Protocol.V772.PacketReaders
 {
     using Fibula.Communications;
     using Fibula.Communications.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
     using Fibula.Communications.Packets.Incoming;
-    using Fibula.Server.Contracts.Enumerations;
+    using Fibula.Definitions.Enumerations;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Logging;
 
@@ -37,7 +38,7 @@ namespace Fibula.Protocol.V772.PacketReaders
         /// </summary>
         /// <param name="message">The message to read from.</param>
         /// <returns>The packet read from the message.</returns>
-        public override IIncomingPacket ReadFromMessage(INetworkMessage message)
+        public override IInboundPacket ReadFromMessage(INetworkMessage message)
         {
             message.ThrowIfNull(nameof(message));
 
@@ -55,7 +56,7 @@ namespace Fibula.Protocol.V772.PacketReaders
                     // case SpeechType.ChannelWhite:
                     return new SpeechPacket(type, channelId: (ChatChannelType)message.GetUInt16(), content: message.GetString());
                 default:
-                    return new SpeechPacket(type, channelId: ChatChannelType.None, content: message.GetString());
+                    return new SpeechPacket(type, channelId: ChatChannelType.Default, content: message.GetString());
             }
         }
     }

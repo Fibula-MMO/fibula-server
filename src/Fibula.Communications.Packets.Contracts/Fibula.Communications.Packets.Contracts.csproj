@@ -45,14 +45,10 @@
   </ItemGroup>
   
   <ItemGroup>
+    <PackageReference Include="Fibula.Definitions" Version="1.0.5" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
-  
-  <ItemGroup>
-    <ProjectReference Include="..\Fibula.Communications.Contracts\Fibula.Communications.Contracts.csproj" />
-    <ProjectReference Include="..\Fibula.Server.Contracts\Fibula.Server.Contracts.csproj" />
   </ItemGroup>
 </Project>

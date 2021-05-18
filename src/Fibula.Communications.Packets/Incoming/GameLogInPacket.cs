@@ -11,13 +11,12 @@
 
 namespace Fibula.Communications.Packets.Incoming
 {
-    using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Packets.Contracts.Abstractions;
 
     /// <summary>
     /// Class that represents a login packet routed to the game server.
     /// </summary>
-    public sealed class GameLogInPacket : IIncomingPacket, IGameLogInInfo
+    public sealed class GameLogInPacket : IInboundPacket, IGameLogInInfo
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="GameLogInPacket"/> class.
@@ -26,10 +25,10 @@ namespace Fibula.Communications.Packets.Incoming
         /// <param name="operatingSystem">The operating system of the character's client.</param>
         /// <param name="version">The version of the character's client.</param>
         /// <param name="isGamemaster">A value indicating whether this character is a gamemaster.</param>
-        /// <param name="accountNumber">The account number of this character.</param>
+        /// <param name="accountIdentifier">The identifier for the account of this character.</param>
         /// <param name="characterName">The character name.</param>
         /// <param name="password">The password used.</param>
-        public GameLogInPacket(uint[] xteaKey, ushort operatingSystem, ushort version, bool isGamemaster, uint accountNumber, string characterName, string password)
+        public GameLogInPacket(uint[] xteaKey, ushort operatingSystem, ushort version, bool isGamemaster, string accountIdentifier, string characterName, string password)
         {
             this.XteaKey = xteaKey;
 
@@ -38,7 +37,7 @@ namespace Fibula.Communications.Packets.Incoming
 
             this.IsGamemaster = isGamemaster;
 
-            this.AccountNumber = accountNumber;
+            this.AccountIdentifier = accountIdentifier;
             this.CharacterName = characterName;
             this.Password = password;
         }
@@ -66,7 +65,7 @@ namespace Fibula.Communications.Packets.Incoming
         /// <summary>
         /// Gets the account number of the character.
         /// </summary>
-        public uint AccountNumber { get; }
+        public string AccountIdentifier { get; }
 
         /// <summary>
         /// Gets the character's name.

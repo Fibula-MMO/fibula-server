@@ -16,7 +16,7 @@ namespace Fibula.Communications.Listeners
     /// <summary>
     /// Class that represents options for the game listener.
     /// </summary>
-    public class GameListenerOptions : BaseListenerOptions
+    public class GameListenerOptions : BaseTcpListenerOptions
     {
         /// <summary>
         /// Gets or sets the port to listen to.

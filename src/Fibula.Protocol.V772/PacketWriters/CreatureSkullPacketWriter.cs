@@ -13,6 +13,7 @@ namespace Fibula.Protocol.V772.PacketWriters
 {
     using Fibula.Communications;
     using Fibula.Communications.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
     using Fibula.Communications.Packets.Outgoing;
     using Fibula.Protocol.V772.Extensions;
     using Microsoft.Extensions.Logging;
@@ -48,7 +49,7 @@ namespace Fibula.Protocol.V772.PacketWriters
             message.AddByte(creatureSkullPacket.PacketType.ToByte());
 
             message.AddUInt32(creatureSkullPacket.Creature.Id);
-            message.AddByte(0x00); // creatureSpeedChangePacket.Creature.Skull
+            message.AddByte(0x00); // creatureSkullPacket.Creature.Skull
         }
     }
 }

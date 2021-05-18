@@ -70,7 +70,7 @@ namespace Fibula.Plugins.PathFinding.AStar
         /// <param name="targetDistance">Optional. The target distance from the target node to shoot for.</param>
         /// <param name="excludeLocations">Optional. Locations to explicitly exclude as a valid goal in the search.</param>
         /// <returns>A tuple consisting of the result of the path search, the end location before returning (even when giving up), and an <see cref="IEnumerable{T}"/> of <see cref="Direction"/>s leading to that end location.</returns>
-        public (SearchState result, Location endLocation, IEnumerable<Direction> directions) FindBetween(
+        public (SearchState result, Location endLocation, IEnumerable<Direction> directions) FindPathBetween(
             Location startLocation,
             Location targetLocation,
             ICreature onBehalfOfCreature = null,

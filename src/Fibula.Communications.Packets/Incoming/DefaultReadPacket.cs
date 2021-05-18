@@ -11,13 +11,13 @@
 
 namespace Fibula.Communications.Packets.Incoming
 {
-    using Fibula.Communications.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
 
     /// <summary>
     /// Class that represents the default packet.
     /// </summary>
-    public sealed class DefaultReadPacket : IIncomingPacket, IBytesInfo
+    public sealed class DefaultReadPacket : IInboundPacket, IBytesInfo
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="DefaultReadPacket"/> class.

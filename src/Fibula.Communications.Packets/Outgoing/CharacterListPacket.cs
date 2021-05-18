@@ -12,9 +12,9 @@
 namespace Fibula.Communications.Packets.Outgoing
 {
     using System.Collections.Generic;
-    using Fibula.Communications.Contracts.Abstractions;
-    using Fibula.Communications.Contracts.Enumerations;
-    using Fibula.Communications.Packets.Contracts.Structures;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Contracts.Enumerations;
+    using Fibula.Server.Contracts.Structures;
     using Fibula.Utilities.Validation;
 
     /// <summary>
@@ -27,7 +27,7 @@ namespace Fibula.Communications.Packets.Outgoing
         /// </summary>
         /// <param name="characters">The list of characters in the account.</param>
         /// <param name="premDays">The premium days left on the account.</param>
-        public CharacterListPacket(IEnumerable<CharacterInfo> characters, ushort premDays)
+        public CharacterListPacket(IEnumerable<CharacterLoginInformation> characters, ushort premDays)
         {
             characters.ThrowIfNull(nameof(characters));
 
@@ -38,12 +38,12 @@ namespace Fibula.Communications.Packets.Outgoing
         /// <summary>
         /// Gets the type of this packet.
         /// </summary>
-        public OutgoingPacketType PacketType => OutgoingPacketType.CharacterList;
+        public OutboundPacketType PacketType => OutboundPacketType.CharacterList;
 
         /// <summary>
         /// Gets the list of characters in the account.
         /// </summary>
-        public IEnumerable<CharacterInfo> Characters { get; }
+        public IEnumerable<CharacterLoginInformation> Characters { get; }
 
         /// <summary>
         /// Gets the premium days left on the account.

@@ -13,12 +13,38 @@ namespace Fibula.Server.Contracts.Abstractions
 {
     using System.Collections.Generic;
     using Fibula.Server.Contracts.Constants;
+    using Fibula.Server.Contracts.Delegates;
 
     /// <summary>
     /// Interface for a container manager.
     /// </summary>
     public interface IContainerManager
     {
+        /// <summary>
+        /// Event fired when a container is closed.
+        /// </summary>
+        event ContainerManagerClosedContainerHandler ContainerClosed;
+
+        /// <summary>
+        /// Event fired when a container is opened.
+        /// </summary>
+        event ContainerManagerOpenedContainerHandler ContainerOpened;
+
+        /// <summary>
+        /// Event fired when an item is added to a container.
+        /// </summary>
+        event ContainerManagerItemAddedHandler ItemAdded;
+
+        /// <summary>
+        /// Event fired when an item is updated in a container.
+        /// </summary>
+        event ContainerManagerItemUpdatedHandler ItemUpdated;
+
+        /// <summary>
+        /// Event fired when an item is removed from a container.
+        /// </summary>
+        event ContainerManagerItemRemovedHandler ItemRemoved;
+
         /// <summary>
         /// Performs a container close action for a player.
         /// </summary>

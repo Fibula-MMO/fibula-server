@@ -11,8 +11,8 @@
 
 namespace Fibula.Communications.Packets.Outgoing
 {
-    using Fibula.Communications.Contracts.Abstractions;
-    using Fibula.Communications.Contracts.Enumerations;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Contracts.Enumerations;
 
     /// <summary>
     /// Class that represents a game server disconnect packet.
@@ -31,7 +31,7 @@ namespace Fibula.Communications.Packets.Outgoing
         /// <summary>
         /// Gets the type of this packet.
         /// </summary>
-        public OutgoingPacketType PacketType => OutgoingPacketType.GameDisconnect;
+        public OutboundPacketType PacketType => OutboundPacketType.GameDisconnect;
 
         /// <summary>
         /// Gets the reason given for the disconnection, if any.

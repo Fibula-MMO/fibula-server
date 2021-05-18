@@ -16,7 +16,6 @@
   <ItemGroup>
     <Compile Remove="Abstractions\IConnectionFinder.cs" />
     <Compile Remove="Abstractions\IConnectionManager.cs" />
-    <Compile Remove="Enumerations\WorldType.cs" />
     <Compile Remove="GameConfigurationOptions.cs" />
     <Compile Remove="ProtocolConfigurationOptions.cs" />
     <Compile Remove="ProtocolVersion.cs" />
@@ -32,11 +31,15 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="Fibula.Definitions" Version="1.0.3" />
+    <PackageReference Include="Fibula.Definitions" Version="1.0.5" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="5.0.0" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\Fibula.Communications.Packets.Contracts\Fibula.Communications.Packets.Contracts.csproj" />
   </ItemGroup>
 </Project>

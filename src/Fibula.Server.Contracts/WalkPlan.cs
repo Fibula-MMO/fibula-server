@@ -56,9 +56,9 @@ namespace Fibula.Server.Contracts
         public WalkPlanStrategy Strategy { get; }
 
         /// <summary>
-        /// Gets or sets the state of this walk plan.
+        /// Gets the state of this walk plan.
         /// </summary>
-        public WalkPlanState State { get; set; }
+        public WalkPlanState State { get; private set; }
 
         /// <summary>
         /// Gets the function that determines the goal location, used when requesting recalculation of the path to the goal.

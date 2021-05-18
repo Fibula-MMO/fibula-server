@@ -11,8 +11,8 @@
 
 namespace Fibula.Communications.Packets.Outgoing
 {
-    using Fibula.Communications.Contracts.Abstractions;
-    using Fibula.Communications.Contracts.Enumerations;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Contracts.Enumerations;
 
     /// <summary>
     /// Class that represents an outgoing message of the day packet.
@@ -31,7 +31,7 @@ namespace Fibula.Communications.Packets.Outgoing
         /// <summary>
         /// Gets the type of this packet.
         /// </summary>
-        public OutgoingPacketType PacketType => OutgoingPacketType.MessageOfTheDay;
+        public OutboundPacketType PacketType => OutboundPacketType.MessageOfTheDay;
 
         /// <summary>
         /// Gets the message of the day.

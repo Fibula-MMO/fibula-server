@@ -11,6 +11,7 @@
 
 namespace Fibula.Plugins.PathFinding.AStar
 {
+    using System;
     using Fibula.Definitions.Data.Structures;
     using Fibula.Server.Contracts.Abstractions;
     using Fibula.Utilities.Pathfinding.Abstractions;
@@ -43,7 +44,7 @@ namespace Fibula.Plugins.PathFinding.AStar
             this.OnBehalfOfCreature = forCreature;
             this.ConsiderAvoidsAsBlocking = considerAvoidsAsBlocking;
             this.TargetDistance = targetDistance;
-            this.ExcludeLocations = excludeLocations ?? (new Location[] { });
+            this.ExcludeLocations = excludeLocations ?? Array.Empty<Location>();
         }
 
         /// <summary>

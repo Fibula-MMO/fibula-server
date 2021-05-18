@@ -16,6 +16,7 @@ namespace Fibula.Communications
     using System.Net.Sockets;
     using System.Text;
     using Fibula.Communications.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
 
     /// <summary>

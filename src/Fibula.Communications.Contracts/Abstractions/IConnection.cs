@@ -13,6 +13,7 @@ namespace Fibula.Communications.Contracts.Abstractions
 {
     using System.Collections.Generic;
     using Fibula.Communications.Contracts.Delegates;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
 
     /// <summary>
     /// Interface for all types of connections.
@@ -22,17 +23,17 @@ namespace Fibula.Communications.Contracts.Abstractions
         /// <summary>
         /// Event fired when this connection has been closed.
         /// </summary>
-        event ConnectionClosedDelegate Closed;
+        event ConnectionClosedHandler Closed;
 
         /// <summary>
-        /// Event fired right after this connection has proccessed an <see cref="IIncomingPacket"/> by any subscriber of the <see cref="PacketReady"/> event.
+        /// Event fired right after this connection has proccessed an <see cref="IInboundPacket"/> by any subscriber of the <see cref="PacketReady"/> event.
         /// </summary>
-        event ConnectionPacketProccessedDelegate PacketProcessed;
+        event ConnectionPacketProccessedHandler PacketProcessed;
 
         /// <summary>
-        /// Event fired when a <see cref="IIncomingPacket"/> picked up by this connection is ready to be processed.
+        /// Event fired when a <see cref="IInboundPacket"/> picked up by this connection is ready to be processed.
         /// </summary>
-        event ConnectionPacketReadyDelegate PacketReady;
+        event ConnectionPacketReadyHandler PacketReady;
 
         /// <summary>
         /// Gets a value indicating whether the connection is an orphan.
@@ -53,6 +54,7 @@ namespace Fibula.Communications.Contracts.Abstractions
         /// Sends the packets supplied through this connection.
         /// </summary>
         /// <param name="packetsToSend">The packets to send.</param>
-        void Send(IEnumerable<IOutboundPacket> packetsToSend);
+        /// <param name="playerId">Optional. The id of the player attached to the connection, for context.</param>
+        void Send(IEnumerable<IOutboundPacket> packetsToSend, uint playerId = 0);
     }
 }

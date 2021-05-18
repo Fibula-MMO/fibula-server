@@ -11,6 +11,7 @@
 
 namespace Fibula.Server.Contracts.Abstractions
 {
+    using Fibula.Common.Contracts.Abstractions;
     using Fibula.Scheduling.Contracts.Abstractions;
 
     /// <summary>
@@ -19,19 +20,19 @@ namespace Fibula.Server.Contracts.Abstractions
     public interface IOperationContext : IEventContext
     {
         /// <summary>
-        /// Gets a reference to the map descriptor in use.
-        /// </summary>
-        IMapDescriptor MapDescriptor { get; }
-
-        /// <summary>
         /// Gets the reference to the map.
         /// </summary>
         IMap Map { get; }
 
         /// <summary>
-        /// Gets the reference to the creature finder in use.
+        /// Gets the reference to the application context.
         /// </summary>
-        ICreatureFinder CreatureFinder { get; }
+        IApplicationContext ApplicationContext { get; }
+
+        /// <summary>
+        /// Gets the reference to the creature manager in use.
+        /// </summary>
+        ICreatureManager CreatureManager { get; }
 
         /// <summary>
         /// Gets a reference to the item factory in use.
@@ -52,11 +53,6 @@ namespace Fibula.Server.Contracts.Abstractions
         /// Gets a reference to the game's api.
         /// </summary>
         IGameOperationsApi GameApi { get; }
-
-        /// <summary>
-        /// Gets a reference to the combat api.
-        /// </summary>
-        ICombatOperationsApi CombatApi { get; }
 
         /// <summary>
         /// Gets a reference to the pathfinder algorithm in use.

@@ -11,14 +11,13 @@
 
 namespace Fibula.Communications.Packets.Incoming
 {
-    using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Packets.Contracts.Abstractions;
     using Fibula.Definitions.Enumerations;
 
     /// <summary>
     /// Class that represents a packet for fight and chase modes.
     /// </summary>
-    public class ModesPacket : IIncomingPacket, IModesInfo
+    public class ModesPacket : IInboundPacket, IModesInfo
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ModesPacket"/> class.

@@ -75,7 +75,7 @@ namespace Fibula.Plugins.PathFinding.AStar
                     this.nodesDictionary.Add(searchContext.SearchId, new Dictionary<Location, TileNode>());
                 }
 
-                if (!this.nodesDictionary[searchContext.SearchId].ContainsKey(locToSearch) && this.map.GetTileAt(tileNodeArguments.Location, out ITile tile, loadAsNeeded: true))
+                if (!this.nodesDictionary[searchContext.SearchId].ContainsKey(locToSearch) && this.map.HasTileAt(tileNodeArguments.Location, out ITile tile, loadAsNeeded: true))
                 {
                     this.nodesDictionary[searchContext.SearchId].Add(locToSearch, new TileNode(searchContext, tile));
                 }

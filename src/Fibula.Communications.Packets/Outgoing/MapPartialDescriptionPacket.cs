@@ -12,9 +12,10 @@
 namespace Fibula.Communications.Packets.Outgoing
 {
     using System;
-    using System.Buffers;
-    using Fibula.Communications.Contracts.Abstractions;
-    using Fibula.Communications.Contracts.Enumerations;
+    using System.Collections.Generic;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Contracts.Enumerations;
+    using Fibula.Server.Contracts.Abstractions;
 
     /// <summary>
     /// Class that represents a partial map description packet.
@@ -25,31 +26,38 @@ namespace Fibula.Communications.Packets.Outgoing
         /// Initializes a new instance of the <see cref="MapPartialDescriptionPacket"/> class.
         /// </summary>
         /// <param name="mapDescriptionType">The type of map description.</param>
-        /// <param name="descriptionBytes">The description bytes.</param>
-        public MapPartialDescriptionPacket(OutgoingPacketType mapDescriptionType, ReadOnlySequence<byte> descriptionBytes)
+        /// <param name="player">The player that will be receiving the description.</param>
+        /// <param name="descriptionTiles">The description tiles.</param>
+        public MapPartialDescriptionPacket(OutboundPacketType mapDescriptionType, IPlayer player, IEnumerable<ITile> descriptionTiles)
         {
-            if (mapDescriptionType != OutgoingPacketType.MapSliceEast &&
-                mapDescriptionType != OutgoingPacketType.MapSliceNorth &&
-                mapDescriptionType != OutgoingPacketType.MapSliceSouth &&
-                mapDescriptionType != OutgoingPacketType.MapSliceWest &&
-                mapDescriptionType != OutgoingPacketType.FloorChangeUp &&
-                mapDescriptionType != OutgoingPacketType.FloorChangeDown)
+            if (mapDescriptionType != OutboundPacketType.MapSliceEast &&
+                mapDescriptionType != OutboundPacketType.MapSliceNorth &&
+                mapDescriptionType != OutboundPacketType.MapSliceSouth &&
+                mapDescriptionType != OutboundPacketType.MapSliceWest &&
+                mapDescriptionType != OutboundPacketType.FloorChangeUp &&
+                mapDescriptionType != OutboundPacketType.FloorChangeDown)
             {
-                throw new ArgumentException(nameof(mapDescriptionType));
+                throw new ArgumentException($"Unsupported partial description type {mapDescriptionType}.", nameof(mapDescriptionType));
             }
 
             this.PacketType = mapDescriptionType;
-            this.DescriptionBytes = descriptionBytes;
+            this.Player = player;
+            this.DescriptionTiles = descriptionTiles;
         }
 
         /// <summary>
         /// Gets the type of this packet.
         /// </summary>
-        public OutgoingPacketType PacketType { get; }
+        public OutboundPacketType PacketType { get; }
 
         /// <summary>
-        /// Gets the description bytes.
+        /// Gets the player that will be receiving the description.
         /// </summary>
-        public ReadOnlySequence<byte> DescriptionBytes { get; }
+        public IPlayer Player { get; }
+
+        /// <summary>
+        /// Gets the description tiles.
+        /// </summary>
+        public IEnumerable<ITile> DescriptionTiles { get; }
     }
 }

@@ -12,6 +12,8 @@
 namespace Fibula.Communications
 {
     using Fibula.Communications.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
+    using Fibula.Protocol.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Logging;
 

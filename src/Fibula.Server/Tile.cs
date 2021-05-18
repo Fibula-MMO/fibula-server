@@ -18,6 +18,7 @@ namespace Fibula.Server
     using Fibula.Definitions.Enumerations;
     using Fibula.Server.Contracts.Abstractions;
     using Fibula.Server.Contracts.Constants;
+    using Fibula.Server.Contracts.Delegates;
     using Fibula.Server.Contracts.Enumerations;
     using Fibula.Utilities.Validation;
 
@@ -81,6 +82,21 @@ namespace Fibula.Server
             this.stayOnBottomItems = new Stack<IItem>();
             this.itemsOnTile = new Stack<IItem>();
         }
+
+        /// <summary>
+        /// A delegate that handles an item being added to this tile.
+        /// </summary>
+        public event ItemsContainerContentAddedHandler ItemAdded;
+
+        /// <summary>
+        /// A delegate that handles an item being updated in this tile.
+        /// </summary>
+        public event ItemsContainerContentUpdatedHandler ItemUpdated;
+
+        /// <summary>
+        /// A delegate that handles an item being removed from this tile.
+        /// </summary>
+        public event ItemsContainerContentRemovedHandler ItemRemoved;
 
         /// <summary>
         /// Gets this tile's location.
@@ -208,6 +224,81 @@ namespace Fibula.Server
         }
 
         /// <summary>
+        /// Attempts to find an <see cref="IItem"/> in this tile, at a given index.
+        /// </summary>
+        /// <param name="index">The index at which to look.</param>
+        /// <returns>The <see cref="IItem"/> found at the index, if any was found, and null otherwise.</returns>
+        IItem IItemsContainer.this[int index] => this[index] as IItem;
+
+        /// <summary>
+        /// Attempts to find a <see cref="IThing"/> in the tile, at the given index.
+        /// </summary>
+        /// <param name="index">The index at which to look for.</param>
+        /// <returns>The <see cref="IThing"/> found at the index, and null otherwise.</returns>
+        public IThing this[int index]
+        {
+            get
+            {
+                var currentIdx = 0;
+
+                lock (this.tileLock)
+                {
+                    if (this.Ground != null && currentIdx++ == index)
+                    {
+                        return this.Ground;
+                    }
+
+                    if (this.groundBorders.Any())
+                    {
+                        if (currentIdx + this.groundBorders.Count > index)
+                        {
+                            return this.groundBorders.Skip(index - currentIdx).Single();
+                        }
+
+                        currentIdx += this.groundBorders.Count;
+                    }
+
+                    if (this.LiquidPool != null && currentIdx++ == index)
+                    {
+                        return this.LiquidPool;
+                    }
+
+                    if (this.stayOnTopItems.Any())
+                    {
+                        if (currentIdx + this.stayOnTopItems.Count > index)
+                        {
+                            return this.stayOnTopItems.Skip(index - currentIdx).Single();
+                        }
+
+                        currentIdx += this.stayOnTopItems.Count;
+                    }
+
+                    if (this.stayOnBottomItems.Any())
+                    {
+                        if (currentIdx + this.stayOnBottomItems.Count > index)
+                        {
+                            return this.stayOnBottomItems.Skip(index - currentIdx).Single();
+                        }
+
+                        currentIdx += this.stayOnBottomItems.Count;
+                    }
+
+                    if (this.itemsOnTile.Any())
+                    {
+                        if (currentIdx + this.itemsOnTile.Count > index)
+                        {
+                            return this.itemsOnTile.Skip(index - currentIdx).Single();
+                        }
+
+                        currentIdx += this.itemsOnTile.Count;
+                    }
+                }
+
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Attempts to get the tile's items to describe prioritized and ordered by their stack order.
         /// </summary>
         /// <param name="maxItemsToGet">The maximum number of items to include in the result.</param>
@@ -226,6 +317,7 @@ namespace Fibula.Server
             var fixedItemList = new List<IItem>();
             var itemList = new List<IItem>();
             var addedCount = 0;
+            var ultimited = maxItemsToGet < 0;
 
             lock (this.tileLock)
             {
@@ -235,7 +327,7 @@ namespace Fibula.Server
                     addedCount++;
                 }
 
-                if (addedCount < maxItemsToGet && this.groundBorders.Any())
+                if ((ultimited || addedCount < maxItemsToGet) && this.groundBorders.Any())
                 {
                     var itemsToAdd = this.groundBorders.Take(maxItemsToGet - addedCount);
 
@@ -244,13 +336,13 @@ namespace Fibula.Server
                     addedCount += itemsToAdd.Count();
                 }
 
-                if (addedCount < maxItemsToGet && this.LiquidPool != null)
+                if ((ultimited || addedCount < maxItemsToGet) && this.LiquidPool != null)
                 {
                     fixedItemList.Add(this.LiquidPool);
                     addedCount++;
                 }
 
-                if (addedCount < maxItemsToGet && this.stayOnTopItems.Any())
+                if ((ultimited || addedCount < maxItemsToGet) && this.stayOnTopItems.Any())
                 {
                     var itemsToAdd = this.stayOnTopItems.Take(maxItemsToGet - addedCount);
 
@@ -259,7 +351,7 @@ namespace Fibula.Server
                     addedCount += itemsToAdd.Count();
                 }
 
-                if (addedCount < maxItemsToGet && this.stayOnBottomItems.Any())
+                if ((ultimited || addedCount < maxItemsToGet) && this.stayOnBottomItems.Any())
                 {
                     var itemsToAdd = this.stayOnBottomItems.Take(maxItemsToGet - addedCount);
 
@@ -268,7 +360,7 @@ namespace Fibula.Server
                     addedCount += itemsToAdd.Count();
                 }
 
-                if (addedCount < maxItemsToGet && this.itemsOnTile.Any())
+                if ((ultimited || addedCount < maxItemsToGet) && this.itemsOnTile.Any())
                 {
                     var itemsToAdd = this.itemsOnTile.Take(maxItemsToGet - addedCount);
 
@@ -314,11 +406,11 @@ namespace Fibula.Server
         }
 
         /// <summary>
-        /// Attempts to get the position in the stack for the given <see cref="IThing"/>.
+        /// Attempts to get the index for the given <see cref="IThing"/> within this container.
         /// </summary>
         /// <param name="thing">The thing to find.</param>
-        /// <returns>The position in the stack for the <see cref="IThing"/>, or <see cref="byte.MaxValue"/> if its not found.</returns>
-        public byte GetStackOrderOfThing(IThing thing)
+        /// <returns>The index for the <see cref="IThing"/> found, or <see cref="byte.MaxValue"/> if it was not found.</returns>
+        public byte GetIndexOfThing(IThing thing)
         {
             thing.ThrowIfNull(nameof(thing));
 
@@ -393,133 +485,165 @@ namespace Fibula.Server
         }
 
         /// <summary>
-        /// Attempts to find an <see cref="IThing"/> whitin this container.
+        /// Attempts to find a <see cref="IThing"/> in the container, at the given index.
         /// </summary>
-        /// <param name="index">The index at which to look for the <see cref="IThing"/>.</param>
-        /// <returns>The <see cref="IThing"/> found at the index, if any was found.</returns>
+        /// <param name="index">The index at which to look for.</param>
+        /// <returns>The <see cref="IThing"/> found at the index, and null otherwise.</returns>
         public IThing FindThingAtIndex(byte index)
         {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Attempts to add a <see cref="IThing"/> to this container.
-        /// </summary>
-        /// <param name="thingFactory">A reference to the factory of things to use.</param>
-        /// <param name="thing">The <see cref="IThing"/> to add to the container.</param>
-        /// <param name="index">Optional. The index at which to add the <see cref="IThing"/>. Defaults to byte.MaxValue, which instructs to add the <see cref="IThing"/> at any free index.</param>
-        /// <returns>A tuple with a value indicating whether the attempt was at least partially successful, and false otherwise. If the result was only partially successful, a remainder of the thing may be returned.</returns>
-        public (bool result, IThing remainder) AddContent(IThingFactory thingFactory, IThing thing, byte index = byte.MaxValue)
-        {
-            thingFactory.ThrowIfNull(nameof(thingFactory));
-
-            if (!(thingFactory is IItemFactory itemFactory))
-            {
-                throw new ArgumentException($"The {nameof(thingFactory)} must be derived of type {nameof(IItemFactory)}.");
-            }
+            var currentIdx = 0;
 
             lock (this.tileLock)
             {
-                if (thing is ICreature creature)
+                if (this.Ground != null && currentIdx++ == index)
                 {
-                    this.creaturesOnTile.Push(creature);
+                    return this.Ground;
                 }
-                else if (thing is IItem item)
+
+                if (this.groundBorders.Any())
                 {
-                    if (item.IsGround)
+                    if (currentIdx + this.groundBorders.Count > index)
                     {
-                        this.Ground = item;
-                    }
-                    else if (item.IsGroundFix)
-                    {
-                        this.groundBorders.Push(item);
-                    }
-                    else if (item.IsLiquidPool)
-                    {
-                        this.LiquidPool = item;
-                    }
-                    else if (item.StaysOnTop)
-                    {
-                        this.stayOnTopItems.Push(item);
-                    }
-                    else if (item.StaysOnBottom)
-                    {
-                        this.stayOnBottomItems.Push(item);
-                    }
-                    else
-                    {
-                        var remainingAmountToAdd = item.Amount;
-
-                        while (remainingAmountToAdd > 0)
-                        {
-                            if (!item.IsCumulative)
-                            {
-                                this.itemsOnTile.Push(item);
-                                break;
-                            }
-
-                            var existingItem = this.itemsOnTile.Count > 0 ? this.itemsOnTile.Peek() : null;
-
-                            // Check if there is an existing top item and if it is of the same type.
-                            if (existingItem == null || existingItem.Type != item.Type || existingItem.Amount >= ItemConstants.MaximumAmountOfCummulativeItems)
-                            {
-                                this.itemsOnTile.Push(item);
-                                break;
-                            }
-
-                            remainingAmountToAdd += existingItem.Amount;
-
-                            // Modify the existing item with the new amount, or the maximum permitted.
-                            var newExistingAmount = Math.Min(remainingAmountToAdd, ItemConstants.MaximumAmountOfCummulativeItems);
-
-                            existingItem.Amount = newExistingAmount;
-
-                            remainingAmountToAdd -= newExistingAmount;
-
-                            if (remainingAmountToAdd == 0)
-                            {
-                                break;
-                            }
-
-                            item = item.Clone() as IItem;
-
-                            item.Amount = remainingAmountToAdd;
-
-                            item.ParentContainer = this;
-                        }
+                        return this.groundBorders.Skip(index - currentIdx).Single();
                     }
 
-                    // Update the tile's version so that it invalidates the cache.
-                    // TOOD: if we start caching creatures, move to outer scope.
-                    this.LastModified = DateTimeOffset.UtcNow;
+                    currentIdx += this.groundBorders.Count;
+                }
+
+                if (this.LiquidPool != null && currentIdx++ == index)
+                {
+                    return this.LiquidPool;
+                }
+
+                if (this.stayOnTopItems.Any())
+                {
+                    if (currentIdx + this.stayOnTopItems.Count > index)
+                    {
+                        return this.stayOnTopItems.Skip(index - currentIdx).Single();
+                    }
+
+                    currentIdx += this.stayOnTopItems.Count;
+                }
+
+                if (this.stayOnBottomItems.Any())
+                {
+                    if (currentIdx + this.stayOnBottomItems.Count > index)
+                    {
+                        return this.stayOnBottomItems.Skip(index - currentIdx).Single();
+                    }
+
+                    currentIdx += this.stayOnBottomItems.Count;
+                }
+
+                if (this.itemsOnTile.Any())
+                {
+                    if (currentIdx + this.itemsOnTile.Count > index)
+                    {
+                        return this.itemsOnTile.Skip(index - currentIdx).Single();
+                    }
+
+                    currentIdx += this.itemsOnTile.Count;
                 }
             }
 
-            if (thing != null && thing is IContainedThing containedThing)
+            return null;
+        }
+
+        /// <summary>
+        /// Attempts to add an <see cref="IItem"/> to this container.
+        /// </summary>
+        /// <param name="itemFactory">A reference to a factory of items. Used in case the item can only partially be added.</param>
+        /// <param name="itemToAdd">The item to add to the container.</param>
+        /// <param name="atIndex">Optional. The index at which to add the item. Defaults to a value of <see cref="byte.MaxValue"/>, which means to try adding at any free index.</param>
+        /// <returns>A tuple with a value indicating whether the attempt was at least partially successful, and false otherwise. If the result was only partially successful, a remainder of the item may be returned.</returns>
+        public (bool result, IItem remainder) AddItem(IItemFactory itemFactory, IItem itemToAdd, byte atIndex = byte.MaxValue)
+        {
+            itemFactory.ThrowIfNull(nameof(itemFactory));
+
+            lock (this.tileLock)
             {
-                containedThing.ParentContainer = this;
+                if (itemToAdd.IsGround)
+                {
+                    this.Ground = itemToAdd;
+                }
+                else if (itemToAdd.IsGroundFix)
+                {
+                    this.groundBorders.Push(itemToAdd);
+                }
+                else if (itemToAdd.IsLiquidPool)
+                {
+                    this.LiquidPool = itemToAdd;
+                }
+                else if (itemToAdd.StaysOnTop)
+                {
+                    this.stayOnTopItems.Push(itemToAdd);
+                }
+                else if (itemToAdd.StaysOnBottom)
+                {
+                    this.stayOnBottomItems.Push(itemToAdd);
+                }
+                else
+                {
+                    var remainingAmountToAdd = itemToAdd.Amount;
+
+                    while (remainingAmountToAdd > 0)
+                    {
+                        if (!itemToAdd.IsCumulative)
+                        {
+                            this.itemsOnTile.Push(itemToAdd);
+                            break;
+                        }
+
+                        var existingItem = this.itemsOnTile.Count > 0 ? this.itemsOnTile.Peek() : null;
+
+                        // Check if there is an existing top itemToAdd and if it is of the same type.
+                        if (existingItem == null || existingItem.Type != itemToAdd.Type || existingItem.Amount >= ItemConstants.MaximumAmountOfCummulativeItems)
+                        {
+                            this.itemsOnTile.Push(itemToAdd);
+                            break;
+                        }
+
+                        remainingAmountToAdd += existingItem.Amount;
+
+                        // Modify the existing itemToAdd with the new amount, or the maximum permitted.
+                        var newExistingAmount = Math.Min(remainingAmountToAdd, ItemConstants.MaximumAmountOfCummulativeItems);
+
+                        existingItem.Amount = newExistingAmount;
+
+                        remainingAmountToAdd -= newExistingAmount;
+
+                        if (remainingAmountToAdd == 0)
+                        {
+                            break;
+                        }
+
+                        itemToAdd = itemToAdd.Clone();
+
+                        itemToAdd.Amount = remainingAmountToAdd;
+
+                        itemToAdd.ParentContainer = this;
+                    }
+                }
+
+                // Update the tile's version so that it invalidates the cache.
+                this.LastModified = DateTimeOffset.UtcNow;
             }
+
+            this.ItemAdded?.Invoke(this, itemToAdd);
 
             return (true, null);
         }
 
         /// <summary>
-        /// Attempts to remove a specific thing from this container.
+        /// Attempts to remove an <see cref="IItem"/> from this container.
         /// </summary>
-        /// <param name="thingFactory">A reference to the factory of things to use.</param>
-        /// <param name="thing">The <see cref="IThing"/> to remove from the container.</param>
-        /// <param name="index">Optional. The index from which to remove the <see cref="IThing"/>. Defaults to byte.MaxValue, which instructs to remove the <see cref="IThing"/> if found at any index.</param>
-        /// <param name="amount">Optional. The amount of the <paramref name="thing"/> to remove.</param>
-        /// <returns>A tuple with a value indicating whether the attempt was at least partially successful, and false otherwise. If the result was only partially successful, a remainder of the thing may be returned.</returns>
-        public (bool result, IThing remainder) RemoveContent(IThingFactory thingFactory, ref IThing thing, byte index = byte.MaxValue, byte amount = 1)
+        /// <param name="itemFactory">A reference to a factory of items. Used in case the item can only partially be removed, like when a smaller <paramref name="amount"/> than what is available is specified.</param>
+        /// <param name="itemToRemove">The item to remove from the container.</param>
+        /// <param name="amount">Optional. The amount of the <paramref name="itemToRemove"/> to remove.</param>
+        /// <param name="index">Optional. The index from which to remove the item. Defaults to <see cref="byte.MaxValue"/>, which means to try removing the item at any index that it's found.</param>
+        /// <returns>A tuple with a value indicating whether the attempt was at least partially successful, and false otherwise. If the result was only partially successful, a remainder of the item may be returned.</returns>
+        public (bool result, IItem remainder) RemoveItem(IItemFactory itemFactory, ref IItem itemToRemove, byte amount = 1, byte index = byte.MaxValue)
         {
-            thingFactory.ThrowIfNull(nameof(thingFactory));
-
-            if (!(thingFactory is IItemFactory itemFactory))
-            {
-                throw new ArgumentException($"The {nameof(thingFactory)} must be derived of type {nameof(IItemFactory)}.");
-            }
-
             if (amount == 0)
             {
                 throw new ArgumentException($"Invalid {nameof(amount)} zero.");
@@ -527,112 +651,103 @@ namespace Fibula.Server
 
             IItem remainder = null;
 
-            if (thing is ICreature creature)
+            if (itemToRemove.IsGround)
             {
-                return (this.InternalRemoveCreature(creature), null);
+                if (this.Ground != itemToRemove)
+                {
+                    return (false, itemToRemove);
+                }
+
+                this.Ground = null;
             }
-            else if (thing is IItem item)
+            else if (itemToRemove.IsGroundFix)
             {
-                if (item.IsGround)
+                if (amount > 1)
                 {
-                    if (this.Ground != item)
-                    {
-                        return (false, item);
-                    }
-
-                    this.Ground = null;
+                    throw new ArgumentException($"Invalid {nameof(amount)} while removing a ground border itemToRemove: {amount}.");
                 }
-                else if (item.IsGroundFix)
+
+                return (this.InternalRemoveGroundBorderItem(itemToRemove), null);
+            }
+            else if (itemToRemove.IsLiquidPool)
+            {
+                if (this.LiquidPool != itemToRemove)
                 {
-                    if (amount > 1)
-                    {
-                        throw new ArgumentException($"Invalid {nameof(amount)} while removing a ground border item: {amount}.");
-                    }
-
-                    return (this.InternalRemoveGroundBorderItem(thing), null);
+                    return (false, itemToRemove);
                 }
-                else if (item.IsLiquidPool)
+
+                this.LiquidPool = null;
+            }
+            else if (itemToRemove.StaysOnTop)
+            {
+                if (amount > 1)
                 {
-                    if (this.LiquidPool != item)
-                    {
-                        return (false, item);
-                    }
-
-                    this.LiquidPool = null;
+                    throw new ArgumentException($"Invalid {nameof(amount)} while removing a stay-on-top itemToRemove: {amount}.");
                 }
-                else if (item.StaysOnTop)
+
+                return (this.InternalRemoveStayOnTopItem(itemToRemove), null);
+            }
+            else if (itemToRemove.StaysOnBottom)
+            {
+                if (amount > 1)
                 {
-                    if (amount > 1)
-                    {
-                        throw new ArgumentException($"Invalid {nameof(amount)} while removing a stay-on-top item: {amount}.");
-                    }
-
-                    return (this.InternalRemoveStayOnTopItem(thing), null);
+                    throw new ArgumentException($"Invalid {nameof(amount)} while removing a stay-on-bottom itemToRemove: {amount}.");
                 }
-                else if (item.StaysOnBottom)
-                {
-                    if (amount > 1)
-                    {
-                        throw new ArgumentException($"Invalid {nameof(amount)} while removing a stay-on-bottom item: {amount}.");
-                    }
 
-                    return (this.InternalRemoveStayOnBottomItem(thing), null);
-                }
-                else
-                {
-                    lock (this.tileLock)
-                    {
-                        if ((!item.IsCumulative && amount > 1) || (item.IsCumulative && item.Amount < amount))
-                        {
-                            return (false, null);
-                        }
-
-                        if (!item.IsCumulative || item.Amount == amount)
-                        {
-                            // Since we have the exact amount, we can remove the item instance from the tile.
-                            this.itemsOnTile.Pop();
-                        }
-                        else
-                        {
-                            // We're removing less than the entire amount, so we need to calculate the remainder to add back.
-                            var newExistingAmount = (byte)(item.Amount - amount);
-
-                            item.Amount = newExistingAmount;
-
-                            // Create a new item as the remainder.
-                            remainder = item.Clone() as IItem;
-
-                            remainder.Amount = amount;
-
-                            thing = remainder;
-                            remainder = item;
-                        }
-                    }
-                }
+                return (this.InternalRemoveStayOnBottomItem(itemToRemove), null);
             }
             else
             {
-                throw new InvalidCastException($"Thing did not cast to either a {nameof(ICreature)} or {nameof(IItem)}.");
+                lock (this.tileLock)
+                {
+                    if ((!itemToRemove.IsCumulative && amount > 1) || (itemToRemove.IsCumulative && itemToRemove.Amount < amount))
+                    {
+                        return (false, null);
+                    }
+
+                    if (!itemToRemove.IsCumulative || itemToRemove.Amount == amount)
+                    {
+                        // Since we have the exact amount, we can remove the itemToRemove instance from the tile.
+                        this.itemsOnTile.Pop();
+                    }
+                    else
+                    {
+                        // We're removing less than the entire amount, so we need to calculate the remainder to add back.
+                        var newExistingAmount = (byte)(itemToRemove.Amount - amount);
+
+                        itemToRemove.Amount = newExistingAmount;
+
+                        // Create a new itemToRemove as the remainder.
+                        remainder = itemToRemove.Clone();
+
+                        remainder.Amount = amount;
+
+                        itemToRemove = remainder;
+                        remainder = itemToRemove;
+                    }
+                }
             }
 
             // Update the tile's version so that it invalidates the cache.
             this.LastModified = DateTimeOffset.UtcNow;
 
+            this.ItemRemoved?.Invoke(this, index);
+
             return (true, remainder);
         }
 
         /// <summary>
-        /// Attempts to replace a <see cref="IThing"/> from this container with another.
+        /// Attempts to replace an <see cref="IItem"/> from this container by removing the <paramref name="itemToRemove"/> and adding the <paramref name="itemToAdd"/>.
         /// </summary>
-        /// <param name="thingFactory">A reference to the factory of things to use.</param>
-        /// <param name="fromThing">The <see cref="IThing"/> to remove from the container.</param>
-        /// <param name="toThing">The <see cref="IThing"/> to add to the container.</param>
-        /// <param name="index">Optional. The index from which to replace the <see cref="IThing"/>. Defaults to byte.MaxValue, which instructs to replace the <see cref="IThing"/> if found at any index.</param>
-        /// <param name="amount">Optional. The amount of the <paramref name="fromThing"/> to replace.</param>
+        /// <param name="itemFactory">A reference to a factory of items. Used in case the item can only partially be removed, like when a smaller <paramref name="amount"/> than what is available is specified.</param>
+        /// <param name="itemToRemove">The item to remove from the container.</param>
+        /// <param name="itemToAdd">The item to add to the container.</param>
+        /// <param name="amount">Optional. The amount of the <paramref name="itemToRemove"/> to replace.</param>
+        /// <param name="index">Optional. The index from which to remove the item. Defaults to <see cref="byte.MaxValue"/>, which means to try removing the item at any index that it's found.</param>
         /// <returns>A tuple with a value indicating whether the attempt was at least partially successful, and false otherwise. If the result was only partially successful, a remainder of the thing may be returned.</returns>
-        public (bool result, IThing remainderToChange) ReplaceContent(IThingFactory thingFactory, IThing fromThing, IThing toThing, byte index = byte.MaxValue, byte amount = 1)
+        public (bool result, IItem remainderToChange) ReplaceItem(IItemFactory itemFactory, IItem itemToRemove, IItem itemToAdd, byte amount = 1, byte index = byte.MaxValue)
         {
-            (bool removeSuccessful, IThing removeRemainder) = this.RemoveContent(thingFactory, ref fromThing, index, amount);
+            (bool removeSuccessful, IItem removeRemainder) = this.RemoveItem(itemFactory, ref itemToRemove, index, amount);
 
             if (!removeSuccessful)
             {
@@ -641,7 +756,7 @@ namespace Fibula.Server
 
             if (removeRemainder != null)
             {
-                (bool addedRemainder, IThing remainderOfRemainder) = this.AddContent(thingFactory, removeRemainder, byte.MaxValue);
+                (bool addedRemainder, IItem remainderOfRemainder) = this.AddItem(itemFactory, removeRemainder, byte.MaxValue);
 
                 if (!addedRemainder)
                 {
@@ -649,30 +764,58 @@ namespace Fibula.Server
                 }
             }
 
-            return this.AddContent(thingFactory, toThing, index);
+            (bool result, IItem remainder) = this.AddItem(itemFactory, itemToAdd, index);
+
+            if (result)
+            {
+                this.ItemUpdated?.Invoke(this, index, itemToAdd);
+            }
+
+            return (result, remainder);
         }
 
         /// <summary>
-        /// Determines if this tile is considered to be blocking the path.
+        /// Attempts to find an <see cref="IItem"/> in this container, at a given index.
         /// </summary>
-        /// <param name="avoidTypes">The damage types to avoid when checking for path blocking. By default, all types are considered path blocking.</param>
-        /// <returns>True if the tile is considered path blocking, false otherwise.</returns>
-        public bool IsPathBlocking(byte avoidTypes = (byte)AvoidDamageType.All)
+        /// <param name="index">The index at which to look.</param>
+        /// <returns>The <see cref="IItem"/> found at the index, if any was found, and null otherwise.</returns>
+        public IItem FindItemAtIndex(byte index)
         {
-            var blocking = this.BlocksPass;
+            throw new NotImplementedException();
+        }
 
-            if (blocking)
-            {
-                return true;
-            }
+        /// <summary>
+        /// Attempts to find an <see cref="IItem"/> in this container, of a given type.
+        /// </summary>
+        /// <param name="typeId">The id of the type to look for.</param>
+        /// <returns>The item found, if any, and null otherwise.</returns>
+        public IItem FindItemByTypeId(ushort typeId)
+        {
+            throw new NotImplementedException();
+        }
 
-            blocking |= (this.Ground != null && this.Ground.IsPathBlocking(avoidTypes)) ||
-                        this.Creatures.Any() ||
-                        this.stayOnTopItems.Any(i => i.IsPathBlocking(avoidTypes)) ||
-                        this.stayOnBottomItems.Any(i => i.IsPathBlocking(avoidTypes)) ||
-                        this.itemsOnTile.Any(i => i.IsPathBlocking(avoidTypes));
+        /// <summary>
+        /// Attempts to add an <see cref="ICreature"/> to this container.
+        /// </summary>
+        /// <param name="creature">The creature to add to the container.</param>
+        /// <returns>True if the creature was successfully added, and false otherwise.</returns>
+        public bool AddCreature(ICreature creature)
+        {
+            this.creaturesOnTile.Push(creature);
 
-            return blocking;
+            creature.ParentContainer = this;
+
+            return true;
+        }
+
+        /// <summary>
+        /// Attempts to remove an <see cref="ICreature"/> from this container.
+        /// </summary>
+        /// <param name="creature">The creature to remove from the container.</param>
+        /// <returns>True if the creature was successfully removed, and false otherwise.</returns>
+        public bool RemoveCreature(ICreature creature)
+        {
+            return this.InternalRemoveCreature(creature);
         }
 
         /// <summary>
@@ -716,7 +859,7 @@ namespace Fibula.Server
         /// </summary>
         /// <param name="groundBorderItem">The item to remove.</param>
         /// <returns>True if the item was found and removed, false otherwise.</returns>
-        private bool InternalRemoveGroundBorderItem(IThing groundBorderItem)
+        private bool InternalRemoveGroundBorderItem(IItem groundBorderItem)
         {
             if (groundBorderItem == null)
             {
@@ -764,7 +907,7 @@ namespace Fibula.Server
         /// </summary>
         /// <param name="stayOnTopItem">The item to remove.</param>
         /// <returns>True if the item was found and removed, false otherwise.</returns>
-        private bool InternalRemoveStayOnTopItem(IThing stayOnTopItem)
+        private bool InternalRemoveStayOnTopItem(IItem stayOnTopItem)
         {
             if (stayOnTopItem == null)
             {
@@ -812,7 +955,7 @@ namespace Fibula.Server
         /// </summary>
         /// <param name="stayOnBottomItem">The item to remove.</param>
         /// <returns>True if the item was found and removed, false otherwise.</returns>
-        private bool InternalRemoveStayOnBottomItem(IThing stayOnBottomItem)
+        private bool InternalRemoveStayOnBottomItem(IItem stayOnBottomItem)
         {
             if (stayOnBottomItem == null)
             {
@@ -843,150 +986,6 @@ namespace Fibula.Server
                 while (tempStack.Count > 0)
                 {
                     this.stayOnBottomItems.Push(tempStack.Pop());
-                }
-            }
-
-            if (wasRemoved)
-            {
-                // Update the tile's version so that it invalidates the cache.
-                this.LastModified = DateTimeOffset.UtcNow;
-            }
-
-            return wasRemoved;
-        }
-
-        /// <summary>
-        /// Attempts to remove an item of the stay-on-top category in this tile, by it's type.
-        /// </summary>
-        /// <param name="stayOnTopItemTypeId">The type of the item to remove.</param>
-        /// <returns>True if such an item was found and removed, false otherwise.</returns>
-        private bool InternalRemoveStayOnTopItemById(ushort stayOnTopItemTypeId)
-        {
-            if (stayOnTopItemTypeId == default)
-            {
-                return false;
-            }
-
-            var tempStack = new Stack<IItem>();
-
-            bool wasRemoved = false;
-
-            lock (this.tileLock)
-            {
-                while (!wasRemoved && this.stayOnTopItems.Count > 0)
-                {
-                    var temp = this.stayOnTopItems.Pop();
-
-                    if (stayOnTopItemTypeId == temp.TypeId)
-                    {
-                        wasRemoved = true;
-                        break;
-                    }
-                    else
-                    {
-                        tempStack.Push(temp);
-                    }
-                }
-
-                while (tempStack.Count > 0)
-                {
-                    this.stayOnTopItems.Push(tempStack.Pop());
-                }
-            }
-
-            if (wasRemoved)
-            {
-                // Update the tile's version so that it invalidates the cache.
-                this.LastModified = DateTimeOffset.UtcNow;
-            }
-
-            return wasRemoved;
-        }
-
-        /// <summary>
-        /// Attempts to remove an item of the stay-on-bottom category in this tile, by it's type.
-        /// </summary>
-        /// <param name="stayOnBottomItemTypeId">The type of the item to remove.</param>
-        /// <returns>True if such an item was found and removed, false otherwise.</returns>
-        private bool InternalRemoveStayOnBottomItemById(ushort stayOnBottomItemTypeId)
-        {
-            if (stayOnBottomItemTypeId == default)
-            {
-                return false;
-            }
-
-            var tempStack = new Stack<IItem>();
-
-            bool wasRemoved = false;
-
-            lock (this.tileLock)
-            {
-                while (!wasRemoved && this.stayOnBottomItems.Count > 0)
-                {
-                    var temp = this.stayOnBottomItems.Pop();
-
-                    if (stayOnBottomItemTypeId == temp.TypeId)
-                    {
-                        wasRemoved = true;
-                        break;
-                    }
-                    else
-                    {
-                        tempStack.Push(temp);
-                    }
-                }
-
-                while (tempStack.Count > 0)
-                {
-                    this.stayOnBottomItems.Push(tempStack.Pop());
-                }
-            }
-
-            if (wasRemoved)
-            {
-                // Update the tile's version so that it invalidates the cache.
-                this.LastModified = DateTimeOffset.UtcNow;
-            }
-
-            return wasRemoved;
-        }
-
-        /// <summary>
-        /// Attempts to remove an item in this tile, by it's type.
-        /// </summary>
-        /// <param name="itemTypeId">The type of the item to remove.</param>
-        /// <returns>True if such an item was found and removed, false otherwise.</returns>
-        private bool InternalRemoveItemById(ushort itemTypeId)
-        {
-            if (itemTypeId == default)
-            {
-                return false;
-            }
-
-            var tempStack = new Stack<IItem>();
-
-            bool wasRemoved = false;
-
-            lock (this.tileLock)
-            {
-                while (!wasRemoved && this.itemsOnTile.Count > 0)
-                {
-                    var temp = this.itemsOnTile.Pop();
-
-                    if (itemTypeId == temp.TypeId)
-                    {
-                        wasRemoved = true;
-                        break;
-                    }
-                    else
-                    {
-                        tempStack.Push(temp);
-                    }
-                }
-
-                while (tempStack.Count > 0)
-                {
-                    this.itemsOnTile.Push(tempStack.Pop());
                 }
             }
 

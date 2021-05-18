@@ -11,8 +11,8 @@
 
 namespace Fibula.Communications.Packets.Outgoing
 {
-    using Fibula.Communications.Contracts.Abstractions;
-    using Fibula.Communications.Contracts.Enumerations;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Contracts.Enumerations;
 
     /// <summary>
     /// Class that represents a waiting list packet.
@@ -33,7 +33,7 @@ namespace Fibula.Communications.Packets.Outgoing
         /// <summary>
         /// Gets the type of this packet.
         /// </summary>
-        public OutgoingPacketType PacketType => OutgoingPacketType.WaitingList;
+        public OutboundPacketType PacketType => OutboundPacketType.WaitingList;
 
         /// <summary>
         /// Gets the message to send.

@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+option csharp_namespace = "Fibula.Common.Contracts.Grpc";
+
+package common;
+
+message CharacterInfo {
+	string name = 1;
+	string ip = 2;
+	uint32 port = 3;
+	string world = 4;
+}
+
+message Item {	
+	uint32 itemTypeId = 1;
+	uint32 amount = 2;
+	int32 liquidColor = 3;
+}
+
+message Location {
+	uint64 x = 1;
+	uint64 y = 2;
+	uint32 z = 3;
+}
+
+message MapDescription {
+	bytes description = 1;
+	repeated uint32 creaturesBeingAdded = 2;
+	repeated uint32 creaturesBeingRemoved = 3;
+}
+
+message Outfit {
+	uint32 id = 1;
+	uint32 lookAlikeId = 2;
+	uint32 head = 3;
+	uint32 body = 4;
+	uint32 legs = 5;
+	uint32 feet = 6;
+}
+
+message Stat {
+	string name = 1;
+	uint32 current = 2;
+	uint32 maximum = 3;
+	uint32 percent = 4;
+}
+
+message Skill {
+	uint32 type = 1;
+	uint32 level = 2;
+	uint32 percent = 3;
+	uint64 count = 4;
+}

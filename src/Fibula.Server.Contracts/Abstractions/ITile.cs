@@ -14,23 +14,12 @@ namespace Fibula.Server.Contracts.Abstractions
     using System;
     using System.Collections.Generic;
     using Fibula.Server.Contracts.Constants;
-    using Fibula.Server.Contracts.Enumerations;
 
     /// <summary>
     /// Interface for all tiles.
     /// </summary>
-    public interface ITile : IThingContainer
+    public interface ITile : ILocatable, IThingsContainer
     {
-        /// <summary>
-        /// Gets the tile's creatures.
-        /// </summary>
-        IEnumerable<ICreature> Creatures { get; }
-
-        /// <summary>
-        /// Gets the flags from this tile.
-        /// </summary>
-        byte Flags { get; }
-
         /// <summary>
         /// Gets the last date and time that this tile was modified.
         /// </summary>
@@ -67,14 +56,24 @@ namespace Fibula.Server.Contracts.Abstractions
         IThing TopThing { get; }
 
         /// <summary>
+        /// Gets the item that is on top based on the tile's stack order.
+        /// </summary>
+        IItem TopItem { get; }
+
+        /// <summary>
         /// Gets the creature that is on top based on the tile's stack order.
         /// </summary>
         ICreature TopCreature { get; }
 
         /// <summary>
-        /// Gets the item that is on top based on the tile's stack order.
+        /// Gets the tile's creatures.
         /// </summary>
-        IItem TopItem { get; }
+        IEnumerable<ICreature> Creatures { get; }
+
+        /// <summary>
+        /// Gets the flags from this tile.
+        /// </summary>
+        byte Flags { get; }
 
         /// <summary>
         /// Attempts to get the tile's items to describe prioritized and ordered by their stack order.
@@ -83,31 +82,10 @@ namespace Fibula.Server.Contracts.Abstractions
         /// <returns>The items in the tile, split by those which are fixed and those considered normal.</returns>
         (IEnumerable<IItem> fixedItems, IEnumerable<IItem> normalItems) GetItemsToDescribeByPriority(int maxItemsToGet = MapConstants.MaximumNumberOfThingsToDescribePerTile);
 
-        /// <summary>
-        /// Attempts to find an item in the tile with the given type.
-        /// </summary>
-        /// <param name="typeId">The type to look for.</param>
-        /// <returns>The item with such id, null otherwise.</returns>
-        IItem FindItemWithTypeId(ushort typeId);
-
-        /// <summary>
-        /// Attempts to get the position in the stack for the given <see cref="IThing"/>.
-        /// </summary>
-        /// <param name="thing">The thing to find.</param>
-        /// <returns>The position in the stack for the <see cref="IThing"/>, or <see cref="byte.MaxValue"/> if its not found.</returns>
-        byte GetStackOrderOfThing(IThing thing);
-
-        /// <summary>
-        /// Sets a flag on this tile.
-        /// </summary>
-        /// <param name="flag">The flag to set.</param>
-        void SetFlag(TileFlag flag);
-
-        /// <summary>
-        /// Determines if this tile is considered to be blocking the path.
-        /// </summary>
-        /// <param name="avoidTypes">The damage types to avoid when checking for path blocking. By default, all types are considered path blocking.</param>
-        /// <returns>True if the tile is considered path blocking, false otherwise.</returns>
-        bool IsPathBlocking(byte avoidTypes = (byte)AvoidDamageType.All);
+        ///// <summary>
+        ///// Sets a flag on this tile.
+        ///// </summary>
+        ///// <param name="flag">The flag to set.</param>
+        // void SetFlag(TileFlag flag);
     }
 }

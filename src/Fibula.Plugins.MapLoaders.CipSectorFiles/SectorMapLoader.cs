@@ -23,9 +23,9 @@ namespace Fibula.Plugins.MapLoaders.CipSectorFiles
     using Fibula.Parsing.CipFiles.Enumerations;
     using Fibula.Parsing.CipFiles.Extensions;
     using Fibula.Parsing.Contracts.Abstractions;
-    using Fibula.Server.Contracts;
     using Fibula.Server.Contracts.Abstractions;
     using Fibula.Server.Contracts.Enumerations;
+    using Fibula.Server.Contracts.Models;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
@@ -86,6 +86,21 @@ namespace Fibula.Plugins.MapLoaders.CipSectorFiles
         private const int SquareSectorSize = 32;
 
         /// <summary>
+        /// The logger to use.
+        /// </summary>
+        private readonly ILogger logger;
+
+        /// <summary>
+        /// The item factory instance.
+        /// </summary>
+        private readonly IItemFactory itemFactory;
+
+        /// <summary>
+        /// The tile factory instance.
+        /// </summary>
+        private readonly ITileFactory tileFactory;
+
+        /// <summary>
         /// Holds the map directory info.
         /// </summary>
         private readonly DirectoryInfo mapDirInfo;
@@ -129,19 +144,16 @@ namespace Fibula.Plugins.MapLoaders.CipSectorFiles
         /// Initializes a new instance of the <see cref="SectorMapLoader"/> class.
         /// </summary>
         /// <param name="logger">A reference to the logger instance in use.</param>
-        /// <param name="creatureFinder">A reference to the creature finder.</param>
         /// <param name="itemFactory">A reference to the item factory.</param>
         /// <param name="tileFactory">A reference to the tile factory.</param>
         /// <param name="sectorMapLoaderOptions">The options for this map loader.</param>
         public SectorMapLoader(
             ILogger<SectorMapLoader> logger,
-            ICreatureFinder creatureFinder,
             IItemFactory itemFactory,
             ITileFactory tileFactory,
             IOptions<SectorMapLoaderOptions> sectorMapLoaderOptions)
         {
             logger.ThrowIfNull(nameof(logger));
-            creatureFinder.ThrowIfNull(nameof(creatureFinder));
             itemFactory.ThrowIfNull(nameof(itemFactory));
             tileFactory.ThrowIfNull(nameof(tileFactory));
             sectorMapLoaderOptions.ThrowIfNull(nameof(sectorMapLoaderOptions));
@@ -155,10 +167,9 @@ namespace Fibula.Plugins.MapLoaders.CipSectorFiles
                 throw new ApplicationException($"The map directory '{sectorMapLoaderOptions.Value.LiveMapDirectory}' could not be found.");
             }
 
-            this.Logger = logger;
-            this.CreatureFinder = creatureFinder;
-            this.ItemFactory = itemFactory;
-            this.TileFactory = tileFactory;
+            this.logger = logger;
+            this.itemFactory = itemFactory;
+            this.tileFactory = tileFactory;
 
             this.totalTileCount = 1;
             this.totalLoadedCount = default;
@@ -173,89 +184,54 @@ namespace Fibula.Plugins.MapLoaders.CipSectorFiles
         }
 
         /// <summary>
-        /// Gets the logger to use.
-        /// </summary>
-        public ILogger Logger { get; }
-
-        /// <summary>
-        /// Gets the creature finder instance.
-        /// </summary>
-        public ICreatureFinder CreatureFinder { get; }
-
-        /// <summary>
-        /// Gets the item factory instance.
-        /// </summary>
-        public IItemFactory ItemFactory { get; }
-
-        /// <summary>
-        /// Gets the tile factory instance.
-        /// </summary>
-        public ITileFactory TileFactory { get; }
-
-        /// <summary>
         /// Gets the percentage completed loading the map [0, 100].
         /// </summary>
         public byte PercentageComplete => (byte)Math.Floor(Math.Min(100, Math.Max(0M, this.totalLoadedCount * 100 / (this.totalTileCount + 1))));
 
         /// <summary>
-        /// Gets a value indicating whether this loader has previously loaded the given coordinates.
+        /// Computes a hash string using the given window parameters.
         /// </summary>
-        /// <param name="x">The X coordinate.</param>
-        /// <param name="y">The Y coordinate.</param>
-        /// <param name="z">The Z coordinate.</param>
-        /// <returns>True if the loader has previously loaded the given coordinates, false otherwise.</returns>
-        public bool HasLoaded(int x, int y, sbyte z)
+        /// <param name="dimensions">The dimensions to compute the hash with.</param>
+        /// <returns>A hash represented by a string.</returns>
+        public string GetLoadHash(IMapWindowDimensions dimensions)
         {
-            var convertToSector = x > SectorXMax;
+            var convertToSector = dimensions.FromX > SectorXMax;
 
-            var probeX = convertToSector ? (x / SquareSectorSize) - SectorXMin : x - SectorXMin;
-            var probeY = convertToSector ? (y / SquareSectorSize) - SectorYMin : y - SectorYMin;
-            var probeZ = z - SectorZMin;
+            var probeX = convertToSector ? (dimensions.FromX / SquareSectorSize) - SectorXMin : dimensions.FromX - SectorXMin;
+            var probeY = convertToSector ? (dimensions.FromY / SquareSectorSize) - SectorYMin : dimensions.FromY - SectorYMin;
+            var probeZ = dimensions.FromZ - SectorZMin;
 
-            if (probeX >= 0 && probeX < this.sectorsLengthX && probeY >= 0 && probeY < this.sectorsLengthY && probeZ >= 0 && probeZ < this.sectorsLengthZ)
-            {
-                lock (this.loadLock)
-                {
-                    return this.sectorsLoaded[probeX, probeY, probeZ];
-                }
-            }
-
-            return false;
+            return $"{probeX}:{probeY}:{probeZ}";
         }
 
         /// <summary>
-        /// Attempts to load all tiles within a 3 dimensional coordinates window.
+        /// Attempts to load all tiles within a map window.
         /// </summary>
-        /// <param name="fromX">The start X coordinate for the load window.</param>
-        /// <param name="toX">The end X coordinate for the load window.</param>
-        /// <param name="fromY">The start Y coordinate for the load window.</param>
-        /// <param name="toY">The end Y coordinate for the load window.</param>
-        /// <param name="fromZ">The start Z coordinate for the load window.</param>
-        /// <param name="toZ">The end Z coordinate for the load window.</param>
-        /// <returns>A collection of ordered pairs containing the <see cref="Location"/> and its corresponding <see cref="ITile"/>.</returns>
-        public IEnumerable<(Location Location, ITile Tile)> Load(int fromX, int toX, int fromY, int toY, sbyte fromZ, sbyte toZ)
+        /// <param name="window">The parameters to for the window to load.</param>
+        /// <returns>A collection of <see cref="ITile"/>s loaded.</returns>
+        public IEnumerable<ITile> Load(IMapWindowDimensions window)
         {
-            var fromSectorX = fromX / SquareSectorSize;
-            var toSectorX = toX / SquareSectorSize;
-            var fromSectorY = fromY / SquareSectorSize;
-            var toSectorY = toY / SquareSectorSize;
+            var fromSectorX = window.FromX / SquareSectorSize;
+            var toSectorX = window.ToX / SquareSectorSize;
+            var fromSectorY = window.FromY / SquareSectorSize;
+            var toSectorY = window.ToY / SquareSectorSize;
 
-            if (toSectorX < fromSectorX || toSectorY < fromSectorY || toZ < fromZ ||
+            if (toSectorX < fromSectorX || toSectorY < fromSectorY || window.ToZ < window.FromZ ||
                 fromSectorX < SectorXMin || toSectorX > SectorXMax ||
                 fromSectorY < SectorYMin || toSectorY > SectorYMax ||
-                fromZ < SectorZMin || toZ > SectorZMax)
+                window.FromZ < SectorZMin || window.ToZ > SectorZMax)
             {
                 throw new InvalidOperationException("Bad range supplied.");
             }
 
-            var tuplesAdded = new List<(Location loc, ITile tile)>();
+            var tiles = new List<ITile>();
 
-            this.totalTileCount = (toSectorX - fromSectorX + 1) * SquareSectorSize * (toSectorY - fromSectorY + 1) * SquareSectorSize * (toZ - fromZ + 1);
+            this.totalTileCount = (toSectorX - fromSectorX + 1) * SquareSectorSize * (toSectorY - fromSectorY + 1) * SquareSectorSize * (window.ToZ - window.FromZ + 1);
             this.totalLoadedCount = default;
 
             lock (this.loadLock)
             {
-                Parallel.For(fromZ, toZ + 1, sectorZ =>
+                for (int sectorZ = window.FromZ; sectorZ <= window.ToZ; sectorZ++)
                 {
                     Parallel.For(fromSectorY, toSectorY + 1, sectorY =>
                     {
@@ -270,9 +246,9 @@ namespace Fibula.Plugins.MapLoaders.CipSectorFiles
                             {
                                 using var streamReader = sectorFileInfo.OpenText();
 
-                                var tuplesLoaded = this.ReadSector(sectorFileName, streamReader.ReadToEnd(), (ushort)(sectorX * SquareSectorSize), (ushort)(sectorY * SquareSectorSize), (sbyte)sectorZ);
+                                var loadedTiles = this.ReadSector(sectorFileName, streamReader.ReadToEnd(), (ushort)(sectorX * SquareSectorSize), (ushort)(sectorY * SquareSectorSize), (sbyte)sectorZ);
 
-                                tuplesAdded.AddRange(tuplesLoaded);
+                                tiles.AddRange(loadedTiles);
                             }
 
                             // 1024 per sector file, regardless if there is a tile or not...
@@ -280,20 +256,20 @@ namespace Fibula.Plugins.MapLoaders.CipSectorFiles
 
                             this.sectorsLoaded[sectorX - SectorXMin, sectorY - SectorYMin, sectorZ - SectorZMin] = true;
 
-                            this.Logger.LogDebug($"Loaded sector {sectorFileName} [{this.totalLoadedCount} out of {this.totalTileCount}].");
+                            this.logger.LogDebug($"Loaded sector {sectorFileName} [{this.totalLoadedCount} out of {this.totalTileCount}].");
                         });
                     });
-                });
+                }
             }
 
             this.totalLoadedCount = this.totalTileCount;
 
-            return tuplesAdded;
+            return tiles;
         }
 
-        private IList<(Location, ITile)> ReadSector(string fileName, string sectorFileContents, ushort xOffset, ushort yOffset, sbyte z)
+        private IList<ITile> ReadSector(string fileName, string sectorFileContents, ushort xOffset, ushort yOffset, sbyte z)
         {
-            var loadedTilesList = new List<(Location, ITile)>();
+            var loadedTilesList = new List<ITile>();
 
             var lines = sectorFileContents.Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
 
@@ -325,14 +301,14 @@ namespace Fibula.Plugins.MapLoaders.CipSectorFiles
                 };
 
                 // start off with a tile that has no ground in it.
-                ITile newTile = this.TileFactory.CreateTile(location);
+                ITile newTile = this.tileFactory.CreateTile(location);
 
                 this.AddContent(newTile, CipFileParser.Parse(tileData));
 
-                loadedTilesList.Add((location, newTile));
+                loadedTilesList.Add(newTile);
             }
 
-            this.Logger.LogTrace($"Sector file {fileName}: {loadedTilesList.Count} tiles loaded.");
+            this.logger.LogTrace($"Sector file {fileName}: {loadedTilesList.Count} tiles loaded.");
 
             return loadedTilesList;
         }
@@ -355,35 +331,32 @@ namespace Fibula.Plugins.MapLoaders.CipSectorFiles
                     {
                         if (attribute.Value is IEnumerable<IParsedElement> elements)
                         {
-                            var thingStack = new Stack<IThing>();
+                            var stack = new Stack<IItem>();
 
                             foreach (var element in elements)
                             {
-                                IItem item = this.ItemFactory.CreateItem(ItemCreationArguments.WithTypeId((ushort)element.Id));
+                                IItem item = this.itemFactory.CreateItem(ItemCreationArguments.WithTypeId((ushort)element.Id));
 
                                 if (item == null)
                                 {
-                                    this.Logger.LogWarning($"Item with id {element.Id} not found in the catalog, skipping.");
+                                    this.logger.LogWarning($"Item with id {element.Id} not found in the catalog, skipping.");
 
                                     continue;
                                 }
 
                                 this.SetItemAttributes(item, element.Attributes);
 
-                                thingStack.Push(item);
+                                stack.Push(item);
                             }
 
                             // Add them in reversed order.
-                            while (thingStack.Count > 0)
+                            while (stack.Count > 0)
                             {
-                                var thing = thingStack.Pop();
+                                var item = stack.Pop();
 
-                                tile.AddContent(this.ItemFactory, thing);
+                                tile.AddItem(this.itemFactory, item);
 
-                                if (thing is IContainedThing containedThing)
-                                {
-                                    containedThing.ParentContainer = tile;
-                                }
+                                item.ParentContainer = tile;
                             }
                         }
                     }
@@ -392,11 +365,12 @@ namespace Fibula.Plugins.MapLoaders.CipSectorFiles
                         // it's a flag
                         if (Enum.TryParse(attribute.Name, out TileFlag flagMatch))
                         {
-                            tile.SetFlag(flagMatch);
+                            // TODO: implement
+                            // tile.SetFlag(flagMatch);
                         }
                         else
                         {
-                            this.Logger.LogWarning($"Unknown flag [{attribute.Name}] found on tile at location {tile.Location}.");
+                            this.logger.LogWarning($"Unknown flag [{attribute.Name}] found on tile at location {tile.Location}.");
                         }
                     }
                 }
@@ -412,6 +386,8 @@ namespace Fibula.Plugins.MapLoaders.CipSectorFiles
 
             foreach (var attribute in attributes)
             {
+                // TODO: support for container items.
+                /*
                 if ("Content".Equals(attribute.Name) && item is IContainerItem containerItem)
                 {
                     if (!(attribute.Value is IEnumerable<IParsedElement> contentElements) || !contentElements.Any())
@@ -421,11 +397,11 @@ namespace Fibula.Plugins.MapLoaders.CipSectorFiles
 
                     foreach (var element in contentElements)
                     {
-                        IItem contentItem = this.ItemFactory.CreateItem(ItemCreationArguments.WithTypeId((ushort)element.Id));
+                        IItem contentItem = this.itemFactory.CreateItem(ItemCreationArguments.WithTypeId((ushort)element.Id));
 
                         if (contentItem == null)
                         {
-                            this.Logger.LogWarning($"Item with id {element.Id} not found in the catalog, skipping.");
+                            this.logger.LogWarning($"Item with id {element.Id} not found in the catalog, skipping.");
 
                             continue;
                         }
@@ -433,16 +409,17 @@ namespace Fibula.Plugins.MapLoaders.CipSectorFiles
                         this.SetItemAttributes(contentItem, element.Attributes);
 
                         // TODO: we should be able to go over capacity here.
-                        containerItem.AddContent(this.ItemFactory, contentItem, 0xFF);
+                        containerItem.AddContent(this.itemFactory, contentItem);
                     }
 
                     continue;
                 }
+                */
 
                 // These are safe to add as Attributes of the item.
                 if (!Enum.TryParse(attribute.Name, out CipItemAttribute cipAttr) || !(cipAttr.ToItemAttribute() is ItemAttribute itemAttribute))
                 {
-                    this.Logger.LogWarning($"Unsupported attribute {attribute.Name} on {item.Type.Name}, ignoring.");
+                    this.logger.LogWarning($"Unsupported attribute {attribute.Name} on {item.Type.Name}, ignoring.");
 
                     continue;
                 }
@@ -453,7 +430,7 @@ namespace Fibula.Plugins.MapLoaders.CipSectorFiles
                 }
                 catch
                 {
-                    this.Logger.LogWarning($"Unexpected attribute {attribute.Name} with illegal value {attribute.Value} on item {item.Type.Name}, ignoring.");
+                    this.logger.LogWarning($"Unexpected attribute {attribute.Name} with illegal value {attribute.Value} on item {item.Type.Name}, ignoring.");
                 }
             }
         }

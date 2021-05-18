@@ -20,9 +20,14 @@ namespace Fibula.Server.Contracts.Abstractions
     public interface IStat
     {
         /// <summary>
-        /// Event triggered when this stat changes.
+        /// Event triggered when this stat value changes.
         /// </summary>
-        event OnStatChanged Changed;
+        event StatValueChangedHandler ValueChanged;
+
+        /// <summary>
+        /// Event triggered when this stat percentual value changes.
+        /// </summary>
+        event StatPercentChangedHandler PercentChanged;
 
         /// <summary>
         /// Gets this stat's type.

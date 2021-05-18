@@ -13,8 +13,8 @@ namespace Fibula.Protocol.V772
 {
     using System;
     using System.Collections.Generic;
-    using Fibula.Communications.Contracts.Abstractions;
-    using Fibula.Communications.Contracts.Enumerations;
+    using Fibula.Communications.Packets.Contracts.Enumerations;
+    using Fibula.Protocol.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Logging;
 
@@ -31,12 +31,12 @@ namespace Fibula.Protocol.V772
         /// <summary>
         /// The known packet readers to pick from.
         /// </summary>
-        private readonly IDictionary<IncomingPacketType, IPacketReader> packetReadersMap;
+        private readonly IDictionary<InboundPacketType, IPacketReader> packetReadersMap;
 
         /// <summary>
         /// The known packet writers to pick from.
         /// </summary>
-        private readonly IDictionary<OutgoingPacketType, IPacketWriter> packetWritersMap;
+        private readonly IDictionary<OutboundPacketType, IPacketWriter> packetWritersMap;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GatewayProtocol_v772"/> class.
@@ -48,8 +48,8 @@ namespace Fibula.Protocol.V772
 
             this.logger = logger;
 
-            this.packetReadersMap = new Dictionary<IncomingPacketType, IPacketReader>();
-            this.packetWritersMap = new Dictionary<OutgoingPacketType, IPacketWriter>();
+            this.packetReadersMap = new Dictionary<InboundPacketType, IPacketReader>();
+            this.packetWritersMap = new Dictionary<OutboundPacketType, IPacketWriter>();
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace Fibula.Protocol.V772
         /// </summary>
         /// <param name="forType">The type of packet to register for.</param>
         /// <param name="packetReader">The packet reader to register.</param>
-        public void RegisterPacketReader(IncomingPacketType forType, IPacketReader packetReader)
+        public void RegisterPacketReader(InboundPacketType forType, IPacketReader packetReader)
         {
             packetReader.ThrowIfNull(nameof(packetReader));
 
@@ -76,7 +76,7 @@ namespace Fibula.Protocol.V772
         /// </summary>
         /// <param name="forType">The type of packet to register for.</param>
         /// <param name="packetWriter">The packet writer to register.</param>
-        public void RegisterPacketWriter(OutgoingPacketType forType, IPacketWriter packetWriter)
+        public void RegisterPacketWriter(OutboundPacketType forType, IPacketWriter packetWriter)
         {
             packetWriter.ThrowIfNull(nameof(packetWriter));
 
@@ -95,7 +95,7 @@ namespace Fibula.Protocol.V772
         /// </summary>
         /// <param name="forPacketType">The type of packet.</param>
         /// <returns>An instance of an <see cref="IPacketReader"/> implementation.</returns>
-        public IPacketReader SelectPacketReader(IncomingPacketType forPacketType)
+        public IPacketReader SelectPacketReader(InboundPacketType forPacketType)
         {
             if (this.packetReadersMap.TryGetValue(forPacketType, out IPacketReader reader))
             {
@@ -110,7 +110,7 @@ namespace Fibula.Protocol.V772
         /// </summary>
         /// <param name="forPacketType">The type of packet.</param>
         /// <returns>An instance of an <see cref="IPacketWriter"/> implementation.</returns>
-        public IPacketWriter SelectPacketWriter(OutgoingPacketType forPacketType)
+        public IPacketWriter SelectPacketWriter(OutboundPacketType forPacketType)
         {
             if (this.packetWritersMap.TryGetValue(forPacketType, out IPacketWriter writer))
             {
@@ -121,17 +121,17 @@ namespace Fibula.Protocol.V772
         }
 
         /// <summary>
-        /// Attempts to convert a byte value into an <see cref="IncomingPacketType"/>.
+        /// Attempts to convert a byte value into an <see cref="InboundPacketType"/>.
         /// </summary>
         /// <param name="fromByte">The byte to convert.</param>
-        /// <returns>The <see cref="IncomingPacketType"/> value converted to.</returns>
-        public IncomingPacketType ByteToIncomingPacketType(byte fromByte)
+        /// <returns>The <see cref="InboundPacketType"/> value converted to.</returns>
+        public InboundPacketType ByteToIncomingPacketType(byte fromByte)
         {
             return fromByte switch
             {
-                0x01 => IncomingPacketType.LogIn,
-                0xFF => IncomingPacketType.ServerStatus,
-                _ => IncomingPacketType.Unsupported,
+                0x01 => InboundPacketType.LogIn,
+                0xFF => InboundPacketType.ServerStatus,
+                _ => InboundPacketType.Unsupported,
             };
         }
     }

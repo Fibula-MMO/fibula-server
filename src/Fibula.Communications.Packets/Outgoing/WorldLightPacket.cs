@@ -11,8 +11,8 @@
 
 namespace Fibula.Communications.Packets.Outgoing
 {
-    using Fibula.Communications.Contracts.Abstractions;
-    using Fibula.Communications.Contracts.Enumerations;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Contracts.Enumerations;
 
     /// <summary>
     /// Class that represents a world light packet.
@@ -33,7 +33,7 @@ namespace Fibula.Communications.Packets.Outgoing
         /// <summary>
         /// Gets the type of this packet.
         /// </summary>
-        public OutgoingPacketType PacketType => OutgoingPacketType.WorldLight;
+        public OutboundPacketType PacketType => OutboundPacketType.WorldLight;
 
         /// <summary>
         /// Gets the level of the light.

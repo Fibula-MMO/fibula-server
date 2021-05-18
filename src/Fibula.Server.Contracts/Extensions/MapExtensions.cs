@@ -48,7 +48,8 @@ namespace Fibula.Server.Contracts.Extensions
             }
 
             // Cannot throw across the surface boundary (floor 7).
-            if ((fromLocation.Z >= 8 && toLocation.Z <= 7) || (toLocation.Z >= 8 && fromLocation.Z <= 7))
+            if (Math.Max(fromLocation.Z, toLocation.Z) > MapConstants.GroundSurfaceZ &&
+                Math.Min(fromLocation.Z, toLocation.Z) <= MapConstants.GroundSurfaceZ)
             {
                 return false;
             }
@@ -115,7 +116,7 @@ namespace Fibula.Server.Contracts.Extensions
                     origin.X += stepX;
                 }
 
-                if (map.GetTileAt(origin, out ITile tile) && tile.BlocksThrow)
+                if (map.HasTileAt(origin, out ITile tile) && tile.BlocksThrow)
                 {
                     return false;
                 }
@@ -124,7 +125,7 @@ namespace Fibula.Server.Contracts.Extensions
             while (origin.Z != target.Z)
             {
                 // now we need to perform a jump between floors to see if everything is clear (literally)
-                if (map.GetTileAt(origin, out ITile tile) && tile.Ground != null)
+                if (map.HasTileAt(origin, out ITile tile) && tile.Ground != null)
                 {
                     return false;
                 }
@@ -164,7 +165,7 @@ namespace Fibula.Server.Contracts.Extensions
                     {
                         var loc = new Location() { X = x, Y = y, Z = z };
 
-                        if (!map.GetTileAt(loc, out ITile tile, loadAsNeeded: false))
+                        if (!map.HasTileAt(loc, out ITile tile, loadAsNeeded: false))
                         {
                             continue;
                         }
@@ -213,12 +214,12 @@ namespace Fibula.Server.Contracts.Extensions
                     {
                         var loc = new Location() { X = x, Y = y, Z = location.Z };
 
-                        if (!map.GetTileAt(loc, out ITile tile, loadAsNeeded: false))
+                        if (!map.HasTileAt(loc, out ITile tile, loadAsNeeded: false))
                         {
                             continue;
                         }
 
-                        foreach (var creature in tile.Creatures)
+                        foreach (var creature in tile.Creatures.ToList())
                         {
                             creatures.Add(creature);
                         }

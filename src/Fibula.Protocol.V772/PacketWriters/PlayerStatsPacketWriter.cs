@@ -14,6 +14,7 @@ namespace Fibula.Protocol.V772.PacketWriters
     using System;
     using Fibula.Communications;
     using Fibula.Communications.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
     using Fibula.Communications.Packets.Outgoing;
     using Fibula.Definitions.Enumerations;
     using Fibula.Protocol.V772.Extensions;
@@ -66,6 +67,7 @@ namespace Fibula.Protocol.V772.PacketWriters
 
             byte magicLevel = (byte)(combatantPlayer != null ? Math.Min(byte.MaxValue, combatantPlayer.Skills[SkillType.Magic].CurrentLevel) : 0);
             byte magicLevelPercentage = (byte)(combatantPlayer != null ? combatantPlayer.Skills[SkillType.Magic].Percent : 0);
+            byte soulPoints = 0;
 
             message.AddByte(playerStatsPacket.PacketType.ToByte());
 
@@ -82,7 +84,7 @@ namespace Fibula.Protocol.V772.PacketWriters
             message.AddByte(magicLevel);
             message.AddByte(magicLevelPercentage);
 
-            message.AddByte(playerStatsPacket.Player.SoulPoints);
+            message.AddByte(soulPoints);
         }
     }
 }

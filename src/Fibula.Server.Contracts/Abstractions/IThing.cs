@@ -19,12 +19,12 @@ namespace Fibula.Server.Contracts.Abstractions
     /// <summary>
     /// Interface for all things in the game.
     /// </summary>
-    public interface IThing : ILocatable, IContainedThing, IEquatable<IThing>
+    public interface IThing : ILocatable, IEquatable<IThing>
     {
         /// <summary>
-        /// Event to invoke when any of the properties of this thing have changed.
+        /// Event to invoke when the location of this thing has changed.
         /// </summary>
-        event OnLocationChanged LocationChanged;
+        event ThingLocationChangedHandler LocationChanged;
 
         /// <summary>
         /// Gets the id of this thing.
@@ -35,11 +35,6 @@ namespace Fibula.Server.Contracts.Abstractions
         /// Gets the unique id of this thing.
         /// </summary>
         Guid UniqueId { get; }
-
-        /// <summary>
-        /// Gets a value indicating whether this thing can be moved.
-        /// </summary>
-        bool CanBeMoved { get; }
 
         /// <summary>
         /// Gets the tracked events for this thing.

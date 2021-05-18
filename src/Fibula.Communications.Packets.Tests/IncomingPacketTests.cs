@@ -11,17 +11,15 @@
 
 namespace Fibula.Communications.Packets.Tests
 {
-    using Fibula.Communications.Contracts.Abstractions;
-    using Fibula.Communications.Contracts.Enumerations;
     using Fibula.Communications.Packets.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Contracts.Enumerations;
     using Fibula.Communications.Packets.Incoming;
     using Fibula.Definitions.Data.Structures;
     using Fibula.Definitions.Enumerations;
-    using Fibula.Server.Contracts.Enumerations;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     /// <summary>
-    /// Tests for packets that implement the <see cref="IIncomingPacket"/> interface.
+    /// Tests for packets that implement the <see cref="IInboundPacket"/> interface.
     /// </summary>
     [TestClass]
     public class IncomingPacketTests
@@ -45,7 +43,7 @@ namespace Fibula.Communications.Packets.Tests
         [TestMethod]
         public void AutoMoveCancelPacket_Initialization()
         {
-            const IncomingPacketType ExpectedPacketType = IncomingPacketType.AutoMoveCancel;
+            const InboundPacketType ExpectedPacketType = InboundPacketType.AutoMoveCancel;
 
             IActionWithoutContentInfo actionWithoutContentInfo = new AutoMoveCancelPacket();
 
@@ -88,7 +86,7 @@ namespace Fibula.Communications.Packets.Tests
             const ushort ExpectedOsValue = 100;
             const ushort ExpectedVersionValue = 772;
             const bool IsGamemasterValue = true;
-            const uint ExpectedAccountNumber = 987654;
+            const string ExpectedAccountNumber = "987654";
             const string ExpectedCharname = "Potato";
             const string ExpectedPassword = "superSecurePwd";
 
@@ -105,7 +103,7 @@ namespace Fibula.Communications.Packets.Tests
             Assert.AreEqual(ExpectedOsValue, gameLoginInfo.ClientOs, $"Expected {nameof(gameLoginInfo.ClientOs)} to match {ExpectedOsValue}.");
             Assert.AreEqual(ExpectedVersionValue, gameLoginInfo.ClientVersion, $"Expected {nameof(gameLoginInfo.ClientVersion)} to match {ExpectedVersionValue}.");
             Assert.AreEqual(IsGamemasterValue, gameLoginInfo.IsGamemaster, $"Expected {nameof(gameLoginInfo.IsGamemaster)} to match {IsGamemasterValue}.");
-            Assert.AreEqual(ExpectedAccountNumber, gameLoginInfo.AccountNumber, $"Expected {nameof(gameLoginInfo.AccountNumber)} to match {ExpectedAccountNumber}.");
+            Assert.AreEqual(ExpectedAccountNumber, gameLoginInfo.AccountIdentifier, $"Expected {nameof(gameLoginInfo.AccountIdentifier)} to match {ExpectedAccountNumber}.");
             Assert.AreEqual(ExpectedCharname, gameLoginInfo.CharacterName, $"Expected {nameof(gameLoginInfo.CharacterName)} to match {ExpectedCharname}.");
             Assert.AreEqual(ExpectedPassword, gameLoginInfo.Password, $"Expected {nameof(gameLoginInfo.Password)} to match {ExpectedPassword}.");
         }
@@ -116,7 +114,7 @@ namespace Fibula.Communications.Packets.Tests
         [TestMethod]
         public void GameLogOutPacket_Initialization()
         {
-            const IncomingPacketType ExpectedPacketType = IncomingPacketType.LogOut;
+            const InboundPacketType ExpectedPacketType = InboundPacketType.LogOut;
 
             IActionWithoutContentInfo actionWithoutContentInfo = new GameLogOutPacket();
 
@@ -155,7 +153,7 @@ namespace Fibula.Communications.Packets.Tests
         [TestMethod]
         public void HeartbeatPacket_Initialization()
         {
-            const IncomingPacketType ExpectedPacketType = IncomingPacketType.Heartbeat;
+            const InboundPacketType ExpectedPacketType = InboundPacketType.Heartbeat;
 
             IActionWithoutContentInfo actionWithoutContentInfo = new HeartbeatPacket();
 
@@ -168,7 +166,7 @@ namespace Fibula.Communications.Packets.Tests
         [TestMethod]
         public void HeartbeatResponsePacket_Initialization()
         {
-            const IncomingPacketType ExpectedPacketType = IncomingPacketType.HeartbeatResponse;
+            const InboundPacketType ExpectedPacketType = InboundPacketType.HeartbeatResponse;
 
             IActionWithoutContentInfo actionWithoutContentInfo = new HeartbeatResponsePacket();
 
@@ -221,8 +219,8 @@ namespace Fibula.Communications.Packets.Tests
         [TestMethod]
         public void SpeechPacket_Initialization()
         {
-            const SpeechType ExpectedSpeechType = SpeechType.Say;
-            const ChatChannelType ExpectedChannelType = ChatChannelType.Game;
+            const SpeechType ExpectedSpeechType = SpeechType.Normal;
+            const ChatChannelType ExpectedChannelType = ChatChannelType.Default;
             const string ExpectedContent = "this is a test!";
             const string ExpectedReceiver = "Player 2";
 
@@ -247,7 +245,7 @@ namespace Fibula.Communications.Packets.Tests
         [TestMethod]
         public void StopAllActionsPacket_Initialization()
         {
-            const IncomingPacketType ExpectedPacketType = IncomingPacketType.StopAllActions;
+            const InboundPacketType ExpectedPacketType = InboundPacketType.StopAllActions;
 
             IActionWithoutContentInfo actionWithoutContentInfo = new StopAllActionsPacket();
 

@@ -15,13 +15,17 @@ namespace Fibula.Server.Contracts.Abstractions
     using System.Collections.Generic;
     using Fibula.Definitions.Data.Entities;
     using Fibula.Definitions.Enumerations;
-    using Fibula.Server.Contracts.Enumerations;
 
     /// <summary>
     /// Interface for all items in the game.
     /// </summary>
-    public interface IItem : IThing, IContainedThing, ICloneableThing<IItem>
+    public interface IItem : IThing, ICloneableThing<IItem>
     {
+        /// <summary>
+        /// Gets or sets the parent container of this item.
+        /// </summary>
+        IItemsContainer ParentContainer { get; set; }
+
         /// <summary>
         /// Gets a reference to this item's <see cref="ItemTypeEntity"/>.
         /// </summary>
@@ -67,6 +71,11 @@ namespace Fibula.Server.Contracts.Abstractions
         /// Callers must check <see cref="ChangesOnUse"/> to verify this item does indeed have a target.
         /// </summary>
         ushort ChangeOnUseTo { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether this item can be moved.
+        /// </summary>
+        bool CanBeMoved { get; }
 
         /// <summary>
         /// Gets a value indicating whether this item can be rotated.
@@ -149,7 +158,7 @@ namespace Fibula.Server.Contracts.Abstractions
         /// <summary>
         /// Gets the position at which the item can be dressed.
         /// </summary>
-        Slot DressPosition { get; }
+        Slot DressSlot { get; }
 
         /// <summary>
         /// Gets a value indicating whether this item triggers a collision event.
@@ -166,26 +175,26 @@ namespace Fibula.Server.Contracts.Abstractions
         /// </summary>
         bool IsGroundFix { get; }
 
-        /// <summary>
-        /// Attempts to join an item to this item's content at the default index.
-        /// </summary>
-        /// <param name="otherItem">The item to join with.</param>
-        /// <returns>True if the operation was successful, false otherwise. Along with any surplus of the item after merge.</returns>
-        (bool success, IItem surplusItem) Merge(IItem otherItem);
+        ///// <summary>
+        ///// Attempts to join an item to this item's content at the default index.
+        ///// </summary>
+        ///// <param name="otherItem">The item to join with.</param>
+        ///// <returns>True if the operation was successful, false otherwise. Along with any surplus of the item after merge.</returns>
+        // (bool success, IItem surplusItem) Merge(IItem otherItem);
 
-        /// <summary>
-        /// Attempts to split this item into two based on the amount provided.
-        /// </summary>
-        /// <param name="itemFactory">A reference to the item factory in use.</param>
-        /// <param name="amount">The amount of the item to split.</param>
-        /// <returns>True if the operation was successful, false otherwise, along with the item produced, if any.</returns>
-        (bool success, IItem itemProduced) Split(IItemFactory itemFactory, byte amount);
+        ///// <summary>
+        ///// Attempts to split this item into two based on the amount provided.
+        ///// </summary>
+        ///// <param name="itemFactory">A reference to the item factory in use.</param>
+        ///// <param name="amount">The amount of the item to split.</param>
+        ///// <returns>True if the operation was successful, false otherwise, along with the item produced, if any.</returns>
+        // (bool success, IItem itemProduced) Split(IItemFactory itemFactory, byte amount);
 
-        /// <summary>
-        /// Determines if this item is blocks pathfinding.
-        /// </summary>
-        /// <param name="avoidTypes">The damage types to avoid when checking for path blocking. By default, all types are considered path blocking.</param>
-        /// <returns>True if the tile is considered path blocking, false otherwise.</returns>
-        bool IsPathBlocking(byte avoidTypes = (byte)AvoidDamageType.All);
+        ///// <summary>
+        ///// Determines if this item is blocks pathfinding.
+        ///// </summary>
+        ///// <param name="avoidTypes">The damage types to avoid when checking for path blocking. By default, all types are considered path blocking.</param>
+        ///// <returns>True if the tile is considered path blocking, false otherwise.</returns>
+        // bool IsPathBlocking(byte avoidTypes = (byte)AvoidDamageType.All);
     }
 }

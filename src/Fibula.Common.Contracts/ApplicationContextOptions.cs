@@ -23,17 +23,6 @@ namespace Fibula.Common.Contracts
     public class ApplicationContextOptions
     {
         /// <summary>
-        /// Gets or sets the supported client version information.
-        /// </summary>
-        [Required(ErrorMessage = "A supported client version must be speficied.")]
-        public VersionInformation SupportedClientVersion { get; set; }
-
-        /// <summary>
-        /// Gets or sets the website url.
-        /// </summary>
-        public string WebsiteUrl { get; set; }
-
-        /// <summary>
         /// Gets or sets the configuration of the game world.
         /// </summary>
         /// <remarks>

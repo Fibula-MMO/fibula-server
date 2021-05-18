@@ -11,13 +11,12 @@
 
 namespace Fibula.Communications.Packets.Incoming
 {
-    using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Packets.Contracts.Abstractions;
 
     /// <summary>
     /// Class that represents a login packet routed to the gateway server.
     /// </summary>
-    public sealed class GatewayLogInPacket : IIncomingPacket, IGatewayLoginInfo
+    public sealed class GatewayLogInPacket : IInboundPacket, IGatewayLoginInfo
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="GatewayLogInPacket"/> class.
@@ -25,14 +24,14 @@ namespace Fibula.Communications.Packets.Incoming
         /// <param name="clientVersion">The version of the client attempting to connect.</param>
         /// <param name="clientOs">The operating system of the client attempting to connect.</param>
         /// <param name="xteaKey">The values for the xtea key.</param>
-        /// <param name="accountName">The account name.</param>
+        /// <param name="accountIdentifier">The identifier for the account.</param>
         /// <param name="password">The password observed.</param>
-        public GatewayLogInPacket(ushort clientVersion, ushort clientOs, uint[] xteaKey, string accountName, string password)
+        public GatewayLogInPacket(ushort clientVersion, ushort clientOs, uint[] xteaKey, string accountIdentifier, string password)
         {
             this.ClientVersion = clientVersion;
             this.ClientOs = clientOs;
             this.XteaKey = xteaKey;
-            this.AccountName = accountName;
+            this.AccountName = accountIdentifier;
             this.Password = password;
         }
 

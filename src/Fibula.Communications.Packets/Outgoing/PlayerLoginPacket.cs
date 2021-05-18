@@ -11,8 +11,8 @@
 
 namespace Fibula.Communications.Packets.Outgoing
 {
-    using Fibula.Communications.Contracts.Abstractions;
-    using Fibula.Communications.Contracts.Enumerations;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Contracts.Enumerations;
     using Fibula.Server.Contracts.Abstractions;
 
     /// <summary>
@@ -34,7 +34,7 @@ namespace Fibula.Communications.Packets.Outgoing
         /// <summary>
         /// Gets the type of this packet.
         /// </summary>
-        public OutgoingPacketType PacketType => OutgoingPacketType.PlayerLogin;
+        public OutboundPacketType PacketType => OutboundPacketType.PlayerLogin;
 
         /// <summary>
         /// Gets the id of this creature.

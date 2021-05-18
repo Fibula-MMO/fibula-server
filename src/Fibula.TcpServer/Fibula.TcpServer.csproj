@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DebugType>full</DebugType>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Handlers\ContainerCloseHandler.cs" />
+    <Compile Remove="Handlers\ContainerMoveUpHandler.cs" />
+    <Compile Remove="Handlers\MoveThingHandler.cs" />
+    <Compile Remove="Handlers\RotateItemHandler.cs" />
+    <Compile Remove="Handlers\UseItemHandler.cs" />
+    <Compile Remove="Handlers\UseItemOnHandler.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="stylecop.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="stylecop.json" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Fibula.Security" Version="1.0.0" />
+    <PackageReference Include="Fibula.Utilities.Validation" Version="1.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="5.0.0" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\Fibula.Common.Contracts\Fibula.Common.Contracts.csproj" />
+    <ProjectReference Include="..\Fibula.Communications.Packets\Fibula.Communications.Packets.csproj" />
+    <ProjectReference Include="..\Fibula.Communications\Fibula.Communications.csproj" />
+    <ProjectReference Include="..\Fibula.Protocol.V772\Fibula.Protocol.V772.csproj" />
+    <ProjectReference Include="..\Fibula.TcpServer.Contracts\Fibula.TcpServer.Contracts.csproj" />
+  </ItemGroup>
+
+</Project>

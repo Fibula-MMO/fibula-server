@@ -11,7 +11,6 @@
 
 namespace Fibula.Server.Contracts.Abstractions
 {
-    using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Definitions.Enumerations;
 
     /// <summary>
@@ -19,11 +18,6 @@ namespace Fibula.Server.Contracts.Abstractions
     /// </summary>
     public interface IPlayer : ICreature
     {
-        /// <summary>
-        /// Gets this player's client.
-        /// </summary>
-        IClient Client { get; }
-
         /// <summary>
         /// Gets the player's character id.
         /// </summary>
@@ -33,12 +27,6 @@ namespace Fibula.Server.Contracts.Abstractions
         /// Gets the player's permissions level.
         /// </summary>
         byte PermissionsLevel { get; }
-
-        /// <summary>
-        /// Gets the player's soul points.
-        /// </summary>
-        // TODO: nobody likes soulpoints... figure out what to do with them.
-        byte SoulPoints { get; }
 
         /// <summary>
         /// Gets the player's profession.

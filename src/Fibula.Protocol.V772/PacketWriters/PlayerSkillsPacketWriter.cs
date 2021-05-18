@@ -14,6 +14,7 @@ namespace Fibula.Protocol.V772.PacketWriters
     using System;
     using Fibula.Communications;
     using Fibula.Communications.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
     using Fibula.Communications.Packets.Outgoing;
     using Fibula.Definitions.Enumerations;
     using Fibula.Protocol.V772.Extensions;
@@ -48,70 +49,58 @@ namespace Fibula.Protocol.V772.PacketWriters
                 return;
             }
 
+            ICombatant combatantPlayer = playerSkillsPacket.Player as ICombatant;
+
+            byte noWeaponSkillLevel = (byte)Math.Min(byte.MaxValue, combatantPlayer.Skills[SkillType.NoWeapon].CurrentLevel);
+            byte noWeaponSkillPercent = combatantPlayer.Skills[SkillType.NoWeapon].Percent;
+
+            byte bluntWeaponSkillLevel = (byte)Math.Min(byte.MaxValue, combatantPlayer.Skills[SkillType.Club].CurrentLevel);
+            byte bluntWeaponSkillPercent = combatantPlayer.Skills[SkillType.Club].Percent;
+
+            byte swordWeaponSkillLevel = (byte)Math.Min(byte.MaxValue, combatantPlayer.Skills[SkillType.Sword].CurrentLevel);
+            byte swordWeaponSkillPercent = combatantPlayer.Skills[SkillType.Sword].Percent;
+
+            byte axeWeaponSkillLevel = (byte)Math.Min(byte.MaxValue, combatantPlayer.Skills[SkillType.Axe].CurrentLevel);
+            byte axeWeaponSkillPercent = combatantPlayer.Skills[SkillType.Axe].Percent;
+
+            byte rangedWeaponSkillLevel = (byte)Math.Min(byte.MaxValue, combatantPlayer.Skills[SkillType.Ranged].CurrentLevel);
+            byte rangedWeaponSkillPercent = combatantPlayer.Skills[SkillType.Ranged].Percent;
+
+            byte shieldingSkillLevel = (byte)Math.Min(byte.MaxValue, combatantPlayer.Skills[SkillType.Shield].CurrentLevel);
+            byte shieldingSkillPercent = combatantPlayer.Skills[SkillType.Shield].Percent;
+
+            byte fishingSkillLevel = (byte)Math.Min(byte.MaxValue, combatantPlayer.Skills[SkillType.Fishing].CurrentLevel);
+            byte fishingSkillPercent = combatantPlayer.Skills[SkillType.Fishing].Percent;
+
             message.AddByte(playerSkillsPacket.PacketType.ToByte());
 
-            if (playerSkillsPacket.Player is ICombatant combatantPlayer)
-            {
-                // NoWeapon
-                message.AddByte((byte)Math.Min(byte.MaxValue, combatantPlayer.Skills[SkillType.NoWeapon].CurrentLevel));
-                message.AddByte(combatantPlayer.Skills[SkillType.NoWeapon].Percent);
-
-                // Club
-                message.AddByte((byte)Math.Min(byte.MaxValue, combatantPlayer.Skills[SkillType.Club].CurrentLevel));
-                message.AddByte(combatantPlayer.Skills[SkillType.Club].Percent);
-
-                // Sword
-                message.AddByte((byte)Math.Min(byte.MaxValue, combatantPlayer.Skills[SkillType.Sword].CurrentLevel));
-                message.AddByte(combatantPlayer.Skills[SkillType.Sword].Percent);
-
-                // Axe
-                message.AddByte((byte)Math.Min(byte.MaxValue, combatantPlayer.Skills[SkillType.Axe].CurrentLevel));
-                message.AddByte(combatantPlayer.Skills[SkillType.Axe].Percent);
-
-                // Ranged
-                message.AddByte((byte)Math.Min(byte.MaxValue, combatantPlayer.Skills[SkillType.Ranged].CurrentLevel));
-                message.AddByte(combatantPlayer.Skills[SkillType.Ranged].Percent);
-
-                // Shield
-                message.AddByte((byte)Math.Min(byte.MaxValue, combatantPlayer.Skills[SkillType.Shield].CurrentLevel));
-                message.AddByte(combatantPlayer.Skills[SkillType.Shield].Percent);
-
-                // Fishing
-                message.AddByte((byte)Math.Min(byte.MaxValue, combatantPlayer.Skills[SkillType.Fishing].CurrentLevel));
-                message.AddByte(combatantPlayer.Skills[SkillType.Fishing].Percent);
-
-                return;
-            }
-
-            // Fail off by sending dummy data if the player for some reason is not a combatant.
-
             // NoWeapon
-            message.AddByte(10);
-            message.AddByte(0);
+            message.AddByte(noWeaponSkillLevel);
+            message.AddByte(noWeaponSkillPercent);
 
             // Club
-            message.AddByte(10);
-            message.AddByte(0);
+            message.AddByte(bluntWeaponSkillLevel);
+            message.AddByte(bluntWeaponSkillPercent);
 
             // Sword
-            message.AddByte(10);
-            message.AddByte(0);
+            message.AddByte(swordWeaponSkillLevel);
+            message.AddByte(swordWeaponSkillPercent);
 
             // Axe
-            message.AddByte(10);
-            message.AddByte(0);
+            message.AddByte(axeWeaponSkillLevel);
+            message.AddByte(axeWeaponSkillPercent);
 
             // Ranged
-            message.AddByte(10);
-            message.AddByte(0);
+            message.AddByte(rangedWeaponSkillLevel);
+            message.AddByte(rangedWeaponSkillPercent);
 
             // Shield
-            message.AddByte(10);
-            message.AddByte(0);
+            message.AddByte(shieldingSkillLevel);
+            message.AddByte(shieldingSkillPercent);
 
             // Fishing
-            message.AddByte(10);
-            message.AddByte(0);
+            message.AddByte(fishingSkillLevel);
+            message.AddByte(fishingSkillPercent);
         }
     }
 }

@@ -48,6 +48,78 @@ namespace Fibula.Server.Contracts.Extensions
         }
 
         /// <summary>
+        /// Checks if a given creature can see another creature.
+        /// </summary>
+        /// <param name="creature">The creature.</param>
+        /// <param name="otherCreature">The creature to check against.</param>
+        /// <returns>True if this creature can see the given creature, false otherwise.</returns>
+        public static bool CanSee(this ICreature creature, ICreature otherCreature)
+        {
+            otherCreature.ThrowIfNull(nameof(otherCreature));
+
+            // (!otherCreature.IsInvisible || this.CanSeeInvisible) &&
+            return creature.CanSee(otherCreature.Location);
+        }
+
+        /// <summary>
+        /// Checks if a given creature can see a given location.
+        /// </summary>
+        /// <param name="creature">The creature.</param>
+        /// <param name="location">The location to check against.</param>
+        /// <returns>True if this creature can see the given location, false otherwise.</returns>
+        public static bool CanSee(this ICreature creature, Location location)
+        {
+            if (creature.Location.Z <= MapConstants.GroundSurfaceZ)
+            {
+                // we are on ground level or above (surface -> 0)
+                // view is from surface -> 0
+                if (location.Z > MapConstants.GroundSurfaceZ)
+                {
+                    return false;
+                }
+            }
+            else if (creature.Location.Z > MapConstants.GroundSurfaceZ)
+            {
+                // we are underground (8 -> 15)
+                // view is +/- 2 from the floor we stand on
+                if (Math.Abs(creature.Location.Z - location.Z) > 2)
+                {
+                    return false;
+                }
+            }
+
+            var offsetZ = creature.Location.Z - location.Z;
+            var withinTopBorder = location.Y > creature.Location.Y - (MapConstants.DefaultWindowSizeY / 2) + offsetZ;
+            var withinLeftBorder = location.X > creature.Location.X - (MapConstants.DefaultWindowSizeX / 2) + offsetZ;
+            var withinRightBorder = location.X <= creature.Location.X + (MapConstants.DefaultWindowSizeX / 2) + offsetZ;
+            var withinBottomBorder = location.Y <= creature.Location.Y + (MapConstants.DefaultWindowSizeY / 2) + offsetZ;
+
+            if (withinTopBorder && withinLeftBorder && withinRightBorder && withinBottomBorder)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Checks if a given creature can push a given creature.
+        /// </summary>
+        /// <param name="creature">The creature.</param>
+        /// <param name="otherCreature">The creature being pushed.</param>
+        /// <returns>True if this creature can see the given location, false otherwise.</returns>
+        public static bool CanPush(this ICreature creature, ICreature otherCreature)
+        {
+            if (creature == null || otherCreature == null)
+            {
+                return false;
+            }
+
+            // TODO: evaluate access/permissions, player vs monster, monster size/weight or some other metrics.
+            return true;
+        }
+
+        /// <summary>
         /// Checks if the creature has an operation being tracked under the given identifier and outputs it if so.
         /// </summary>
         /// <param name="creature">The creature to check in.</param>
@@ -57,7 +129,6 @@ namespace Fibula.Server.Contracts.Extensions
         public static bool TryRetrieveTrackedOperation(this ICreature creature, string identifier, out IOperation operation)
         {
             creature.ThrowIfNull(nameof(creature));
-
             operation = creature.TrackedEvents.TryGetValue(identifier, out IEvent evt) ? evt as IOperation : null;
 
             return operation != null;

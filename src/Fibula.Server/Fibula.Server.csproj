@@ -8,45 +8,23 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Mechanics\Handlers\AutoMoveCancelHandler.cs" />
-    <Compile Remove="Mechanics\Handlers\ContainerCloseHandler.cs" />
-    <Compile Remove="Mechanics\Handlers\ContainerMoveUpHandler.cs" />
-    <Compile Remove="Mechanics\Handlers\KeepAliveRequestHandler.cs" />
-    <Compile Remove="Mechanics\Handlers\MoveThingHandler.cs" />
-    <Compile Remove="Mechanics\Handlers\RotateItemHandler.cs" />
-    <Compile Remove="Mechanics\Handlers\SetModeHandler.cs" />
-    <Compile Remove="Mechanics\Handlers\StopAllActionsHandler.cs" />
-    <Compile Remove="Mechanics\Handlers\TurnEastHandler.cs" />
-    <Compile Remove="Mechanics\Handlers\TurnNorthHandler.cs" />
-    <Compile Remove="Mechanics\Handlers\TurnSouthHandler.cs" />
-    <Compile Remove="Mechanics\Handlers\TurnWestHandler.cs" />
-    <Compile Remove="Mechanics\Handlers\UseItemHandler.cs" />
-    <Compile Remove="Mechanics\Handlers\UseItemOnHandler.cs" />
-    <Compile Remove="Mechanics\Handlers\WalkEastHandler.cs" />
-    <Compile Remove="Mechanics\Handlers\WalkNortheastHandler.cs" />
-    <Compile Remove="Mechanics\Handlers\WalkNorthHandler.cs" />
-    <Compile Remove="Mechanics\Handlers\WalkNorthWestHandler.cs" />
-    <Compile Remove="Mechanics\Handlers\WalkSoutheastHandler.cs" />
-    <Compile Remove="Mechanics\Handlers\WalkSouthHandler.cs" />
-    <Compile Remove="Mechanics\Handlers\WalkSouthwestHandler.cs" />
-    <Compile Remove="Mechanics\Handlers\WalkWestHandler.cs" />
-    <Compile Remove="Mechanics\Operations\Unused\AutoAttackCombatOperation.cs" />
-    <Compile Remove="Mechanics\Operations\Unused\AutoWalkOperation.cs" />
-    <Compile Remove="Mechanics\Operations\Unused\BaseActionOperation.cs" />
-    <Compile Remove="Mechanics\Operations\Unused\BaseCombatOperation.cs" />
-    <Compile Remove="Mechanics\Operations\Unused\ChangeItemOperation.cs" />
-    <Compile Remove="Mechanics\Operations\Unused\CloseContainerOperation.cs" />
-    <Compile Remove="Mechanics\Operations\Unused\CreateItemOperation.cs" />
-    <Compile Remove="Mechanics\Operations\Unused\DeleteItemOperation.cs" />
-    <Compile Remove="Mechanics\Operations\Unused\MoveUpContainerOperation.cs" />
-    <Compile Remove="Mechanics\Operations\Unused\OpenContainerOperation.cs" />
-    <Compile Remove="Mechanics\Operations\Unused\PlaceCreatureOperation.cs" />
-    <Compile Remove="Mechanics\Operations\Unused\RemoveCreatureOperation.cs" />
-    <Compile Remove="Mechanics\Operations\Unused\RestoreCombatCreditOperation.cs" />
-    <Compile Remove="Mechanics\Operations\Unused\SpawnMonstersOperation.cs" />
-    <Compile Remove="Mechanics\Operations\Unused\ThinkingOperation.cs" />
-    <Compile Remove="Mechanics\Operations\Unused\UseItemOnOperation.cs" />
-    <Compile Remove="Mechanics\Operations\Unused\UseItemOperation.cs" />
+    <Compile Remove="Abstractions\IActionOperation.cs" />
+    <Compile Remove="Abstractions\ICollisionEventRule.cs" />
+    <Compile Remove="Abstractions\ICombatOperation.cs" />
+    <Compile Remove="Abstractions\ICreatureWithExhaustion.cs" />
+    <Compile Remove="Abstractions\IEventRule.cs" />
+    <Compile Remove="Abstractions\IEventRuleArguments.cs" />
+    <Compile Remove="Abstractions\IEventRuleContext.cs" />
+    <Compile Remove="Abstractions\IEventRuleCreationArguments.cs" />
+    <Compile Remove="Abstractions\IEventRuleFunction.cs" />
+    <Compile Remove="Abstractions\IEventRulesApi.cs" />
+    <Compile Remove="Abstractions\IEventRulesFactory.cs" />
+    <Compile Remove="Abstractions\IEventRulesLoader.cs" />
+    <Compile Remove="Abstractions\IMovementOperation.cs" />
+    <Compile Remove="Abstractions\ISeparationEventRule.cs" />
+    <Compile Remove="Abstractions\IThingMovementEventRule.cs" />
+    <Compile Remove="Abstractions\IUseItemEventRule.cs" />
+    <Compile Remove="Abstractions\IUseItemOnEventRule.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -58,9 +36,20 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\..\LICENSE" Link="LICENSE" Pack="true" Visible="false" PackagePath="" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Fibula.Plugins.Database.InMemoryOnly" Version="1.0.0" />
+    <PackageReference Include="Fibula.Plugins.Database.SqlServer" Version="1.0.0" />
+    <PackageReference Include="Fibula.Plugins.ItemLoaders.CipObjectsFile" Version="1.0.0" />
+    <PackageReference Include="Fibula.Plugins.MonsterLoaders.CipMonFiles" Version="1.0.0" />
+    <PackageReference Include="Fibula.Providers.Azure" Version="1.0.0" />
     <PackageReference Include="Fibula.Scheduling" Version="1.1.1" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="3.8.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.4" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="5.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -69,13 +58,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Fibula.Communications.Packets\Fibula.Communications.Packets.csproj" />
-    <ProjectReference Include="..\Fibula.Communications\Fibula.Communications.csproj" />
+    <ProjectReference Include="..\Fibula.Plugins.MapLoaders.CipSectorFiles\Fibula.Plugins.MapLoaders.CipSectorFiles.csproj" />
+    <ProjectReference Include="..\Fibula.Plugins.MapLoaders.GrassOnly\Fibula.Plugins.MapLoaders.GrassOnly.csproj" />
+    <ProjectReference Include="..\Fibula.Plugins.PathFinding.AStar\Fibula.Plugins.PathFinding.AStar.csproj" />
+    <ProjectReference Include="..\Fibula.Plugins.SpawnLoaders.CipMonstersDbFile\Fibula.Plugins.SpawnLoaders.CipMonstersDbFile.csproj" />
     <ProjectReference Include="..\Fibula.Scripting.Formulae\Fibula.Scripting.Formulae.csproj" />
     <ProjectReference Include="..\Fibula.Server.Contracts\Fibula.Server.Contracts.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Mechanics\Operations\Unused\" />
   </ItemGroup>
 
 </Project>

@@ -32,5 +32,20 @@ namespace Fibula.Server.Contracts.Constants
         /// The default window size in the Y coordinate.
         /// </summary>
         public const byte DefaultWindowSizeY = 14;
+
+        /// <summary>
+        /// The Z level considered as the ground surface.
+        /// </summary>
+        public const byte GroundSurfaceZ = 7;
+
+        /// <summary>
+        /// The Z level considered the minimum Z level.
+        /// </summary>
+        public const byte MinimumLevelZ = 0;
+
+        /// <summary>
+        /// The Z level considered the maximum Z level.
+        /// </summary>
+        public const byte MaximumLevelZ = 15;
     }
 }
