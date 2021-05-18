@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------
-// <copyright file="PlayerLogInNotification.cs" company="2Dudes">
+// <copyright file="PlayerLoginNotification.cs" company="2Dudes">
 // Copyright (c) | Jose L. Nunez de Caceres et al.
 // https://linkedin.com/in/nunezdecaceres
 //
@@ -22,16 +22,16 @@ namespace Fibula.ServerV2.Notifications
     /// <summary>
     /// Class that represents a notification for when a player first logs in to the game.
     /// </summary>
-    public class PlayerLogInNotification : Notification
+    public class PlayerLoginNotification : Notification
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="PlayerLogInNotification"/> class.
+        /// Initializes a new instance of the <see cref="PlayerLoginNotification"/> class.
         /// </summary>
         /// <param name="player">The player that was logged in.</param>
         /// <param name="atLocation">The location to which the creature is being added.</param>
         /// <param name="descriptionTiles">The map tiles that are being sent as part of the description.</param>
         /// <param name="addEffect">Optional. An effect to add when removing the creature.</param>
-        public PlayerLogInNotification(
+        public PlayerLoginNotification(
             IPlayer player,
             Location atLocation,
             IEnumerable<ITile> descriptionTiles,
@@ -82,7 +82,7 @@ namespace Fibula.ServerV2.Notifications
                 packets.Add(new MagicEffectPacket(this.AtLocation, this.AddEffect));
             }
 
-            packets.Add(new CreatureLightPacket(player));
+            packets.Add(new CreatureLightPacket(this.Player));
 
             packets.Add(new PlayerStatsPacket(this.Player));
             packets.Add(new PlayerSkillsPacket(this.Player));

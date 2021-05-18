@@ -25,6 +25,11 @@ namespace Fibula.ServerV2.Contracts.Abstractions
         IEnumerable<IPlayer> TargetPlayers { get; }
 
         /// <summary>
+        /// Gets a value indicating whether this notification is final.
+        /// </summary>
+        bool IsFinal { get; }
+
+        /// <summary>
         /// Prepares the packets that will be sent out because of this notification, for the given player.
         /// </summary>
         /// <param name="player">The player which this notification is being prepared for.</param>

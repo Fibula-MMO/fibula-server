@@ -14,7 +14,6 @@ namespace Fibula.ServerV2.Extensions
     using System;
     using Fibula.Data.Contracts.Abstractions;
     using Fibula.Plugins.Database.InMemoryOnly;
-    using Fibula.Plugins.Database.SqlServer;
     using Fibula.Plugins.ItemLoaders.CipObjectsFile;
     using Fibula.Plugins.MapLoaders.CipSectorFiles;
     using Fibula.Plugins.MonsterLoaders.CipMonFiles;
@@ -49,7 +48,7 @@ namespace Fibula.ServerV2.Extensions
             services.AddSingleton<ICreatureManager, CreatureManager>();
             services.AddSingleton<ICreatureFinder>(s => s.GetService<ICreatureManager>());
 
-            // services.AddSingleton<IContainerManager, ContainerManager>();
+            services.AddSingleton<IContainerManager, ContainerManager>();
             services.AddSingleton<IItemFactory, ItemFactory>();
 
             services.AddSingleton<IMap, Map>();

@@ -219,7 +219,7 @@ namespace Fibula.Standalone
         /// <param name="playerId">The id of the player to try to log out.</param>
         public void RequestPlayerLogOutAsync(uint playerId)
         {
-            throw new NotImplementedException();
+            this.gameworld.LogPlayerOut(playerId);
         }
 
         /// <summary>
@@ -271,7 +271,7 @@ namespace Fibula.Standalone
         /// <param name="directions">The specific directions to set as the creature's walk plan.</param>
         public void RequestToUpdateWalkPlanAsync(uint creatureId, Direction[] directions)
         {
-            throw new NotImplementedException();
+            this.gameworld.ResetCreatureWalkPlan(creatureId, directions);
         }
 
         /// <summary>

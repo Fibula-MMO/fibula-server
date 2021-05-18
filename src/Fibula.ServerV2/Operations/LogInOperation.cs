@@ -109,7 +109,7 @@ namespace Fibula.ServerV2.Operations
 
             // TODO: In addition, we need to send the player's inventory, the first time login message + outfit window here if applicable.
             // And any VIP records here.
-            this.SendNotification(context, new PlayerLogInNotification(player, player.Location, descriptionTiles, AnimatedEffect.BubbleBlue));
+            this.SendNotification(context, new PlayerLoginNotification(player, player.Location, descriptionTiles, AnimatedEffect.BubbleBlue));
             this.SendNotification(context, new WorldLightChangedNotification(player.YieldSingleItem(), this.currentWorldLightLevel, this.currentWorldLightColor));
             this.SendNotification(context, new CreatureLightUpdateNotification(player.YieldSingleItem(), player));
             this.SendNotification(context, new TextMessageNotification(player.YieldSingleItem(), MessageType.Status, "This is a test message"));

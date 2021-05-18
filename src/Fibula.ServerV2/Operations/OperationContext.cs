@@ -32,6 +32,7 @@ namespace Fibula.ServerV2.Operations
         /// <param name="creatureManager">A reference to the creature finder in use.</param>
         /// <param name="itemFactory">A reference to the item factory in use.</param>
         /// <param name="creatureFactory">A reference to the creature factory in use.</param>
+        /// <param name="containerManager">A reference to the container manager in use.</param>
         /// <param name="gameOperationsApi">A reference to the game operations api.</param>
         /// <param name="pathFinderAlgo">A reference to the path finding algorithm in use.</param>
         /// <param name="predefinedItemSet">A reference to the predefined item set declared.</param>
@@ -43,6 +44,7 @@ namespace Fibula.ServerV2.Operations
             ICreatureManager creatureManager,
             IItemFactory itemFactory,
             ICreatureFactory creatureFactory,
+            IContainerManager containerManager,
             IGameOperationsApi gameOperationsApi,
             IPathFinder pathFinderAlgo,
             IPredefinedItemSet predefinedItemSet,
@@ -54,6 +56,7 @@ namespace Fibula.ServerV2.Operations
             creatureManager.ThrowIfNull(nameof(creatureManager));
             itemFactory.ThrowIfNull(nameof(itemFactory));
             creatureFactory.ThrowIfNull(nameof(creatureFactory));
+            containerManager.ThrowIfNull(nameof(containerManager));
             gameOperationsApi.ThrowIfNull(nameof(gameOperationsApi));
             pathFinderAlgo.ThrowIfNull(nameof(pathFinderAlgo));
             predefinedItemSet.ThrowIfNull(nameof(predefinedItemSet));
@@ -64,6 +67,7 @@ namespace Fibula.ServerV2.Operations
             this.CreatureManager = creatureManager;
             this.ItemFactory = itemFactory;
             this.CreatureFactory = creatureFactory;
+            this.ContainerManager = containerManager;
             this.GameApi = gameOperationsApi;
             this.PathFinder = pathFinderAlgo;
             this.PredefinedItemSet = predefinedItemSet;
@@ -94,6 +98,11 @@ namespace Fibula.ServerV2.Operations
         /// Gets a reference to the creature factory in use.
         /// </summary>
         public ICreatureFactory CreatureFactory { get; }
+
+        /// <summary>
+        /// Gets a reference to the container manager in use.
+        /// </summary>
+        public IContainerManager ContainerManager { get; }
 
         /// <summary>
         /// Gets a reference to the game's api.

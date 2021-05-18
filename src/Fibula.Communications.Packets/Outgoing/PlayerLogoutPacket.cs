@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------
-// <copyright file="TileUpdatePacket.cs" company="2Dudes">
+// <copyright file="PlayerLogoutPacket.cs" company="2Dudes">
 // Copyright (c) | Jose L. Nunez de Caceres et al.
 // https://linkedin.com/in/nunezdecaceres
 //
@@ -16,34 +16,27 @@ namespace Fibula.Communications.Packets.Outgoing
     using Fibula.ServerV2.Contracts.Abstractions;
 
     /// <summary>
-    /// Class that represents a tile update packet.
+    /// Class that represents a player logout packet.
     /// </summary>
-    public class TileUpdatePacket : IOutboundPacket
+    public class PlayerLogoutPacket : IOutboundPacket
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="TileUpdatePacket"/> class.
+        /// Initializes a new instance of the <see cref="PlayerLogoutPacket"/> class.
         /// </summary>
-        /// <param name="player">The player that will be receiving the updated tile description.</param>
-        /// <param name="tile">The tile that was updated.</param>
-        public TileUpdatePacket(IPlayer player, ITile tile)
+        /// <param name="player">A reference to the player.</param>
+        public PlayerLogoutPacket(IPlayer player)
         {
             this.Player = player;
-            this.UpdatedTile = tile;
         }
 
         /// <summary>
         /// Gets the type of this packet.
         /// </summary>
-        public OutboundPacketType PacketType => OutboundPacketType.TileUpdate;
+        public OutboundPacketType PacketType => OutboundPacketType.PlayerLogout;
 
         /// <summary>
-        /// Gets the player that will be receiving the description.
+        /// Gets a reference to the player.
         /// </summary>
         public IPlayer Player { get; }
-
-        /// <summary>
-        /// Gets the tile that was updated.
-        /// </summary>
-        public ITile UpdatedTile { get; }
     }
 }

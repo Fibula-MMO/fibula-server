@@ -18,6 +18,7 @@ namespace Fibula.ServerV2
     using Fibula.Definitions.Enumerations;
     using Fibula.ServerV2.Contracts.Abstractions;
     using Fibula.ServerV2.Contracts.Constants;
+    using Fibula.ServerV2.Contracts.Delegates;
     using Fibula.ServerV2.Contracts.Enumerations;
     using Fibula.Utilities.Validation;
 
@@ -81,6 +82,21 @@ namespace Fibula.ServerV2
             this.stayOnBottomItems = new Stack<IItem>();
             this.itemsOnTile = new Stack<IItem>();
         }
+
+        /// <summary>
+        /// A delegate that handles an item being added to this tile.
+        /// </summary>
+        public event ItemsContainerContentAddedHandler ItemAdded;
+
+        /// <summary>
+        /// A delegate that handles an item being updated in this tile.
+        /// </summary>
+        public event ItemsContainerContentUpdatedHandler ItemUpdated;
+
+        /// <summary>
+        /// A delegate that handles an item being removed from this tile.
+        /// </summary>
+        public event ItemsContainerContentRemovedHandler ItemRemoved;
 
         /// <summary>
         /// Gets this tile's location.
@@ -204,6 +220,81 @@ namespace Fibula.ServerV2
                        this.LiquidPool ??
                        this.groundBorders.FirstOrDefault() ??
                        this.Ground;
+            }
+        }
+
+        /// <summary>
+        /// Attempts to find an <see cref="IItem"/> in this tile, at a given index.
+        /// </summary>
+        /// <param name="index">The index at which to look.</param>
+        /// <returns>The <see cref="IItem"/> found at the index, if any was found, and null otherwise.</returns>
+        IItem IItemsContainer.this[int index] => this[index] as IItem;
+
+        /// <summary>
+        /// Attempts to find a <see cref="IThing"/> in the tile, at the given index.
+        /// </summary>
+        /// <param name="index">The index at which to look for.</param>
+        /// <returns>The <see cref="IThing"/> found at the index, and null otherwise.</returns>
+        public IThing this[int index]
+        {
+            get
+            {
+                var currentIdx = 0;
+
+                lock (this.tileLock)
+                {
+                    if (this.Ground != null && currentIdx++ == index)
+                    {
+                        return this.Ground;
+                    }
+
+                    if (this.groundBorders.Any())
+                    {
+                        if (currentIdx + this.groundBorders.Count > index)
+                        {
+                            return this.groundBorders.Skip(index - currentIdx).Single();
+                        }
+
+                        currentIdx += this.groundBorders.Count;
+                    }
+
+                    if (this.LiquidPool != null && currentIdx++ == index)
+                    {
+                        return this.LiquidPool;
+                    }
+
+                    if (this.stayOnTopItems.Any())
+                    {
+                        if (currentIdx + this.stayOnTopItems.Count > index)
+                        {
+                            return this.stayOnTopItems.Skip(index - currentIdx).Single();
+                        }
+
+                        currentIdx += this.stayOnTopItems.Count;
+                    }
+
+                    if (this.stayOnBottomItems.Any())
+                    {
+                        if (currentIdx + this.stayOnBottomItems.Count > index)
+                        {
+                            return this.stayOnBottomItems.Skip(index - currentIdx).Single();
+                        }
+
+                        currentIdx += this.stayOnBottomItems.Count;
+                    }
+
+                    if (this.itemsOnTile.Any())
+                    {
+                        if (currentIdx + this.itemsOnTile.Count > index)
+                        {
+                            return this.itemsOnTile.Skip(index - currentIdx).Single();
+                        }
+
+                        currentIdx += this.itemsOnTile.Count;
+                    }
+                }
+
+                return null;
             }
         }
 
@@ -538,6 +629,8 @@ namespace Fibula.ServerV2
                 this.LastModified = DateTimeOffset.UtcNow;
             }
 
+            this.ItemAdded?.Invoke(this, itemToAdd);
+
             return (true, null);
         }
 
@@ -638,6 +731,8 @@ namespace Fibula.ServerV2
             // Update the tile's version so that it invalidates the cache.
             this.LastModified = DateTimeOffset.UtcNow;
 
+            this.ItemRemoved?.Invoke(this, index);
+
             return (true, remainder);
         }
 
@@ -669,7 +764,14 @@ namespace Fibula.ServerV2
                 }
             }
 
-            return this.AddItem(itemFactory, itemToAdd, index);
+            (bool result, IItem remainder) = this.AddItem(itemFactory, itemToAdd, index);
+
+            if (result)
+            {
+                this.ItemUpdated?.Invoke(this, index, itemToAdd);
+            }
+
+            return (result, remainder);
         }
 
         /// <summary>

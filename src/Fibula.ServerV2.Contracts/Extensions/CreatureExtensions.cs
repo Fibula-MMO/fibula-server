@@ -14,7 +14,6 @@ namespace Fibula.ServerV2.Contracts.Extensions
     using System;
     using Fibula.Definitions.Data.Structures;
     using Fibula.Definitions.Enumerations;
-    using Fibula.Scheduling.Contracts.Abstractions;
     using Fibula.ServerV2.Contracts.Abstractions;
     using Fibula.ServerV2.Contracts.Constants;
     using Fibula.Utilities.Validation;
@@ -100,6 +99,23 @@ namespace Fibula.ServerV2.Contracts.Extensions
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Checks if a given creature can push a given creature.
+        /// </summary>
+        /// <param name="creature">The creature.</param>
+        /// <param name="otherCreature">The creature being pushed.</param>
+        /// <returns>True if this creature can see the given location, false otherwise.</returns>
+        public static bool CanPush(this ICreature creature, ICreature otherCreature)
+        {
+            if (creature == null || otherCreature == null)
+            {
+                return false;
+            }
+
+            // TODO: evaluate access/permissions, player vs monster, monster size/weight or some other metrics.
+            return true;
         }
 
         ///// <summary>

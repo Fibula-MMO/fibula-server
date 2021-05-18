@@ -116,7 +116,7 @@ namespace Fibula.Server.Mechanics.Operations
             this.SendNotification(context, new PlayerSkillsUpdateNotification(() => player.YieldSingleItem(), player));
             this.SendNotification(context, new WorldLightChangedNotification(() => player.YieldSingleItem(), this.CurrentWorldLightLevel, this.CurrentWorldLightColor));
             this.SendNotification(context, new CreatureLightUpdateNotification(() => player.YieldSingleItem(), player));
-            this.SendNotification(context, new TextMessageNotification(() => player.YieldSingleItem(), MessageType.StatusDefault, "This is a test message"));
+            this.SendNotification(context, new TextMessageNotification(() => player.YieldSingleItem(), MessageType.Status, "This is a test message"));
             this.SendNotification(context, new PlayerConditionsUpdateNotification(() => player.YieldSingleItem(), player));
         }
     }

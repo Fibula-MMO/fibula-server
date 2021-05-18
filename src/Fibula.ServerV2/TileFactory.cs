@@ -13,12 +13,18 @@ namespace Fibula.ServerV2
 {
     using Fibula.Definitions.Data.Structures;
     using Fibula.ServerV2.Contracts.Abstractions;
+    using Fibula.ServerV2.Contracts.Delegates;
 
     /// <summary>
     /// Class that represents a tile factory.
     /// </summary>
     public sealed class TileFactory : ITileFactory
     {
+        /// <summary>
+        /// Event called when a tile is created.
+        /// </summary>
+        public event TileFactoryTileCreatedHandler TileCreated;
+
         /// <summary>
         /// Creates a new <see cref="ITile"/>.
         /// </summary>
@@ -27,7 +33,11 @@ namespace Fibula.ServerV2
         /// <returns>A new instance of a <see cref="ITile"/>.</returns>
         public ITile CreateTile(Location atLocation, IItem groundItem = null)
         {
-            return new Tile(atLocation, groundItem);
+            var newTile = new Tile(atLocation, groundItem);
+
+            this.TileCreated?.Invoke(newTile);
+
+            return newTile;
         }
     }
 }

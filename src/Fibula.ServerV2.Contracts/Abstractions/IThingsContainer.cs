@@ -21,7 +21,7 @@ namespace Fibula.ServerV2.Contracts.Abstractions
         /// </summary>
         /// <param name="index">The index at which to look for.</param>
         /// <returns>The <see cref="IThing"/> found at the index, and null otherwise.</returns>
-        IThing FindThingAtIndex(byte index);
+        new IThing this[int index] { get; }
 
         /// <summary>
         /// Attempts to get the index for the given <see cref="IThing"/> within this container.

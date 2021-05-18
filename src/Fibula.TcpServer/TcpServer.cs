@@ -451,6 +451,11 @@ namespace Fibula.TcpServer
                     }
 
                     client.Send(outgoingPackets);
+
+                    if (notification.IsFinal)
+                    {
+                        client.Connection.Close();
+                    }
                 }
             }
             catch (Exception ex)

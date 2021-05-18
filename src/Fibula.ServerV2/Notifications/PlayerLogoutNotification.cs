@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------
-// <copyright file="Notification.cs" company="2Dudes">
+// <copyright file="PlayerLogoutNotification.cs" company="2Dudes">
 // Copyright (c) | Jose L. Nunez de Caceres et al.
 // https://linkedin.com/in/nunezdecaceres
 //
@@ -13,38 +13,46 @@ namespace Fibula.ServerV2.Notifications
 {
     using System.Collections.Generic;
     using Fibula.Communications.Packets.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Outgoing;
     using Fibula.ServerV2.Contracts.Abstractions;
+    using Fibula.Utilities.Common.Extensions;
+    using Fibula.Utilities.Validation;
 
     /// <summary>
-    /// Abstract class that represents a notification to a player's connection.
-    /// Notifications are basically any message that the server sends to the client of a specific player.
+    /// Class that represents a notification for when a player logs out of the gameworld.
     /// </summary>
-    public abstract class Notification : INotification
+    public class PlayerLogoutNotification : Notification
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Notification"/> class.
+        /// Initializes a new instance of the <see cref="PlayerLogoutNotification"/> class.
         /// </summary>
-        /// <param name="targetPlayers">The set of players that should get this notification.</param>
-        protected Notification(IEnumerable<IPlayer> targetPlayers)
+        /// <param name="player">The player who logged out.</param>
+        public PlayerLogoutNotification(IPlayer player)
+            : base(player.YieldSingleItem())
         {
-            this.TargetPlayers = targetPlayers;
+            player.ThrowIfNull(nameof(player));
+
+            this.Player = player;
         }
 
         /// <summary>
-        /// Gets the target players for this notification.
+        /// Gets the player for which this announcement is for.
         /// </summary>
-        public IEnumerable<IPlayer> TargetPlayers { get; }
+        public IPlayer Player { get; }
 
         /// <summary>
         /// Gets a value indicating whether this notification is final.
         /// </summary>
-        public virtual bool IsFinal { get; }
+        public override bool IsFinal => true;
 
         /// <summary>
         /// Prepares the packets that will be sent out because of this notification, for the given player.
         /// </summary>
         /// <param name="player">The player which this notification is being prepared for.</param>
         /// <returns>A collection of packets to be sent out to the player.</returns>
-        public abstract IEnumerable<IOutboundPacket> PrepareFor(IPlayer player);
+        public override IEnumerable<IOutboundPacket> PrepareFor(IPlayer player)
+        {
+            return new PlayerLogoutPacket(this.Player).YieldSingleItem();
+        }
     }
 }

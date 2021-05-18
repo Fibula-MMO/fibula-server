@@ -51,7 +51,7 @@ namespace Fibula.ServerV2.Contracts.Abstractions
         /// <summary>
         /// Logs a player out of the game.
         /// </summary>
-        /// <param name="player">The player to log out.</param>
-        void LogPlayerOut(IPlayer player);
+        /// <param name="playerId">The id of the player to log out.</param>
+        void LogPlayerOut(uint playerId);
     }
 }

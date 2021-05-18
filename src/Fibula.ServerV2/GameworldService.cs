@@ -26,6 +26,7 @@ namespace Fibula.ServerV2
     using Fibula.Scheduling;
     using Fibula.Scheduling.Contracts.Abstractions;
     using Fibula.Scheduling.Contracts.Delegates;
+    using Fibula.ServerV2.Contracts;
     using Fibula.ServerV2.Contracts.Abstractions;
     using Fibula.ServerV2.Contracts.Delegates;
     using Fibula.ServerV2.Contracts.Enumerations;
@@ -73,9 +74,19 @@ namespace Fibula.ServerV2
         private readonly IItemFactory itemFactory;
 
         /// <summary>
+        /// Gets the tile factory instance.
+        /// </summary>
+        private readonly ITileFactory tileFactory;
+
+        /// <summary>
         /// Gets the creature factory instance.
         /// </summary>
         private readonly ICreatureFactory creatureFactory;
+
+        /// <summary>
+        /// Gets the container manager in use.
+        /// </summary>
+        private readonly IContainerManager containerManager;
 
         /// <summary>
         /// The pathfinder algorithm in use.
@@ -101,6 +112,8 @@ namespace Fibula.ServerV2
         /// <param name="creatureManager">A reference to the creature manager in use.</param>
         /// <param name="itemFactory">A reference to the item factory in use.</param>
         /// <param name="creatureFactory">A reference to the creature factory in use.</param>
+        /// <param name="containerManager">A reference to the container manager in use.</param>
+        /// <param name="tileFactory">A reference to the tile factory in use.</param>
         /// <param name="pathFinderAlgo">A reference to the path finding algorithm in use.</param>
         /// <param name="predefinedItemSet">A reference to the predefined item set declared.</param>
         /// <param name="monsterSpawnsLoader">A reference to the monster spawns loader.</param>
@@ -112,6 +125,8 @@ namespace Fibula.ServerV2
             ICreatureManager creatureManager,
             IItemFactory itemFactory,
             ICreatureFactory creatureFactory,
+            IContainerManager containerManager,
+            ITileFactory tileFactory,
             IPathFinder pathFinderAlgo,
             IPredefinedItemSet predefinedItemSet,
             IMonsterSpawnLoader monsterSpawnsLoader,
@@ -123,6 +138,8 @@ namespace Fibula.ServerV2
             creatureManager.ThrowIfNull(nameof(creatureManager));
             itemFactory.ThrowIfNull(nameof(itemFactory));
             creatureFactory.ThrowIfNull(nameof(creatureFactory));
+            containerManager.ThrowIfNull(nameof(containerManager));
+            tileFactory.ThrowIfNull(nameof(tileFactory));
             pathFinderAlgo.ThrowIfNull(nameof(pathFinderAlgo));
             predefinedItemSet.ThrowIfNull(nameof(predefinedItemSet));
             monsterSpawnsLoader.ThrowIfNull(nameof(monsterSpawnsLoader));
@@ -134,11 +151,14 @@ namespace Fibula.ServerV2
             this.creatureManager = creatureManager;
             this.itemFactory = itemFactory;
             this.creatureFactory = creatureFactory;
+            this.containerManager = containerManager;
+            this.tileFactory = tileFactory;
             this.pathFinder = pathFinderAlgo;
             this.predefinedItems = predefinedItemSet;
             this.scheduler = scheduler;
 
             this.itemFactory.ItemCreated += this.AfterItemIsCreated;
+            this.tileFactory.TileCreated += this.AfterTileIsCreated;
 
             // Load the spawns
             this.monsterSpawns = monsterSpawnsLoader.LoadSpawns();
@@ -217,6 +237,7 @@ namespace Fibula.ServerV2
             this.logger.LogWarning($"Cancellation requested on game instance, beginning shut-down...");
 
             this.itemFactory.ItemCreated -= this.AfterItemIsCreated;
+            this.tileFactory.TileCreated -= this.AfterTileIsCreated;
 
             // TODO: probably save game state here.
             return Task.CompletedTask;
@@ -243,17 +264,19 @@ namespace Fibula.ServerV2
         /// <summary>
         /// Logs a player out of the game.
         /// </summary>
-        /// <param name="player">The player to log out.</param>
-        public void LogPlayerOut(IPlayer player)
+        /// <param name="playerId">The id of the player to log out.</param>
+        public void LogPlayerOut(uint playerId)
         {
+            var player = this.creatureManager.FindPlayerById(playerId);
+
             if (player == null)
             {
                 return;
             }
 
-            // var logOutOp = new LogOutOperation(player.Id, player);
+            var logOutOp = new LogOutOperation(player.Id, player);
 
-            // this.DispatchOperation(logOutOp);
+            this.DispatchOperation(logOutOp);
         }
 
         /// <summary>
@@ -293,7 +316,7 @@ namespace Fibula.ServerV2
 
                 if (player != null)
                 {
-                    var loginNotification = new PlayerLogInNotification(player, creature.Location, this.map.DescribeAt(player, player.Location), AnimatedEffect.BubbleBlue);
+                    var loginNotification = new PlayerLoginNotification(player, creature.Location, this.map.DescribeAt(player, player.Location), AnimatedEffect.BubbleBlue);
 
                     this.SendNotification(loginNotification);
                 }
@@ -340,6 +363,94 @@ namespace Fibula.ServerV2
             this.SendNotification(notification);
 
             return true;
+        }
+
+        /// <summary>
+        /// Resets a given creature's walk plan and kicks it off.
+        /// </summary>
+        /// <param name="creatureId">The id of the creature to reset the walk plan of.</param>
+        /// <param name="directions">The directions for the new plan.</param>
+        /// <param name="strategy">Optional. The strategy to follow in the plan.</param>
+        public void ResetCreatureWalkPlan(uint creatureId, Direction[] directions, WalkPlanStrategy strategy = WalkPlanStrategy.DoNotRecalculate)
+        {
+            if (!(this.creatureManager.FindCreatureById(creatureId) is Creature creature) || !directions.Any())
+            {
+                return;
+            }
+
+            var lastLoc = creature.Location;
+            var waypoints = new List<Location>()
+            {
+                creature.Location,
+            };
+
+            // Build the waypoints.
+            for (int i = 0; i < directions.Length; i++)
+            {
+                var nextLoc = lastLoc.LocationAt(directions[i]);
+
+                waypoints.Add(nextLoc);
+                lastLoc = nextLoc;
+            }
+
+            creature.WalkPlan = new WalkPlan(strategy, () => lastLoc, goalDistance: 0, waypoints.ToArray());
+
+            this.scheduler.CancelAllFor(creature.Id, typeof(AutoWalkOrchestratorOperation));
+
+            var autoWalkOrchOp = new AutoWalkOrchestratorOperation(creature);
+
+            this.DispatchOperation(autoWalkOrchOp);
+        }
+
+        /// <summary>
+        /// Resets a given creature's walk plan and kicks it off.
+        /// </summary>
+        /// <param name="creatureId">The id of the creature to reset the walk plan of.</param>
+        /// <param name="targetCreature">The creature towards which the walk plan will be generated to.</param>
+        /// <param name="strategy">Optional. The strategy to follow in the plan.</param>
+        /// <param name="targetDistance">Optional. The target distance to calculate from the target creature.</param>
+        /// <param name="excludeCurrentLocation">Optional. A value indicating whether to exclude the current creature's location from being the goal location.</param>
+        public void ResetCreatureWalkPlan(uint creatureId, ICreature targetCreature, WalkPlanStrategy strategy = WalkPlanStrategy.ConservativeRecalculation, int targetDistance = 1, bool excludeCurrentLocation = false)
+        {
+            if (!(this.creatureManager.FindCreatureById(creatureId) is Creature creature))
+            {
+                return;
+            }
+
+            this.scheduler.CancelAllFor(creature.Id, typeof(AutoWalkOrchestratorOperation));
+
+            if (targetCreature == null)
+            {
+                return;
+            }
+
+            var (result, endLocation, directions) = excludeCurrentLocation ?
+                this.pathFinder.FindPathBetween(creature.Location, targetCreature.Location, creature, targetDistance, excludeLocations: creature.Location)
+                :
+                this.pathFinder.FindPathBetween(creature.Location, targetCreature.Location, creature, targetDistance);
+
+            var waypoints = new List<Location>()
+            {
+                creature.Location,
+            };
+
+            var lastLoc = creature.Location;
+
+            // Calculate and add the waypoints.
+            foreach (var dir in directions)
+            {
+                var nextLoc = lastLoc.LocationAt(dir);
+
+                waypoints.Add(nextLoc);
+
+                lastLoc = nextLoc;
+            }
+
+            creature.WalkPlan = new WalkPlan(strategy, () => targetCreature.Location, targetDistance, waypoints.ToArray());
+
+            var autoWalkOrchOp = new AutoWalkOrchestratorOperation(creature);
+
+            this.DispatchOperation(autoWalkOrchOp);
         }
 
         /// <summary>
@@ -478,6 +589,7 @@ namespace Fibula.ServerV2
                     this.creatureManager,
                     this.itemFactory,
                     this.creatureFactory,
+                    this.containerManager,
                     this,
                     this.pathFinder,
                     this.predefinedItems,
@@ -539,6 +651,20 @@ namespace Fibula.ServerV2
             // {
             //     this.AddOrAggregateCondition(itemCreated, new DecayingCondition(itemCreated), itemCreated.ExpirationTimeLeft);
             // }
+        }
+
+        /// <summary>
+        /// Handles commonly executed logic on any tile being created.
+        /// </summary>
+        /// <param name="tileCreated">The tile that was created.</param>
+        private void AfterTileIsCreated(ITile tileCreated)
+        {
+            tileCreated.ItemUpdated += (tile, index, item) =>
+            {
+                var notification = new TileUpdatedNotification(this.map.FindPlayersThatCanSee(tile.Location), tileCreated);
+
+                this.NotificationReady?.Invoke(this, notification);
+            };
         }
     }
 }

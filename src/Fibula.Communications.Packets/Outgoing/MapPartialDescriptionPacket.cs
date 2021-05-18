@@ -12,9 +12,10 @@
 namespace Fibula.Communications.Packets.Outgoing
 {
     using System;
-    using System.Buffers;
+    using System.Collections.Generic;
     using Fibula.Communications.Packets.Contracts.Abstractions;
     using Fibula.Communications.Packets.Contracts.Enumerations;
+    using Fibula.ServerV2.Contracts.Abstractions;
 
     /// <summary>
     /// Class that represents a partial map description packet.
@@ -25,8 +26,9 @@ namespace Fibula.Communications.Packets.Outgoing
         /// Initializes a new instance of the <see cref="MapPartialDescriptionPacket"/> class.
         /// </summary>
         /// <param name="mapDescriptionType">The type of map description.</param>
-        /// <param name="descriptionBytes">The description bytes.</param>
-        public MapPartialDescriptionPacket(OutboundPacketType mapDescriptionType, ReadOnlySequence<byte> descriptionBytes)
+        /// <param name="player">The player that will be receiving the description.</param>
+        /// <param name="descriptionTiles">The description tiles.</param>
+        public MapPartialDescriptionPacket(OutboundPacketType mapDescriptionType, IPlayer player, IEnumerable<ITile> descriptionTiles)
         {
             if (mapDescriptionType != OutboundPacketType.MapSliceEast &&
                 mapDescriptionType != OutboundPacketType.MapSliceNorth &&
@@ -39,7 +41,8 @@ namespace Fibula.Communications.Packets.Outgoing
             }
 
             this.PacketType = mapDescriptionType;
-            this.DescriptionBytes = descriptionBytes;
+            this.Player = player;
+            this.DescriptionTiles = descriptionTiles;
         }
 
         /// <summary>
@@ -48,8 +51,13 @@ namespace Fibula.Communications.Packets.Outgoing
         public OutboundPacketType PacketType { get; }
 
         /// <summary>
-        /// Gets the description bytes.
+        /// Gets the player that will be receiving the description.
         /// </summary>
-        public ReadOnlySequence<byte> DescriptionBytes { get; }
+        public IPlayer Player { get; }
+
+        /// <summary>
+        /// Gets the description tiles.
+        /// </summary>
+        public IEnumerable<ITile> DescriptionTiles { get; }
     }
 }

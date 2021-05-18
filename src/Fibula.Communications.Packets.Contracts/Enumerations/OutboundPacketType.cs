@@ -32,6 +32,11 @@ namespace Fibula.Communications.Packets.Contracts.Enumerations
         PlayerLogin,
 
         /// <summary>
+        /// Player logout.
+        /// </summary>
+        PlayerLogout,
+
+        /// <summary>
         /// Gamemaster flags.
         /// </summary>
         GamemasterFlags,

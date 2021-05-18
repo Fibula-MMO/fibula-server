@@ -16,8 +16,10 @@ namespace Fibula.ServerV2.Creatures
     using Fibula.Definitions.Data.Entities;
     using Fibula.Definitions.Data.Structures;
     using Fibula.Definitions.Enumerations;
+    using Fibula.ServerV2.Contracts;
     using Fibula.ServerV2.Contracts.Abstractions;
     using Fibula.ServerV2.Contracts.Constants;
+    using Fibula.ServerV2.Contracts.Delegates;
     using Fibula.Utilities.Validation;
 
     /// <summary>
@@ -69,6 +71,21 @@ namespace Fibula.ServerV2.Creatures
                 ItemIdLookAlike = 0,
             };
         }
+
+        /// <summary>
+        /// A delegate that handles an item being added to this creature.
+        /// </summary>
+        public event ItemsContainerContentAddedHandler ItemAdded;
+
+        /// <summary>
+        /// A delegate that handles an item being updated in this creature.
+        /// </summary>
+        public event ItemsContainerContentUpdatedHandler ItemUpdated;
+
+        /// <summary>
+        /// A delegate that handles an item being removed from this creature.
+        /// </summary>
+        public event ItemsContainerContentRemovedHandler ItemRemoved;
 
         /// <summary>
         /// Gets this thing's location.
@@ -193,6 +210,11 @@ namespace Fibula.ServerV2.Creatures
         public decimal LastMovementCostModifier { get; set; }
 
         /// <summary>
+        /// Gets or sets this creature's walk plan.
+        /// </summary>
+        public WalkPlan WalkPlan { get; set; }
+
+        /// <summary>
         /// Gets a value indicating whether the creature is considered dead.
         /// </summary>
         public bool IsDead => false;
@@ -201,6 +223,13 @@ namespace Fibula.ServerV2.Creatures
         /// Gets a value indicating whether this creature can walk.
         /// </summary>
         public bool CanWalk => this.Speed > 0;
+
+        /// <summary>
+        /// Attempts to find an <see cref="IItem"/> in this creature, at a given index.
+        /// </summary>
+        /// <param name="index">The index at which to look.</param>
+        /// <returns>The <see cref="IItem"/> found at the index, if any was found, and null otherwise.</returns>
+        public IItem this[int index] => null;
 
         /// <summary>
         /// Provides a string describing the current creature for logging purposes.
@@ -230,7 +259,10 @@ namespace Fibula.ServerV2.Creatures
         /// <returns>A tuple with a value indicating whether the attempt was at least partially successful, and false otherwise. If the result was only partially successful, a remainder of the item may be returned.</returns>
         public (bool result, IItem remainder) AddItem(IItemFactory itemFactory, IItem itemToAdd, byte atIndex = byte.MaxValue)
         {
-            throw new NotImplementedException();
+            // TODO: add to inventory.
+            this.ItemAdded?.Invoke(this, itemToAdd);
+
+            return (true, null);
         }
 
         /// <summary>
@@ -243,7 +275,10 @@ namespace Fibula.ServerV2.Creatures
         /// <returns>A tuple with a value indicating whether the attempt was at least partially successful, and false otherwise. If the result was only partially successful, a remainder of the item may be returned.</returns>
         public (bool result, IItem remainder) RemoveItem(IItemFactory itemFactory, ref IItem itemToRemove, byte amount = 1, byte index = byte.MaxValue)
         {
-            throw new NotImplementedException();
+            // TODO: lookup and remove from inventory.
+            this.ItemRemoved?.Invoke(this, index);
+
+            return (true, null);
         }
 
         /// <summary>
@@ -257,17 +292,10 @@ namespace Fibula.ServerV2.Creatures
         /// <returns>A tuple with a value indicating whether the attempt was at least partially successful, and false otherwise. If the result was only partially successful, a remainder of the thing may be returned.</returns>
         public (bool result, IItem remainderToChange) ReplaceItem(IItemFactory itemFactory, IItem itemToRemove, IItem itemToAdd, byte amount = 1, byte index = byte.MaxValue)
         {
-            throw new NotImplementedException();
-        }
+            // TODO: lookup and replace in inventory.
+            this.ItemUpdated?.Invoke(this, index, itemToAdd);
 
-        /// <summary>
-        /// Attempts to find an <see cref="IItem"/> in this creature, at a given index.
-        /// </summary>
-        /// <param name="index">The index at which to look.</param>
-        /// <returns>The <see cref="IItem"/> found at the index, if any was found, and null otherwise.</returns>
-        public IItem FindItemAtIndex(byte index)
-        {
-            throw new NotImplementedException();
+            return (true, null);
         }
 
         /// <summary>

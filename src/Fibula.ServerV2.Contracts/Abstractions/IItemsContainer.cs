@@ -11,11 +11,35 @@
 
 namespace Fibula.ServerV2.Contracts.Abstractions
 {
+    using Fibula.ServerV2.Contracts.Delegates;
+
     /// <summary>
     /// Interface an entity that can contain <see cref="IItem"/>s.
     /// </summary>
     public interface IItemsContainer : ILocatable
     {
+        /// <summary>
+        /// A delegate that handles an item being added to this container.
+        /// </summary>
+        event ItemsContainerContentAddedHandler ItemAdded;
+
+        /// <summary>
+        /// A delegate that handles an item being updated in this container.
+        /// </summary>
+        event ItemsContainerContentUpdatedHandler ItemUpdated;
+
+        /// <summary>
+        /// A delegate that handles an item being removed from this container.
+        /// </summary>
+        event ItemsContainerContentRemovedHandler ItemRemoved;
+
+        /// <summary>
+        /// Attempts to find an <see cref="IItem"/> in this container, at a given index.
+        /// </summary>
+        /// <param name="index">The index to retrieve.</param>
+        /// <returns>The item retrieved, if any, or null.</returns>
+        IItem this[int index] { get; }
+
         /// <summary>
         /// Attempts to add an <see cref="IItem"/> to this container.
         /// </summary>
@@ -45,13 +69,6 @@ namespace Fibula.ServerV2.Contracts.Abstractions
         /// <param name="index">Optional. The index from which to remove the item. Defaults to <see cref="byte.MaxValue"/>, which means to try removing the item at any index that it's found.</param>
         /// <returns>A tuple with a value indicating whether the attempt was at least partially successful, and false otherwise. If the result was only partially successful, a remainder of the thing may be returned.</returns>
         (bool result, IItem remainderToChange) ReplaceItem(IItemFactory itemFactory, IItem itemToRemove, IItem itemToAdd, byte amount = 1, byte index = byte.MaxValue);
-
-        /// <summary>
-        /// Attempts to find an <see cref="IItem"/> in this container, at a given index.
-        /// </summary>
-        /// <param name="index">The index at which to look.</param>
-        /// <returns>The <see cref="IItem"/> found at the index, if any was found, and null otherwise.</returns>
-        IItem FindItemAtIndex(byte index);
 
         /// <summary>
         /// Attempts to find an <see cref="IItem"/> in this container, of a given type.

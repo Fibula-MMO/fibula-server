@@ -100,10 +100,10 @@ namespace Fibula.ServerV2.Contracts.Abstractions
         /// </summary>
         decimal LastMovementCostModifier { get; }
 
-        ///// <summary>
-        ///// Gets this creature's walk plan.
-        ///// </summary>
-        // WalkPlan WalkPlan { get; }
+        /// <summary>
+        /// Gets this creature's walk plan.
+        /// </summary>
+        WalkPlan WalkPlan { get; }
 
         ///// <summary>
         ///// Gets the current stats information for the creature.
@@ -112,19 +112,5 @@ namespace Fibula.ServerV2.Contracts.Abstractions
         ///// The key is a <see cref="CreatureStat"/>, and the value is an <see cref="IStat"/>.
         ///// </remarks>
         // IDictionary<CreatureStat, IStat> Stats { get; }
-
-        ///// <summary>
-        ///// Checks if this creature can see a given creature.
-        ///// </summary>
-        ///// <param name="creature">The creature to check against.</param>
-        ///// <returns>True if this creature can see the given creature, false otherwise.</returns>
-        // bool CanSee(ICreature creature);
-
-        ///// <summary>
-        ///// Checks if this creature can see a given location.
-        ///// </summary>
-        ///// <param name="location">The location to check against.</param>
-        ///// <returns>True if this creature can see the given location, false otherwise.</returns>
-        // bool CanSee(Location location);
     }
 }
