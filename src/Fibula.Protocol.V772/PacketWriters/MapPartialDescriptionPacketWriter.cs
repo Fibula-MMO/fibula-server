@@ -22,7 +22,7 @@ namespace Fibula.Protocol.V772.PacketWriters
     using Fibula.Protocol.Contracts;
     using Fibula.Protocol.Contracts.Abstractions;
     using Fibula.Protocol.V772.Extensions;
-    using Fibula.ServerV2.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Abstractions;
     using Microsoft.Extensions.Logging;
 
     /// <summary>

@@ -11,8 +11,8 @@
 
 namespace Fibula.Server.Contracts.Abstractions
 {
-    using System;
     using System.Collections.Generic;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
 
     /// <summary>
     /// Interface for all notifications.
@@ -20,16 +20,20 @@ namespace Fibula.Server.Contracts.Abstractions
     public interface INotification
     {
         /// <summary>
-        /// Gets the function for determining target players for this notification.
+        /// Gets the target players for this notification.
         /// </summary>
-        Func<IEnumerable<IPlayer>> FindTargetPlayers { get; }
+        IEnumerable<IPlayer> TargetPlayers { get; }
 
         /// <summary>
-        /// Finalizes the notification in preparation to it being sent.
+        /// Gets a value indicating whether this notification is final.
         /// </summary>
-        /// <param name="context">The context of this notification.</param>
+        bool IsFinal { get; }
+
+        /// <summary>
+        /// Prepares the packets that will be sent out because of this notification, for the given player.
+        /// </summary>
         /// <param name="player">The player which this notification is being prepared for.</param>
-        /// <returns>True if the notification was posted successfuly, and false otherwise.</returns>
-        bool Post(INotificationContext context, IPlayer player);
+        /// <returns>A collection of packets to be sent out to the player.</returns>
+        IEnumerable<IOutboundPacket> PrepareFor(IPlayer player);
     }
 }

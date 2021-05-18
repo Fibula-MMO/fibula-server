@@ -14,7 +14,7 @@ namespace Fibula.Communications.Packets.Outgoing
     using System.Collections.Generic;
     using Fibula.Communications.Packets.Contracts.Abstractions;
     using Fibula.Communications.Packets.Contracts.Enumerations;
-    using Fibula.ServerV2.Contracts.Structures;
+    using Fibula.Server.Contracts.Structures;
     using Fibula.Utilities.Validation;
 
     /// <summary>

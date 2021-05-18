@@ -11,7 +11,7 @@
 
 namespace Fibula.Plugins.SpawnLoaders.CipMonstersDbFile
 {
-    using Fibula.ServerV2.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;

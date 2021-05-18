@@ -26,11 +26,6 @@ namespace Fibula.Server
     public abstract class Thing : IThing
     {
         /// <summary>
-        /// Holds this thing's parent container.
-        /// </summary>
-        private IThingContainer parentContainer;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="Thing"/> class.
         /// </summary>
         public Thing()
@@ -41,60 +36,24 @@ namespace Fibula.Server
         }
 
         /// <summary>
-        /// Event to invoke when the thing's location has changed.
+        /// Event to invoke when the location of this thing has changed.
         /// </summary>
-        public event OnLocationChanged LocationChanged;
+        public event ThingLocationChangedHandler LocationChanged;
 
         /// <summary>
-        /// Gets the unique id of this item.
-        /// </summary>
-        public Guid UniqueId { get; }
-
-        /// <summary>
-        /// Gets the type id of this thing.
+        /// Gets the id of the type of this thing.
         /// </summary>
         public abstract ushort TypeId { get; }
 
         /// <summary>
-        /// Gets a value indicating whether this thing can be moved.
+        /// Gets the unique id given to this thing.
         /// </summary>
-        public abstract bool CanBeMoved { get; }
-
-        /// <summary>
-        /// Gets or sets the parent container of this thing.
-        /// </summary>
-        public IThingContainer ParentContainer
-        {
-            get
-            {
-                return this.parentContainer;
-            }
-
-            set
-            {
-                var oldLocation = this.Location;
-
-                this.parentContainer = value;
-
-                // Note that this.Location accounts for the parent container's location
-                // That's why we check if these are now considered different.
-                if (oldLocation != this.Location)
-                {
-                    this.RaiseLocationChanged(oldLocation);
-                }
-            }
-        }
+        public Guid UniqueId { get; }
 
         /// <summary>
         /// Gets this thing's location.
         /// </summary>
-        public virtual Location Location
-        {
-            get
-            {
-                return this.ParentContainer?.Location ?? default;
-            }
-        }
+        public abstract Location Location { get; }
 
         /// <summary>
         /// Gets the location where this thing is being carried at, if any.
@@ -174,12 +133,6 @@ namespace Fibula.Server
 
             evt.Completed -= this.HandleTrackedEventCompletion;
         }
-
-        /// <summary>
-        /// Creates a new <see cref="IThing"/> that is a shallow copy of the current instance.
-        /// </summary>
-        /// <returns>A new <see cref="IThing"/> that is a shallow copy of this instance.</returns>
-        public abstract IThing Clone();
 
         /// <summary>
         /// Handles a tracked event's <see cref="IEvent.Completed"/> event.

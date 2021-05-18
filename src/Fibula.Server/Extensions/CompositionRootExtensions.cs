@@ -11,10 +11,20 @@
 
 namespace Fibula.Server.Extensions
 {
+    using System;
+    using Fibula.Data.Contracts.Abstractions;
+    using Fibula.Plugins.Database.InMemoryOnly;
+    using Fibula.Plugins.ItemLoaders.CipObjectsFile;
+    using Fibula.Plugins.MapLoaders.CipSectorFiles;
+    using Fibula.Plugins.MonsterLoaders.CipMonFiles;
+    using Fibula.Plugins.PathFinding.AStar.Extensions;
+    using Fibula.Plugins.SpawnLoaders.CipMonstersDbFile;
+    using Fibula.Providers.Azure.Extensions;
     using Fibula.Scheduling;
     using Fibula.Scheduling.Contracts.Abstractions;
     using Fibula.Server.Contracts.Abstractions;
-    using Fibula.Server.Mechanics;
+    using Fibula.Server.Creatures;
+    using Fibula.Server.Items;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -33,14 +43,55 @@ namespace Fibula.Server.Extensions
         {
             configuration.ThrowIfNull(nameof(configuration));
 
+            // Setup game components.
+            services.AddSingleton<ICreatureFactory, CreatureFactory>();
+            services.AddSingleton<ICreatureManager, CreatureManager>();
+            services.AddSingleton<ICreatureFinder>(s => s.GetService<ICreatureManager>());
+
+            services.AddSingleton<IContainerManager, ContainerManager>();
+            services.AddSingleton<IItemFactory, ItemFactory>();
+
+            services.AddSingleton<IMap, Map>();
+            services.AddSingleton<ITileFactory, TileFactory>();
+
             services.AddSingleton<IScheduler, Scheduler>();
 
-            services.AddSingleton<Gameworld>();
-            services.AddSingleton<IGameworld>(s => s.GetService<Gameworld>());
+            services.AddSingleton<GameworldService>();
+            services.AddSingleton<IGameworldService>(s => s.GetService<GameworldService>());
 
             // Since the gmae service is derived from IHostedService, it must be added using AddHostedService
             // in order for the underlying framework to run it.
-            services.AddHostedService(s => s.GetService<Gameworld>());
+            services.AddHostedService(s => s.GetService<GameworldService>());
+
+            // Choose a type of map loader:
+            // services.AddGrassOnlyDummyMapLoader(hostingContext.Configuration);
+            // services.AddOtbmMapLoader(hostingContext.Configuration);
+            services.AddSectorFilesMapLoader(configuration);
+
+            // Chose a type of item types (catalog) loader:
+            services.AddObjectsFileItemTypeLoader(configuration);
+
+            // Chose a type of monster types (catalog) loader:
+            services.AddMonFilesMonsterTypeLoader(configuration);
+
+            // Chose a type of monster spawns loader:
+            services.AddMonsterDbFileMonsterSpawnLoader(configuration);
+
+            // Chose a type of Database context:
+            // services.AddCosmosDBDatabaseContext(configuration);
+            // services.AddSqlServerDatabaseContext(configuration);
+            services.AddInMemoryDatabaseContext(configuration);
+
+            // IFibulaDbContext itself is added by the Add<DatabaseProvider>() call above.
+            // We add Func<IFibulaDbContext> to let callers retrieve a transient instance of this from the Application context,
+            // rather than save an actual copy of the DB context in the app context.
+            // TODO: simplify this by adding as transient directly?
+            services.AddSingleton<Func<IFibulaDbContext>>(s => s.GetService<IFibulaDbContext>);
+
+            services.AddAStarPathFinder(configuration);
+
+            // Azure providers for Azure VM hosting and storing secrets in KeyVault.
+            services.AddAzureProviders(configuration);
         }
     }
 }

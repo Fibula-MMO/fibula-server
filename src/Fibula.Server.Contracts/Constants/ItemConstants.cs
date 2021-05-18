@@ -30,5 +30,10 @@ namespace Fibula.Server.Contracts.Constants
         /// The maximum number of containers to maintain per creature.
         /// </summary>
         public const int MaxContainersPerCreature = 16;
+
+        /// <summary>
+        /// The default container capacity value.
+        /// </summary>
+        public const int DefaultContainerCapacity = 8;
     }
 }

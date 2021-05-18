@@ -11,31 +11,32 @@
 
 namespace Fibula.Server.Notifications
 {
-    using System;
     using System.Collections.Generic;
-    using System.Threading.Tasks.Dataflow;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Outgoing;
     using Fibula.Definitions.Enumerations;
     using Fibula.Server.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Extensions;
     using Fibula.Utilities.Validation;
 
     /// <summary>
-    /// Class that represents a notification for a creature being removed.
+    /// Class that represents a notification for when a creature is removed from the map.
     /// </summary>
     public class CreatureRemovedNotification : Notification
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="CreatureRemovedNotification"/> class.
         /// </summary>
-        /// <param name="findTargetPlayers">A function to determine the target players of this notification.</param>
-        /// <param name="creature">The creature being removed.</param>
+        /// <param name="spectators">The set of players that spectated the creature removal.</param>
+        /// <param name="removedCreature">The creature being removed.</param>
         /// <param name="oldStackPos">The position in the stack of the creature being removed.</param>
         /// <param name="removeEffect">Optional. An effect to add when removing the creature.</param>
-        public CreatureRemovedNotification(Func<IEnumerable<IPlayer>> findTargetPlayers, ICreature creature, byte oldStackPos, AnimatedEffect removeEffect = AnimatedEffect.None)
-            : base(findTargetPlayers)
+        public CreatureRemovedNotification(IEnumerable<IPlayer> spectators, ICreature removedCreature, byte oldStackPos, AnimatedEffect removeEffect = AnimatedEffect.None)
+            : base(spectators)
         {
-            creature.ThrowIfNull(nameof(creature));
+            removedCreature.ThrowIfNull(nameof(removedCreature));
 
-            this.Creature = creature;
+            this.Creature = removedCreature;
             this.StackPosition = oldStackPos;
             this.RemoveEffect = removeEffect;
         }
@@ -56,50 +57,28 @@ namespace Fibula.Server.Notifications
         public ICreature Creature { get; }
 
         /// <summary>
-        /// Finalizes the notification in preparation to it being sent.
+        /// Prepares the packets that will be sent out because of this notification, for the given player.
         /// </summary>
-        /// <param name="context">The context of this notification.</param>
         /// <param name="player">The player which this notification is being prepared for.</param>
-        /// <returns>True if the notification was posted successfuly, and false otherwise.</returns>
-        public override bool Post(INotificationContext context, IPlayer player)
+        /// <returns>A collection of packets to be sent out to the player.</returns>
+        public override IEnumerable<IOutboundPacket> PrepareFor(IPlayer player)
         {
-            if (!(context.Buffer is ITargetBlock<GameNotification> targetBuffer))
+            if (player == null || !player.CanSee(this.Creature) || !player.CanSee(this.Creature.Location))
             {
-                return false;
+                return null;
             }
+
+            var packets = new List<IOutboundPacket>
+            {
+                new RemoveAtLocationPacket(this.Creature.Location, this.StackPosition),
+            };
 
             if (this.RemoveEffect != AnimatedEffect.None)
             {
-                targetBuffer.Post(
-                    new GameNotification()
-                    {
-                        MagicEffect = new MagicEffect()
-                        {
-                            Effect = (uint)this.RemoveEffect,
-                            Location = new Common.Contracts.Grpc.Location()
-                            {
-                                X = (ulong)this.Creature.Location.X,
-                                Y = (ulong)this.Creature.Location.Y,
-                                Z = (uint)this.Creature.Location.Z,
-                            },
-                        },
-                    });
+                packets.Add(new MagicEffectPacket(this.Creature.Location, this.RemoveEffect));
             }
 
-            return targetBuffer.Post(
-                new GameNotification()
-                {
-                    RemoveAtLocation = new RemoveAtLocation()
-                    {
-                        Location = new Common.Contracts.Grpc.Location()
-                        {
-                            X = (ulong)this.Creature.Location.X,
-                            Y = (ulong)this.Creature.Location.Y,
-                            Z = (uint)this.Creature.Location.Z,
-                        },
-                        Index = this.StackPosition,
-                    },
-                });
+            return packets;
         }
     }
 }

@@ -11,12 +11,13 @@
 
 namespace Fibula.Server.Notifications
 {
-    using System;
     using System.Collections.Generic;
-    using System.Threading.Tasks.Dataflow;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Outgoing;
     using Fibula.Definitions.Data.Structures;
     using Fibula.Definitions.Enumerations;
     using Fibula.Server.Contracts.Abstractions;
+    using Fibula.Utilities.Common.Extensions;
 
     /// <summary>
     /// Class that represents a notification for projectile effects.
@@ -26,16 +27,16 @@ namespace Fibula.Server.Notifications
         /// <summary>
         /// Initializes a new instance of the <see cref="ProjectileNotification"/> class.
         /// </summary>
-        /// <param name="findTargetPlayers">A function to determine the target players of this notification.</param>
+        /// <param name="spectators">The spectators that saw the projectile.</param>
         /// <param name="fromLocation">The location from which the projectile originates.</param>
         /// <param name="toLocation">The location to which the projectile travels.</param>
         /// <param name="type">The type of projectile.</param>
         public ProjectileNotification(
-            Func<IEnumerable<IPlayer>> findTargetPlayers,
+            IEnumerable<IPlayer> spectators,
             Location fromLocation,
             Location toLocation,
             ProjectileType type = ProjectileType.None)
-            : base(findTargetPlayers)
+            : base(spectators)
         {
             this.FromLocation = fromLocation;
             this.ToLocation = toLocation;
@@ -58,38 +59,13 @@ namespace Fibula.Server.Notifications
         public Location ToLocation { get; }
 
         /// <summary>
-        /// Finalizes the notification in preparation to it being sent.
+        /// Prepares the packets that will be sent out because of this notification, for the given player.
         /// </summary>
-        /// <param name="context">The context of this notification.</param>
         /// <param name="player">The player which this notification is being prepared for.</param>
-        /// <returns>True if the notification was posted successfuly, and false otherwise.</returns>
-        public override bool Post(INotificationContext context, IPlayer player)
+        /// <returns>A collection of packets to be sent out to the player.</returns>
+        public override IEnumerable<IOutboundPacket> PrepareFor(IPlayer player)
         {
-            if (!(context.Buffer is ITargetBlock<GameNotification> targetBuffer))
-            {
-                return false;
-            }
-
-            return targetBuffer.Post(
-                    new GameNotification()
-                    {
-                        Projectile = new Projectile()
-                        {
-                            Type = (uint)this.Type,
-                            FromLocation = new Common.Contracts.Grpc.Location()
-                            {
-                                X = (ulong)this.FromLocation.X,
-                                Y = (ulong)this.FromLocation.Y,
-                                Z = (uint)this.FromLocation.Z,
-                            },
-                            ToLocation = new Common.Contracts.Grpc.Location()
-                            {
-                                X = (ulong)this.ToLocation.X,
-                                Y = (ulong)this.ToLocation.Y,
-                                Z = (uint)this.ToLocation.Z,
-                            },
-                        },
-                    });
+            return new ProjectilePacket(this.FromLocation, this.ToLocation, this.Type).YieldSingleItem();
         }
     }
 }

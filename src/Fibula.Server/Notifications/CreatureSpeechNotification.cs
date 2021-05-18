@@ -13,9 +13,11 @@ namespace Fibula.Server.Notifications
 {
     using System;
     using System.Collections.Generic;
-    using System.Threading.Tasks.Dataflow;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Outgoing;
     using Fibula.Definitions.Enumerations;
     using Fibula.Server.Contracts.Abstractions;
+    using Fibula.Utilities.Common.Extensions;
 
     /// <summary>
     /// Class that represents a notification for a creature speech.
@@ -25,14 +27,14 @@ namespace Fibula.Server.Notifications
         /// <summary>
         /// Initializes a new instance of the <see cref="CreatureSpeechNotification"/> class.
         /// </summary>
-        /// <param name="findTargetPlayers">A function to determine the target players of this notification.</param>
+        /// <param name="spectators">The spectators of the speech.</param>
         /// <param name="creature">The creature that spoke.</param>
         /// <param name="speechType">The type of speech.</param>
         /// <param name="channelType">The channel type.</param>
         /// <param name="text">The message content.</param>
         /// <param name="receiver">Optional. The receiver of the message.</param>
-        public CreatureSpeechNotification(Func<IEnumerable<IPlayer>> findTargetPlayers, ICreature creature, SpeechType speechType, ChatChannelType channelType, string text, string receiver = "")
-            : base(findTargetPlayers)
+        public CreatureSpeechNotification(IEnumerable<IPlayer> spectators, ICreature creature, SpeechType speechType, ChatChannelType channelType, string text, string receiver = "")
+            : base(spectators)
         {
             this.Creature = creature;
             this.SpeechType = speechType;
@@ -67,37 +69,20 @@ namespace Fibula.Server.Notifications
         public string Receiver { get; }
 
         /// <summary>
-        /// Finalizes the notification in preparation to it being sent.
+        /// Prepares the packets that will be sent out because of this notification, for the given player.
         /// </summary>
-        /// <param name="context">The context of this notification.</param>
         /// <param name="player">The player which this notification is being prepared for.</param>
-        /// <returns>True if the notification was posted successfuly, and false otherwise.</returns>
-        public override bool Post(INotificationContext context, IPlayer player)
+        /// <returns>A collection of packets to be sent out to the player.</returns>
+        public override IEnumerable<IOutboundPacket> PrepareFor(IPlayer player)
         {
-            if (!(context.Buffer is ITargetBlock<GameNotification> targetBuffer))
-            {
-                return false;
-            }
-
-            return targetBuffer.Post(
-                new GameNotification()
-                {
-                    CreatureSpeech = new CreatureSpeech()
-                    {
-                        AtLocation = new Common.Contracts.Grpc.Location()
-                        {
-                            X = (ulong)this.Creature.Location.X,
-                            Y = (ulong)this.Creature.Location.Y,
-                            Z = (uint)this.Creature.Location.Z,
-                        },
-                        SenderId = this.Creature.Id,
-                        SenderName = this.Creature.Name,
-                        SpeechType = (uint)this.SpeechType,
-                        Message = this.Text,
-                        Channel = (uint)this.ChannelType,
-                        UnixTimestamp = (uint)DateTimeOffset.Now.ToUnixTimeMilliseconds(),
-                    },
-                });
+            return new CreatureSpeechPacket(
+                this.Creature.Id,
+                this.Creature.Name,
+                this.SpeechType,
+                this.Text,
+                this.Creature.Location,
+                this.ChannelType,
+                (uint)DateTimeOffset.Now.ToUnixTimeMilliseconds()).YieldSingleItem();
         }
     }
 }

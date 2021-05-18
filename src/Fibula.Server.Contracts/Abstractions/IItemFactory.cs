@@ -17,19 +17,19 @@ namespace Fibula.Server.Contracts.Abstractions
     /// <summary>
     /// Interface for an item factory.
     /// </summary>
-    public interface IItemFactory : IThingFactory
+    public interface IItemFactory
     {
         /// <summary>
         /// Event called when an item is created.
         /// </summary>
-        event OnItemCreated ItemCreated;
+        event ItemFactoryItemCreatedHandler ItemCreated;
 
         /// <summary>
         /// Creates a new <see cref="IItem"/>.
         /// </summary>
         /// <param name="creationArguments">The arguments for the <see cref="IItem"/> creation.</param>
         /// <returns>A new instance of the <see cref="IItem"/>.</returns>
-        IItem CreateItem(IThingCreationArguments creationArguments);
+        IItem CreateItem(IItemCreationArguments creationArguments);
 
         /// <summary>
         /// Looks up an <see cref="ItemTypeEntity"/> given a type id.

@@ -14,27 +14,27 @@ namespace Fibula.Server.Contracts.Abstractions
     using System.Collections.Generic;
     using Fibula.Definitions.Enumerations;
     using Fibula.Server.Contracts.Delegates;
-    using Fibula.Server.Contracts.Structs;
+    using Fibula.Server.Contracts.Structures;
 
     /// <summary>
     /// Interface for all creatures that can participate in combat.
     /// </summary>
-    public interface ICombatant : ICreatureWithSkills, ICreatureThatSensesOthers
+    public interface ICombatant : ISkilledCreature, ISentientCreature
     {
         /// <summary>
         /// Event to call when the combatant dies.
         /// </summary>
-        event OnDeath Death;
+        event CombatantDeathHandler Death;
 
         /// <summary>
         /// Event to call when the attack target changes.
         /// </summary>
-        event OnAttackTargetChanged AttackTargetChanged;
+        event CombatantAttackTargetChangedHandler AttackTargetChanged;
 
         /// <summary>
         /// Event to call when the chase target changes.
         /// </summary>
-        event OnFollowTargetChanged FollowTargetChanged;
+        event CombatantFollowTargetChangedHandler FollowTargetChanged;
 
         /// <summary>
         /// Gets the current target being chased, if any.
@@ -60,21 +60,6 @@ namespace Fibula.Server.Contracts.Abstractions
         /// Gets a metric of how fast a combatant can earn a defense credit per combat round.
         /// </summary>
         decimal DefenseSpeed { get; }
-
-        ///// <summary>
-        ///// Gets the attack power of this combatant.
-        ///// </summary>
-        // ushort AttackPower { get; }
-
-        ///// <summary>
-        ///// Gets the defense power of this combatant.
-        ///// </summary>
-        // ushort DefensePower { get; }
-
-        ///// <summary>
-        ///// Gets the armor rating of this combatant.
-        ///// </summary>
-        // ushort ArmorRating { get; }
 
         /// <summary>
         /// Gets the distribution of damage taken by any combatant that has attacked this combatant while the current combat is active.

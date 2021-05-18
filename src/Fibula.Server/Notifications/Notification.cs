@@ -11,8 +11,8 @@
 
 namespace Fibula.Server.Notifications
 {
-    using System;
     using System.Collections.Generic;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
     using Fibula.Server.Contracts.Abstractions;
 
     /// <summary>
@@ -24,23 +24,27 @@ namespace Fibula.Server.Notifications
         /// <summary>
         /// Initializes a new instance of the <see cref="Notification"/> class.
         /// </summary>
-        /// <param name="findTargetPlayersFunc">A function to determine the target players of this notification.</param>
-        protected Notification(Func<IEnumerable<IPlayer>> findTargetPlayersFunc)
+        /// <param name="targetPlayers">The set of players that should get this notification.</param>
+        protected Notification(IEnumerable<IPlayer> targetPlayers)
         {
-            this.FindTargetPlayers = findTargetPlayersFunc;
+            this.TargetPlayers = targetPlayers;
         }
 
         /// <summary>
-        /// Gets the function for determining target players for this notification.
+        /// Gets the target players for this notification.
         /// </summary>
-        public Func<IEnumerable<IPlayer>> FindTargetPlayers { get; }
+        public IEnumerable<IPlayer> TargetPlayers { get; }
 
         /// <summary>
-        /// Finalizes the notification in preparation to it being sent.
+        /// Gets a value indicating whether this notification is final.
         /// </summary>
-        /// <param name="context">The context of this notification.</param>
+        public virtual bool IsFinal { get; }
+
+        /// <summary>
+        /// Prepares the packets that will be sent out because of this notification, for the given player.
+        /// </summary>
         /// <param name="player">The player which this notification is being prepared for.</param>
-        /// <returns>A <see cref="GameNotification"/> to be broadcasted.</returns>
-        public abstract bool Post(INotificationContext context, IPlayer player);
+        /// <returns>A collection of packets to be sent out to the player.</returns>
+        public abstract IEnumerable<IOutboundPacket> PrepareFor(IPlayer player);
     }
 }

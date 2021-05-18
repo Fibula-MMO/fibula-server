@@ -57,7 +57,7 @@
   
   <ItemGroup>
     <ProjectReference Include="..\Fibula.Common\Fibula.Common.csproj" />
-    <ProjectReference Include="..\Fibula.ServerV2\Fibula.ServerV2.csproj" />
+    <ProjectReference Include="..\Fibula.Server\Fibula.Server.csproj" />
     <ProjectReference Include="..\Fibula.TcpServer\Fibula.TcpServer.csproj" />
   </ItemGroup>
   

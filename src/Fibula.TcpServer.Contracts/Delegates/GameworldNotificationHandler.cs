@@ -11,7 +11,7 @@
 
 namespace Fibula.TcpServer.Contracts.Delegates
 {
-    using Fibula.ServerV2.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Abstractions;
 
     /// <summary>
     /// Delegate to handle a <see cref="IGameworldService"/>'s notification.

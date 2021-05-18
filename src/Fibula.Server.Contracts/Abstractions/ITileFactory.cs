@@ -12,12 +12,18 @@
 namespace Fibula.Server.Contracts.Abstractions
 {
     using Fibula.Definitions.Data.Structures;
+    using Fibula.Server.Contracts.Delegates;
 
     /// <summary>
-    /// Interface for a tile factory.
+    /// Interface for factories of tiles.
     /// </summary>
     public interface ITileFactory
     {
+        /// <summary>
+        /// Event called when a tile is created.
+        /// </summary>
+        event TileFactoryTileCreatedHandler TileCreated;
+
         /// <summary>
         /// Creates a new <see cref="ITile"/>.
         /// </summary>

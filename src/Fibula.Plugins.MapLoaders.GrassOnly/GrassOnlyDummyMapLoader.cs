@@ -15,9 +15,9 @@ namespace Fibula.Plugins.MapLoaders.GrassOnly
     using System.Collections.Generic;
     using System.Linq;
     using Fibula.Definitions.Data.Structures;
-    using Fibula.ServerV2.Contracts.Abstractions;
-    using Fibula.ServerV2.Contracts.Delegates;
-    using Fibula.ServerV2.Contracts.Models;
+    using Fibula.Server.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Delegates;
+    using Fibula.Server.Contracts.Models;
     using Fibula.Utilities.Validation;
 
     /// <summary>

@@ -32,6 +32,6 @@
     <ProjectReference Include="..\Fibula.Communications.Packets\Fibula.Communications.Packets.csproj" />
     <ProjectReference Include="..\Fibula.Communications\Fibula.Communications.csproj" />
     <ProjectReference Include="..\Fibula.Protocol.Contracts\Fibula.Protocol.Contracts.csproj" />
-    <ProjectReference Include="..\Fibula.ServerV2.Contracts\Fibula.ServerV2.Contracts.csproj" />
+    <ProjectReference Include="..\Fibula.Server.Contracts\Fibula.Server.Contracts.csproj" />
   </ItemGroup>
 </Project>

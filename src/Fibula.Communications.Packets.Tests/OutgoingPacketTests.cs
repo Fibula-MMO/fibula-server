@@ -20,8 +20,8 @@ namespace Fibula.Communications.Packets.Tests
     using Fibula.Communications.Packets.Outgoing;
     using Fibula.Definitions.Data.Structures;
     using Fibula.Definitions.Enumerations;
-    using Fibula.ServerV2.Contracts.Abstractions;
-    using Fibula.ServerV2.Contracts.Structures;
+    using Fibula.Server.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Structures;
     using Fibula.Utilities.Testing;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;

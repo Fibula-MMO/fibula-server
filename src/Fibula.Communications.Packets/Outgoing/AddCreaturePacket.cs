@@ -13,7 +13,7 @@ namespace Fibula.Communications.Packets.Outgoing
 {
     using Fibula.Communications.Packets.Contracts.Abstractions;
     using Fibula.Communications.Packets.Contracts.Enumerations;
-    using Fibula.ServerV2.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
 
     /// <summary>

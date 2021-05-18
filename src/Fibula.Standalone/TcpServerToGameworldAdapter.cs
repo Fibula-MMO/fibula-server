@@ -21,9 +21,9 @@ namespace Fibula.Standalone
     using Fibula.Definitions.Data.Entities;
     using Fibula.Definitions.Data.Structures;
     using Fibula.Definitions.Enumerations;
-    using Fibula.ServerV2.Contracts.Abstractions;
-    using Fibula.ServerV2.Contracts.Enumerations;
-    using Fibula.ServerV2.Contracts.Structures;
+    using Fibula.Server.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Enumerations;
+    using Fibula.Server.Contracts.Structures;
     using Fibula.TcpServer.Contracts.Abstractions;
     using Fibula.TcpServer.Contracts.Delegates;
     using Fibula.Utilities.Validation;
@@ -210,7 +210,7 @@ namespace Fibula.Standalone
         /// <param name="category">Optional. The category of operations to cancel. Defaults to <see cref="OperationCategory.Any"/>.</param>
         public void RequestToCancelPlayerOperationsAsync(uint playerId, OperationCategory category = OperationCategory.Any)
         {
-            throw new NotImplementedException();
+            this.gameworld.CancelPlayerOperationsAsync(playerId, category);
         }
 
         /// <summary>
@@ -229,7 +229,7 @@ namespace Fibula.Standalone
         /// <param name="targetId">Optional. The id of the target, where zero means target or in other words, stop following.</param>
         public void RequestToFollowCreatureAsync(uint creatureId, uint targetId = 0)
         {
-            throw new NotImplementedException();
+            this.gameworld.SetCombatantFollowTarget(creatureId, targetId);
         }
 
         /// <summary>
@@ -239,7 +239,7 @@ namespace Fibula.Standalone
         /// <param name="targetId">Optional. The id of the target, where zero means target or in other words, stop attacking.</param>
         public void RequestToAttackCreatureAsync(uint creatureId, uint targetId = 0)
         {
-            throw new NotImplementedException();
+            this.gameworld.SetCombatantAttackTarget(creatureId, targetId);
         }
 
         /// <summary>
@@ -249,7 +249,7 @@ namespace Fibula.Standalone
         /// <param name="direction">The direction to turn it to.</param>
         public void RequestToTurnCreatureAsync(uint creatureId, Direction direction)
         {
-            throw new NotImplementedException();
+            this.gameworld.DoCreatureTurnAsync(creatureId, creatureId, direction);
         }
 
         /// <summary>
@@ -261,7 +261,7 @@ namespace Fibula.Standalone
         /// <param name="safeModeOn">A value inidicating whether the safety lock should be set (prevents attacking others).</param>
         public void RequestToUpdateModesAsync(uint playerId, FightMode fightMode, ChaseMode chaseMode, bool safeModeOn)
         {
-            throw new NotImplementedException();
+            this.gameworld.SetCombatantModes(playerId, fightMode, chaseMode, safeModeOn);
         }
 
         /// <summary>
@@ -283,7 +283,7 @@ namespace Fibula.Standalone
         /// <param name="idHint">The id of the thing as observed by the client. The server treats this as a hint.</param>
         public void RequestTextDescriptionAtAsync(uint playerId, Location location, byte indexHint, ushort idHint)
         {
-            throw new NotImplementedException();
+            this.gameworld.DescribeThingAt(idHint, location, indexHint, playerId);
         }
 
         /// <summary>
@@ -293,10 +293,10 @@ namespace Fibula.Standalone
         /// <param name="speechType">The type of speech.</param>
         /// <param name="channelType">The game channel over which the message is going.</param>
         /// <param name="content">The content of the message.</param>
-        /// <param name="receiverId">Optional. The intended receiver of the message.</param>
-        public void RequestSendMessageAsync(uint playerId, SpeechType speechType, ChatChannelType channelType, string content, string receiverId)
+        /// <param name="receiver">Optional. The intended receiver of the message.</param>
+        public void RequestSendMessageAsync(uint playerId, SpeechType speechType, ChatChannelType channelType, string content, string receiver)
         {
-            throw new NotImplementedException();
+            this.gameworld.DoCreatureSpeechAsync(playerId, speechType, channelType, content, receiver);
         }
 
         /// <summary>

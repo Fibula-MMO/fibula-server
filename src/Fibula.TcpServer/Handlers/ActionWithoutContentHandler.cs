@@ -15,7 +15,7 @@ namespace Fibula.TcpServer.Handlers
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Communications.Packets.Contracts.Abstractions;
     using Fibula.Communications.Packets.Contracts.Enumerations;
-    using Fibula.ServerV2.Contracts.Enumerations;
+    using Fibula.Server.Contracts.Enumerations;
     using Fibula.TcpServer.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Logging;

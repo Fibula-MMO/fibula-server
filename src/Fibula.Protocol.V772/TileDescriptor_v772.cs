@@ -21,9 +21,9 @@ namespace Fibula.Protocol.V772
     using Fibula.Protocol.Contracts;
     using Fibula.Protocol.Contracts.Abstractions;
     using Fibula.Protocol.V772.Extensions;
-    using Fibula.ServerV2.Contracts.Abstractions;
-    using Fibula.ServerV2.Contracts.Constants;
-    using Fibula.ServerV2.Contracts.Extensions;
+    using Fibula.Server.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Constants;
+    using Fibula.Server.Contracts.Extensions;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Logging;
 

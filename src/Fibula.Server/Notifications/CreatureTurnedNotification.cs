@@ -11,9 +11,9 @@
 
 namespace Fibula.Server.Notifications
 {
-    using System;
     using System.Collections.Generic;
-    using System.Threading.Tasks.Dataflow;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Outgoing;
     using Fibula.Definitions.Enumerations;
     using Fibula.Server.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
@@ -26,12 +26,12 @@ namespace Fibula.Server.Notifications
         /// <summary>
         /// Initializes a new instance of the <see cref="CreatureTurnedNotification"/> class.
         /// </summary>
-        /// <param name="findTargetPlayers">A function to determine the target players of this notification.</param>
+        /// <param name="spectators">The spectators for the creature turning.</param>
         /// <param name="creature">The creature that turned.</param>
         /// <param name="creatureStackPosition">The position in the stack of the creature that turned.</param>
         /// <param name="turnEffect">Optional. An effect of the turn.</param>
-        public CreatureTurnedNotification(Func<IEnumerable<IPlayer>> findTargetPlayers, ICreature creature, byte creatureStackPosition, AnimatedEffect turnEffect = AnimatedEffect.None)
-            : base(findTargetPlayers)
+        public CreatureTurnedNotification(IEnumerable<IPlayer> spectators, ICreature creature, byte creatureStackPosition, AnimatedEffect turnEffect = AnimatedEffect.None)
+            : base(spectators)
         {
             creature.ThrowIfNull(nameof(creature));
 
@@ -56,53 +56,22 @@ namespace Fibula.Server.Notifications
         public AnimatedEffect TurnedEffect { get; }
 
         /// <summary>
-        /// Finalizes the notification in preparation to it being sent.
+        /// Prepares the packets that will be sent out because of this notification, for the given player.
         /// </summary>
-        /// <param name="context">The context of this notification.</param>
         /// <param name="player">The player which this notification is being prepared for.</param>
-        /// <returns>True if the notification was posted successfuly, and false otherwise.</returns>
-        public override bool Post(INotificationContext context, IPlayer player)
+        /// <returns>A collection of packets to be sent out to the player.</returns>
+        public override IEnumerable<IOutboundPacket> PrepareFor(IPlayer player)
         {
-            if (!(context.Buffer is ITargetBlock<GameNotification> targetBuffer))
-            {
-                return false;
-            }
+            var packets = new List<IOutboundPacket>();
 
             if (this.TurnedEffect != AnimatedEffect.None)
             {
-                targetBuffer.Post(
-                    new GameNotification()
-                    {
-                        MagicEffect = new MagicEffect()
-                        {
-                            Effect = (uint)this.TurnedEffect,
-                            Location = new Common.Contracts.Grpc.Location()
-                            {
-                                X = (ulong)this.Creature.Location.X,
-                                Y = (ulong)this.Creature.Location.Y,
-                                Z = (uint)this.Creature.Location.Z,
-                            },
-                        },
-                    });
+                packets.Add(new MagicEffectPacket(this.Creature.Location, this.TurnedEffect));
             }
 
-            return targetBuffer.Post(
-                new GameNotification()
-                {
-                    CreatureTurned = new CreatureTurned()
-                    {
-                        AtLocation = new Common.Contracts.Grpc.Location()
-                        {
-                            X = (ulong)this.Creature.Location.X,
-                            Y = (ulong)this.Creature.Location.Y,
-                            Z = (uint)this.Creature.Location.Z,
-                        },
-                        Index = this.StackPosition,
-                        ThingId = this.Creature.TypeId,
-                        CreatureId = this.Creature.Id,
-                        Direction = (uint)this.Creature.Direction,
-                    },
-                });
+            packets.Add(new CreatureTurnedPacket(this.Creature, this.StackPosition));
+
+            return packets;
         }
     }
 }

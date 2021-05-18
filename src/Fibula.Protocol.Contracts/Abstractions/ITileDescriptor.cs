@@ -13,7 +13,7 @@ namespace Fibula.Protocol.Contracts.Abstractions
 {
     using System.Collections.Generic;
     using Fibula.Protocol.Contracts;
-    using Fibula.ServerV2.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Abstractions;
 
     /// <summary>
     /// Interface for tile descriptors, which are per protocol.

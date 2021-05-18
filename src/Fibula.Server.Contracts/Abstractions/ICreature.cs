@@ -21,12 +21,17 @@ namespace Fibula.Server.Contracts.Abstractions
     /// <summary>
     /// Interface for all creatures in the game.
     /// </summary>
-    public interface ICreature : IThing, IThingContainer, IEquatable<ICreature>
+    public interface ICreature : IThing, IEquatable<ICreature>, IItemsContainer
     {
         /// <summary>
         /// Event triggered when this creature's stat has changed.
         /// </summary>
-        event OnCreatureStatChanged StatChanged;
+        event CreatureStatChangedHandler StatChanged;
+
+        /// <summary>
+        /// Gets or sets the parent container of this creature.
+        /// </summary>
+        ICreaturesContainer ParentContainer { get; set; }
 
         /// <summary>
         /// Gets the creature's in-game id.
@@ -74,11 +79,6 @@ namespace Fibula.Server.Contracts.Abstractions
         uint Flags { get; }
 
         /// <summary>
-        /// Gets the inventory for the entity.
-        /// </summary>
-        IInventory Inventory { get; }
-
-        /// <summary>
         /// Gets a value indicating whether the creature is dead.
         /// </summary>
         bool IsDead { get; }
@@ -89,24 +89,24 @@ namespace Fibula.Server.Contracts.Abstractions
         bool CanWalk { get; }
 
         /// <summary>
-        /// Gets or sets the creature's outfit.
+        /// Gets the creature's outfit.
         /// </summary>
-        Outfit Outfit { get; set; }
+        Outfit Outfit { get; }
 
         /// <summary>
-        /// Gets or sets the creature's facing direction.
+        /// Gets the direction that the creature is facing.
         /// </summary>
-        Direction Direction { get; set; }
+        Direction Direction { get; }
 
         /// <summary>
-        /// Gets or sets the creature's last move modifier.
+        /// Gets the creature's last move modifier.
         /// </summary>
-        decimal LastMovementCostModifier { get; set; }
+        decimal LastMovementCostModifier { get; }
 
         /// <summary>
-        /// Gets or sets this creature's walk plan.
+        /// Gets this creature's walk plan.
         /// </summary>
-        WalkPlan WalkPlan { get; set; }
+        WalkPlan WalkPlan { get; }
 
         /// <summary>
         /// Gets the current stats information for the creature.
@@ -115,19 +115,5 @@ namespace Fibula.Server.Contracts.Abstractions
         /// The key is a <see cref="CreatureStat"/>, and the value is an <see cref="IStat"/>.
         /// </remarks>
         IDictionary<CreatureStat, IStat> Stats { get; }
-
-        /// <summary>
-        /// Checks if this creature can see a given creature.
-        /// </summary>
-        /// <param name="creature">The creature to check against.</param>
-        /// <returns>True if this creature can see the given creature, false otherwise.</returns>
-        bool CanSee(ICreature creature);
-
-        /// <summary>
-        /// Checks if this creature can see a given location.
-        /// </summary>
-        /// <param name="location">The location to check against.</param>
-        /// <returns>True if this creature can see the given location, false otherwise.</returns>
-        bool CanSee(Location location);
     }
 }

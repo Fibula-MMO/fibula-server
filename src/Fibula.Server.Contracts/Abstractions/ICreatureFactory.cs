@@ -14,13 +14,18 @@ namespace Fibula.Server.Contracts.Abstractions
     /// <summary>
     /// Interface for an <see cref="ICreature"/> factory.
     /// </summary>
-    public interface ICreatureFactory : IThingFactory
+    public interface ICreatureFactory
     {
+        ///// <summary>
+        ///// Event called when a creature is created.
+        ///// </summary>
+        // event OnCreatureCreated CreatureCreated;
+
         /// <summary>
         /// Creates a new implementation instance of <see cref="ICreature"/> depending on the chosen type.
         /// </summary>
         /// <param name="creationArguments">The creation arguments for the new creature.</param>
         /// <returns>A new instance of the chosen <see cref="ICreature"/> implementation.</returns>
-        ICreature CreateCreature(IThingCreationArguments creationArguments);
+        ICreature CreateCreature(ICreatureCreationArguments creationArguments);
     }
 }

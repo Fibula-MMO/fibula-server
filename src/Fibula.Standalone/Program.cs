@@ -17,7 +17,7 @@ namespace Fibula.Standalone
     using Fibula.Common;
     using Fibula.Common.Contracts;
     using Fibula.Common.Contracts.Abstractions;
-    using Fibula.ServerV2.Extensions;
+    using Fibula.Server.Extensions;
     using Fibula.TcpServer.Contracts.Abstractions;
     using Fibula.TcpServer.Extensions;
     using Fibula.Utilities.Validation;

@@ -16,7 +16,7 @@ namespace Fibula.Server.Contracts.Abstractions
     /// <summary>
     /// Interface for character players in the game.
     /// </summary>
-    public interface IPlayer : ICreatureWithSkills
+    public interface IPlayer : ICreature
     {
         /// <summary>
         /// Gets the player's character id.
@@ -27,12 +27,6 @@ namespace Fibula.Server.Contracts.Abstractions
         /// Gets the player's permissions level.
         /// </summary>
         byte PermissionsLevel { get; }
-
-        /// <summary>
-        /// Gets the player's soul points.
-        /// </summary>
-        // TODO: nobody likes soulpoints... figure out what to do with them.
-        byte SoulPoints { get; }
 
         /// <summary>
         /// Gets the player's profession.

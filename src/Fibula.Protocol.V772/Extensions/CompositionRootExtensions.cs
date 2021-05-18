@@ -19,7 +19,7 @@ namespace Fibula.Protocol.V772.Extensions
     using Fibula.Protocol.Contracts.Abstractions;
     using Fibula.Protocol.V772.PacketReaders;
     using Fibula.Protocol.V772.PacketWriters;
-    using Fibula.ServerV2.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Abstractions;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;

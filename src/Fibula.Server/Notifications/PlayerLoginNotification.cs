@@ -11,59 +11,84 @@
 
 namespace Fibula.Server.Notifications
 {
-    using System;
     using System.Collections.Generic;
-    using System.Threading.Tasks.Dataflow;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Outgoing;
+    using Fibula.Definitions.Data.Structures;
+    using Fibula.Definitions.Enumerations;
     using Fibula.Server.Contracts.Abstractions;
-    using Fibula.Utilities.Validation;
+    using Fibula.Utilities.Common.Extensions;
 
     /// <summary>
-    /// Class that represents a notification for when a player logs in to the gameworld.
+    /// Class that represents a notification for when a player first logs in to the game.
     /// </summary>
     public class PlayerLoginNotification : Notification
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PlayerLoginNotification"/> class.
         /// </summary>
-        /// <param name="findTargetPlayersFunc">A function to determine the target players of this notification.</param>
-        /// <param name="player">The player who logged out.</param>
-        public PlayerLoginNotification(Func<IEnumerable<IPlayer>> findTargetPlayersFunc, IPlayer player)
-            : base(findTargetPlayersFunc)
+        /// <param name="player">The player that was logged in.</param>
+        /// <param name="atLocation">The location to which the creature is being added.</param>
+        /// <param name="descriptionTiles">The map tiles that are being sent as part of the description.</param>
+        /// <param name="addEffect">Optional. An effect to add when removing the creature.</param>
+        public PlayerLoginNotification(
+            IPlayer player,
+            Location atLocation,
+            IEnumerable<ITile> descriptionTiles,
+            AnimatedEffect addEffect = AnimatedEffect.None)
+            : base(player.YieldSingleItem())
         {
-            player.ThrowIfNull(nameof(player));
-
+            this.DescriptionTiles = descriptionTiles;
             this.Player = player;
+            this.AtLocation = atLocation;
+            this.AddEffect = addEffect;
         }
 
         /// <summary>
-        /// Gets the player for which this announcement is for.
+        /// Gets the player being logged in.
         /// </summary>
         public IPlayer Player { get; }
 
         /// <summary>
-        /// Finalizes the notification in preparation to it being sent.
+        /// Gets the location to which the creature is being added.
         /// </summary>
-        /// <param name="context">The context of this notification.</param>
+        public Location AtLocation { get; }
+
+        /// <summary>
+        /// Gets the tiles that will be sent as part of the description.
+        /// </summary>
+        public IEnumerable<ITile> DescriptionTiles { get; }
+
+        /// <summary>
+        /// Gets the effect to send when adding the creature.
+        /// </summary>
+        public AnimatedEffect AddEffect { get; }
+
+        /// <summary>
+        /// Prepares the packets that will be sent out because of this notification, for the given player.
+        /// </summary>
         /// <param name="player">The player which this notification is being prepared for.</param>
-        /// <returns>True if the notification was posted successfuly, and false otherwise.</returns>
-        public override bool Post(INotificationContext context, IPlayer player)
+        /// <returns>A collection of packets to be sent out to the player.</returns>
+        public override IEnumerable<IOutboundPacket> PrepareFor(IPlayer player)
         {
-            if (!(context.Buffer is ITargetBlock<GameNotification> targetBuffer))
+            var packets = new List<IOutboundPacket>
             {
-                return false;
+                new PlayerLoginPacket(this.Player.Id, this.Player),
+                new MapDescriptionPacket(this.Player, this.AtLocation, this.DescriptionTiles),
+            };
+
+            if (this.AddEffect != AnimatedEffect.None)
+            {
+                packets.Add(new MagicEffectPacket(this.AtLocation, this.AddEffect));
             }
 
-            return targetBuffer.Post(
-            new GameNotification()
-            {
-                PlayerLogin = new PlayerLogin()
-                {
-                    PlayerId = this.Player.Id,
-                    CanReportBugs = false,
-                    Permissions = 0,
-                    PermissionsFlags = null,
-                },
-            });
+            packets.Add(new CreatureLightPacket(this.Player));
+
+            packets.Add(new PlayerStatsPacket(this.Player));
+            packets.Add(new PlayerSkillsPacket(this.Player));
+            packets.Add(new PlayerConditionsPacket(this.Player));
+
+            return packets;
         }
     }
 }

@@ -11,71 +11,41 @@
 
 namespace Fibula.Server.Notifications
 {
-    using System;
-    using System.Buffers;
     using System.Collections.Generic;
-    using System.Threading.Tasks.Dataflow;
-    using Fibula.Definitions.Data.Structures;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Outgoing;
     using Fibula.Server.Contracts.Abstractions;
+    using Fibula.Utilities.Common.Extensions;
 
     /// <summary>
-    /// Class that represents a notification for a tile update.
+    /// Class that represents a notification for a tile being updated.
     /// </summary>
     public class TileUpdatedNotification : Notification
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="TileUpdatedNotification"/> class.
         /// </summary>
-        /// <param name="findTargetPlayers">A function to determine the target players of this notification.</param>
-        /// <param name="location">The location of the updated tile.</param>
-        /// <param name="descriptionFunction">The function used to get the description of the updated tile.</param>
-        public TileUpdatedNotification(Func<IEnumerable<IPlayer>> findTargetPlayers, Location location, Func<IPlayer, Location, (IDictionary<string, object> descriptionMetadata, ReadOnlySequence<byte> descriptionData)> descriptionFunction)
-            : base(findTargetPlayers)
+        /// <param name="spectators">The spectators of this notification.</param>
+        /// <param name="tile">The updated tile.</param>
+        public TileUpdatedNotification(IEnumerable<IPlayer> spectators, ITile tile)
+            : base(spectators)
         {
-            this.Location = location;
-            this.TileDescriptionFunction = descriptionFunction;
+            this.Tile = tile;
         }
 
         /// <summary>
-        /// Gets the location of the updated tile.
+        /// Gets the updated tile.
         /// </summary>
-        public Location Location { get; }
+        public ITile Tile { get; }
 
         /// <summary>
-        /// Gets the function that decribes the tile.
+        /// Prepares the packets that will be sent out because of this notification, for the given player.
         /// </summary>
-        public Func<IPlayer, Location, (IDictionary<string, object> descriptionMetadata, ReadOnlySequence<byte> descriptionData)> TileDescriptionFunction { get; }
-
-        /// <summary>
-        /// Finalizes the notification in preparation to it being sent.
-        /// </summary>
-        /// <param name="context">The context of this notification.</param>
         /// <param name="player">The player which this notification is being prepared for.</param>
-        /// <returns>True if the notification was posted successfuly, and false otherwise.</returns>
-        public override bool Post(INotificationContext context, IPlayer player)
+        /// <returns>A collection of packets to be sent out to the player.</returns>
+        public override IEnumerable<IOutboundPacket> PrepareFor(IPlayer player)
         {
-            if (!(context.Buffer is ITargetBlock<GameNotification> targetBuffer))
-            {
-                return false;
-            }
-
-            var (descriptionMetadata, descriptionBytes) = this.TileDescriptionFunction(player, this.Location);
-
-            return targetBuffer.Post(
-                    new GameNotification()
-                    {
-                        TileUpdate = new TileUpdate()
-                        {
-                            Location = new Common.Contracts.Grpc.Location()
-                            {
-                                X = (ulong)this.Location.X,
-                                Y = (ulong)this.Location.Y,
-                                Z = (uint)this.Location.Z,
-                            },
-                            DeletingTile = descriptionBytes.Length == 0,
-                            Description = ByteString.CopyFrom(descriptionBytes.ToArray()),
-                        },
-                    });
+            return new TileUpdatePacket(player, this.Tile).YieldSingleItem();
         }
     }
 }

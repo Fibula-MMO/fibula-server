@@ -23,9 +23,9 @@ namespace Fibula.Plugins.MapLoaders.CipSectorFiles
     using Fibula.Parsing.CipFiles.Enumerations;
     using Fibula.Parsing.CipFiles.Extensions;
     using Fibula.Parsing.Contracts.Abstractions;
-    using Fibula.ServerV2.Contracts.Abstractions;
-    using Fibula.ServerV2.Contracts.Enumerations;
-    using Fibula.ServerV2.Contracts.Models;
+    using Fibula.Server.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Enumerations;
+    using Fibula.Server.Contracts.Models;
     using Fibula.Utilities.Validation;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;

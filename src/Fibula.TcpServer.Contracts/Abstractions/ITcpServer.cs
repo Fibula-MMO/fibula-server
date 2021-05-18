@@ -15,8 +15,8 @@ namespace Fibula.TcpServer.Contracts.Abstractions
     using Fibula.Communications.Contracts.Abstractions;
     using Fibula.Definitions.Data.Structures;
     using Fibula.Definitions.Enumerations;
-    using Fibula.ServerV2.Contracts.Enumerations;
-    using Fibula.ServerV2.Contracts.Structures;
+    using Fibula.Server.Contracts.Enumerations;
+    using Fibula.Server.Contracts.Structures;
     using Microsoft.Extensions.Hosting;
 
     /// <summary>

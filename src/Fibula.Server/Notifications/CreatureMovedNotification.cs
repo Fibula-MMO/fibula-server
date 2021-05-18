@@ -12,14 +12,16 @@
 namespace Fibula.Server.Notifications
 {
     using System;
-    using System.Buffers;
     using System.Collections.Generic;
-    using System.Threading.Tasks.Dataflow;
+    using System.Linq;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Contracts.Enumerations;
+    using Fibula.Communications.Packets.Outgoing;
     using Fibula.Definitions.Data.Structures;
     using Fibula.Definitions.Enumerations;
     using Fibula.Server.Contracts.Abstractions;
     using Fibula.Server.Contracts.Constants;
-    using Fibula.Server.Contracts.Enumerations;
+    using Fibula.Server.Contracts.Extensions;
 
     /// <summary>
     /// Class that represents a notification for when a creature has moved.
@@ -29,32 +31,45 @@ namespace Fibula.Server.Notifications
         /// <summary>
         /// Initializes a new instance of the <see cref="CreatureMovedNotification"/> class.
         /// </summary>
-        /// <param name="findTargetPlayers">A function to determine the target players of this notification.</param>
-        /// <param name="creatureId">The id of the creature moving.</param>
+        /// <param name="targetPlayers">The target players of this notification.</param>
+        /// <param name="map">A reference to the map, to get descriptions from.</param>
+        /// <param name="movingCreature">The creature moving.</param>
         /// <param name="fromLocation">The location from which the creature is moving.</param>
         /// <param name="fromStackPos">The stack position from where the creature moving.</param>
         /// <param name="toLocation">The location to which the creature is moving.</param>
         /// <param name="toStackPos">The stack position to which the creature is moving.</param>
         /// <param name="wasTeleport">A value indicating whether this movement was a teleportation.</param>
         public CreatureMovedNotification(
-            Func<IEnumerable<IPlayer>> findTargetPlayers,
-            uint creatureId,
+            IEnumerable<IPlayer> targetPlayers,
+            IMap map,
+            ICreature movingCreature,
             Location fromLocation,
             byte fromStackPos,
             Location toLocation,
             byte toStackPos,
             bool wasTeleport)
-            : base(findTargetPlayers)
+            : base(targetPlayers)
         {
             var locationDiff = fromLocation - toLocation;
 
-            this.CreatureId = creatureId;
+            this.Map = map;
+            this.Creature = movingCreature;
             this.OldLocation = fromLocation;
             this.OldStackPosition = fromStackPos;
             this.NewLocation = toLocation;
             this.NewStackPosition = toStackPos;
             this.WasTeleport = wasTeleport || locationDiff.MaxValueIn3D > 1;
         }
+
+        /// <summary>
+        /// Gets a reference to the map.
+        /// </summary>
+        public IMap Map { get; }
+
+        /// <summary>
+        /// Gets the creature being added.
+        /// </summary>
+        public ICreature Creature { get; }
 
         /// <summary>
         /// Gets a value indicating whether this movement was a teleportation.
@@ -82,124 +97,42 @@ namespace Fibula.Server.Notifications
         public Location NewLocation { get; }
 
         /// <summary>
-        /// Gets the id of the creature moving.
+        /// Prepares the packets that will be sent out because of this notification, for the given player.
         /// </summary>
-        public uint CreatureId { get; }
-
-        /// <summary>
-        /// Finalizes the notification in preparation to it being sent.
-        /// </summary>
-        /// <param name="context">The context of this notification.</param>
         /// <param name="player">The player which this notification is being prepared for.</param>
-        /// <returns>True if the notification was posted successfuly, and false otherwise.</returns>
-        public override bool Post(INotificationContext context, IPlayer player)
+        /// <returns>A collection of packets to be sent out to the player.</returns>
+        public override IEnumerable<IOutboundPacket> PrepareFor(IPlayer player)
         {
-            if (!(context.Buffer is ITargetBlock<GameNotification> targetBuffer))
-            {
-                return false;
-            }
+            var packets = new List<IOutboundPacket>();
 
-            var creature = context.CreatureFinder.FindCreatureById(this.CreatureId);
-
-            if (this.CreatureId == player.Id)
+            if (this.Creature == player)
             {
                 if (this.WasTeleport)
                 {
                     if (this.OldStackPosition <= MapConstants.MaximumNumberOfThingsToDescribePerTile)
                     {
                         // Since this was described to the client before, we send a packet that lets them know the thing must be removed from that Tile's stack.
-                        targetBuffer.Post(
-                            new GameNotification()
-                            {
-                                RemoveAtLocation = new RemoveAtLocation()
-                                {
-                                    Location = new Common.Contracts.Grpc.Location()
-                                    {
-                                        X = (ulong)this.OldLocation.X,
-                                        Y = (ulong)this.OldLocation.Y,
-                                        Z = (uint)this.OldLocation.Z,
-                                    },
-                                    Index = this.OldStackPosition,
-                                },
-                            });
+                        packets.Add(new RemoveAtLocationPacket(this.OldLocation, this.OldStackPosition));
                     }
 
                     // Then send the entire description at the new location.
-                    var (descriptionMetadata, descriptionBytes) = context.MapDescriptor.DescribeAt(player, this.NewLocation);
+                    var descriptionTiles = this.Map.DescribeAt(player, this.NewLocation);
 
-                    var mapDescription = new Common.Contracts.Grpc.MapDescription()
-                    {
-                        Description = ByteString.CopyFrom(descriptionBytes.ToArray()),
-                    };
+                    packets.Add(new MapDescriptionPacket(player, this.NewLocation, descriptionTiles));
 
-                    if (descriptionMetadata.ContainsKey(IMapDescriptor.CreatureIdsToLearnMetadataKeyName))
-                    {
-                        mapDescription.CreaturesBeingAdded.AddRange((IEnumerable<uint>)descriptionMetadata[IMapDescriptor.CreatureIdsToLearnMetadataKeyName]);
-                    }
-
-                    if (descriptionMetadata.ContainsKey(IMapDescriptor.CreatureIdsToForgetMetadataKeyName))
-                    {
-                        mapDescription.CreaturesBeingRemoved.AddRange((IEnumerable<uint>)descriptionMetadata[IMapDescriptor.CreatureIdsToForgetMetadataKeyName]);
-                    }
-
-                    return targetBuffer.Post(
-                            new GameNotification()
-                            {
-                                MapDescriptionFull = new MapDescriptionFull()
-                                {
-                                    Origin = new Common.Contracts.Grpc.Location()
-                                    {
-                                        X = (ulong)this.NewLocation.X,
-                                        Y = (ulong)this.NewLocation.Y,
-                                        Z = (uint)this.NewLocation.Z,
-                                    },
-                                    Description = mapDescription,
-                                },
-                            });
+                    return packets;
                 }
 
-                if (this.OldLocation.Z == 7 && this.NewLocation.Z > 7)
+                if (this.OldLocation.Z == MapConstants.GroundSurfaceZ && this.NewLocation.Z > MapConstants.GroundSurfaceZ)
                 {
                     if (this.OldStackPosition <= MapConstants.MaximumNumberOfThingsToDescribePerTile)
                     {
-                        targetBuffer.Post(
-                            new GameNotification()
-                            {
-                                RemoveAtLocation = new RemoveAtLocation()
-                                {
-                                    Location = new Common.Contracts.Grpc.Location()
-                                    {
-                                        X = (ulong)this.OldLocation.X,
-                                        Y = (ulong)this.OldLocation.Y,
-                                        Z = (uint)this.OldLocation.Z,
-                                    },
-                                    Index = this.OldStackPosition,
-                                },
-                            });
+                        packets.Add(new RemoveAtLocationPacket(this.OldLocation, this.OldStackPosition));
                     }
                 }
                 else
                 {
-                    targetBuffer.Post(
-                        new GameNotification()
-                        {
-                            CreatureMoved = new CreatureMoved()
-                            {
-                                FromLocation = new Common.Contracts.Grpc.Location()
-                                {
-                                    X = (ulong)this.OldLocation.X,
-                                    Y = (ulong)this.OldLocation.Y,
-                                    Z = (uint)this.OldLocation.Z,
-                                },
-                                FromIndex = this.OldStackPosition,
-                                ToLocation = new Common.Contracts.Grpc.Location()
-                                {
-                                    X = (ulong)this.NewLocation.X,
-                                    Y = (ulong)this.NewLocation.Y,
-                                    Z = (uint)this.NewLocation.Z,
-                                },
-                            },
-                        });
+                    packets.Add(new CreatureMovedPacket(this.OldLocation, this.OldStackPosition, this.NewLocation));
                 }
 
                 // floor change down
@@ -212,13 +145,13 @@ namespace Fibula.Server.Notifications
                         Z = this.NewLocation.Z,
                     };
 
-                    (IDictionary<string, object> Metadata, ReadOnlySequence<byte> Data) description;
+                    IEnumerable<ITile> description;
 
                     // going from surface to underground
                     if (this.NewLocation.Z == 8)
                     {
                         // Client already has the two floors above (6 and 7), so it needs 8 (new current), and 2 below.
-                        description = context.MapDescriptor.DescribeWindow(
+                        description = this.Map.DescribeWindow(
                             player,
                             (ushort)windowStartLocation.X,
                             (ushort)windowStartLocation.Y,
@@ -233,7 +166,7 @@ namespace Fibula.Server.Notifications
                     else if (this.NewLocation.Z > 8 && this.NewLocation.Z < 14)
                     {
                         // Client already has all floors needed except the new deepest floor, so it needs the 2th floor below the current.
-                        description = context.MapDescriptor.DescribeWindow(
+                        description = this.Map.DescribeWindow(
                             player,
                             (ushort)windowStartLocation.X,
                             (ushort)windowStartLocation.Y,
@@ -247,56 +180,22 @@ namespace Fibula.Server.Notifications
                     // going down but still above surface, so client has all floors.
                     else
                     {
-                        description = (new Dictionary<string, object>(), ReadOnlySequence<byte>.Empty);
+                        description = Enumerable.Empty<ITile>();
                     }
 
-                    targetBuffer.Post(
-                        new GameNotification()
-                        {
-                            MapDescriptionPartial = new MapDescriptionPartial()
-                            {
-                                Type = (uint)MapDescriptionType.BottomAndRight,
-                                Description = new Common.Contracts.Grpc.MapDescription()
-                                {
-                                    Description = ByteString.CopyFrom(description.Data.ToArray()),
-                                },
-                            },
-                        });
+                    packets.Add(new MapPartialDescriptionPacket(OutboundPacketType.FloorChangeDown, player, description));
 
                     // moving down a floor makes us out of sync, include east and south
-                    var (eastDescriptionMetadata, eastDescriptionBytes) = this.EastSliceDescription(
-                            context,
+                    var eastDescriptionTiles = this.EastSliceDescription(
                             player,
                             this.OldLocation.X - this.NewLocation.X,
                             this.OldLocation.Y - this.NewLocation.Y + this.OldLocation.Z - this.NewLocation.Z);
 
-                    targetBuffer.Post(
-                        new GameNotification()
-                        {
-                            MapDescriptionPartial = new MapDescriptionPartial()
-                            {
-                                Type = (uint)MapDescriptionType.RightOnly,
-                                Description = new Common.Contracts.Grpc.MapDescription()
-                                {
-                                    Description = ByteString.CopyFrom(eastDescriptionBytes.ToArray()),
-                                },
-                            },
-                        });
+                    packets.Add(new MapPartialDescriptionPacket(OutboundPacketType.MapSliceEast, player, eastDescriptionTiles));
 
-                    var (southDescriptionMetadata, southDescriptionBytes) = this.SouthSliceDescription(context, player, this.OldLocation.Y - this.NewLocation.Y);
+                    var southDescriptionTiles = this.SouthSliceDescription(player, this.OldLocation.Y - this.NewLocation.Y);
 
-                    targetBuffer.Post(
-                        new GameNotification()
-                        {
-                            MapDescriptionPartial = new MapDescriptionPartial()
-                            {
-                                Type = (uint)MapDescriptionType.BottomOnly,
-                                Description = new Common.Contracts.Grpc.MapDescription()
-                                {
-                                    Description = ByteString.CopyFrom(southDescriptionBytes.ToArray()),
-                                },
-                            },
-                        });
+                    packets.Add(new MapPartialDescriptionPacket(OutboundPacketType.MapSliceSouth, player, southDescriptionTiles));
                 }
 
                 // floor change up
@@ -309,13 +208,13 @@ namespace Fibula.Server.Notifications
                         Z = this.NewLocation.Z,
                     };
 
-                    (IDictionary<string, object> Metadata, ReadOnlySequence<byte> Data) description;
+                    IEnumerable<ITile> description;
 
                     // going to surface
-                    if (this.NewLocation.Z == 7)
+                    if (this.NewLocation.Z == MapConstants.GroundSurfaceZ)
                     {
                         // Client already has the first two above-the-ground floors (6 and 7), so it needs 0-5 above.
-                        description = context.MapDescriptor.DescribeWindow(
+                        description = this.Map.DescribeWindow(
                             player,
                             (ushort)windowStartLocation.X,
                             (ushort)windowStartLocation.Y,
@@ -327,10 +226,10 @@ namespace Fibula.Server.Notifications
                     }
 
                     // going up but still underground
-                    else if (this.NewLocation.Z > 7)
+                    else if (this.NewLocation.Z > MapConstants.GroundSurfaceZ)
                     {
                         // Client already has all floors needed except the new highest floor, so it needs the 2th floor above the current.
-                        description = context.MapDescriptor.DescribeWindow(
+                        description = this.Map.DescribeWindow(
                             player,
                             (ushort)windowStartLocation.X,
                             (ushort)windowStartLocation.Y,
@@ -344,309 +243,97 @@ namespace Fibula.Server.Notifications
                     // already above surface, so client has all floors.
                     else
                     {
-                        description = (new Dictionary<string, object>(), ReadOnlySequence<byte>.Empty);
+                        description = Enumerable.Empty<ITile>();
                     }
 
-                    targetBuffer.Post(
-                        new GameNotification()
-                        {
-                            MapDescriptionPartial = new MapDescriptionPartial()
-                            {
-                                Type = (uint)MapDescriptionType.LeftAndTop,
-                                Description = new Common.Contracts.Grpc.MapDescription()
-                                {
-                                    Description = ByteString.CopyFrom(description.Data.ToArray()),
-                                },
-                            },
-                        });
+                    packets.Add(new MapPartialDescriptionPacket(OutboundPacketType.FloorChangeUp, player, description));
 
                     // moving up a floor up makes us out of sync, include west and north
-                    var (westDescriptionMetadata, westDescriptionBytes) = this.WestSliceDescription(
-                            context,
+                    var westDescriptionTiles = this.WestSliceDescription(
                             player,
                             this.OldLocation.X - this.NewLocation.X,
                             this.OldLocation.Y - this.NewLocation.Y + this.OldLocation.Z - this.NewLocation.Z);
 
-                    targetBuffer.Post(
-                        new GameNotification()
-                        {
-                            MapDescriptionPartial = new MapDescriptionPartial()
-                            {
-                                Type = (uint)MapDescriptionType.LeftOnly,
-                                Description = new Common.Contracts.Grpc.MapDescription()
-                                {
-                                    Description = ByteString.CopyFrom(westDescriptionBytes.ToArray()),
-                                },
-                            },
-                        });
+                    packets.Add(new MapPartialDescriptionPacket(OutboundPacketType.MapSliceWest, player, westDescriptionTiles));
 
-                    var (northDescriptionMetadata, northDescriptionBytes) = this.NorthSliceDescription(context, player, this.OldLocation.Y - this.NewLocation.Y);
+                    var northDescriptionTiles = this.NorthSliceDescription(player, this.OldLocation.Y - this.NewLocation.Y);
 
-                    targetBuffer.Post(
-                        new GameNotification()
-                        {
-                            MapDescriptionPartial = new MapDescriptionPartial()
-                            {
-                                Type = (uint)MapDescriptionType.TopOnly,
-                                Description = new Common.Contracts.Grpc.MapDescription()
-                                {
-                                    Description = ByteString.CopyFrom(northDescriptionBytes.ToArray()),
-                                },
-                            },
-                        });
+                    packets.Add(new MapPartialDescriptionPacket(OutboundPacketType.MapSliceNorth, player, northDescriptionTiles));
                 }
 
                 if (this.OldLocation.Y > this.NewLocation.Y)
                 {
                     // Creature is moving north, so we need to send the additional north bytes.
-                    var (northDescriptionMetadata, northDescriptionBytes) = this.NorthSliceDescription(context, player);
+                    var northDescriptionTiles = this.NorthSliceDescription(player);
 
-                    targetBuffer.Post(
-                        new GameNotification()
-                        {
-                            MapDescriptionPartial = new MapDescriptionPartial()
-                            {
-                                Type = (uint)MapDescriptionType.TopOnly,
-                                Description = new Common.Contracts.Grpc.MapDescription()
-                                {
-                                    Description = ByteString.CopyFrom(northDescriptionBytes.ToArray()),
-                                },
-                            },
-                        });
+                    packets.Add(new MapPartialDescriptionPacket(OutboundPacketType.MapSliceNorth, player, northDescriptionTiles));
                 }
                 else if (this.OldLocation.Y < this.NewLocation.Y)
                 {
                     // Creature is moving south, so we need to send the additional south bytes.
-                    var (southDescriptionMetadata, southDescriptionBytes) = this.SouthSliceDescription(context, player);
+                    var southDescriptionTiles = this.SouthSliceDescription(player);
 
-                    targetBuffer.Post(
-                        new GameNotification()
-                        {
-                            MapDescriptionPartial = new MapDescriptionPartial()
-                            {
-                                Type = (uint)MapDescriptionType.BottomOnly,
-                                Description = new Common.Contracts.Grpc.MapDescription()
-                                {
-                                    Description = ByteString.CopyFrom(southDescriptionBytes.ToArray()),
-                                },
-                            },
-                        });
+                    packets.Add(new MapPartialDescriptionPacket(OutboundPacketType.MapSliceSouth, player, southDescriptionTiles));
                 }
 
                 if (this.OldLocation.X < this.NewLocation.X)
                 {
                     // Creature is moving east, so we need to send the additional east bytes.
-                    var (eastDescriptionMetadata, eastDescriptionBytes) = this.EastSliceDescription(context, player);
+                    var eastDescriptionTiles = this.EastSliceDescription(player);
 
-                    targetBuffer.Post(
-                        new GameNotification()
-                        {
-                            MapDescriptionPartial = new MapDescriptionPartial()
-                            {
-                                Type = (uint)MapDescriptionType.RightOnly,
-                                Description = new Common.Contracts.Grpc.MapDescription()
-                                {
-                                    Description = ByteString.CopyFrom(eastDescriptionBytes.ToArray()),
-                                },
-                            },
-                        });
+                    packets.Add(new MapPartialDescriptionPacket(OutboundPacketType.MapSliceEast, player, eastDescriptionTiles));
                 }
                 else if (this.OldLocation.X > this.NewLocation.X)
                 {
                     // Creature is moving west, so we need to send the additional west bytes.
-                    var (westDescriptionMetadata, westDescriptionBytes) = this.WestSliceDescription(context, player);
+                    var westDescriptionTiles = this.WestSliceDescription(player);
 
-                    targetBuffer.Post(
-                        new GameNotification()
-                        {
-                            MapDescriptionPartial = new MapDescriptionPartial()
-                            {
-                                Type = (uint)MapDescriptionType.LeftOnly,
-                                Description = new Common.Contracts.Grpc.MapDescription()
-                                {
-                                    Description = ByteString.CopyFrom(westDescriptionBytes.ToArray()),
-                                },
-                            },
-                        });
+                    packets.Add(new MapPartialDescriptionPacket(OutboundPacketType.MapSliceWest, player, westDescriptionTiles));
                 }
             }
             else if (player.CanSee(this.OldLocation) && player.CanSee(this.NewLocation))
             {
-                if (player.CanSee(creature))
+                if (player.CanSee(this.Creature))
                 {
-                    if (this.WasTeleport || (this.OldLocation.Z == 7 && this.NewLocation.Z > 7) || this.OldStackPosition > 9)
+                    if (this.WasTeleport || (this.OldLocation.Z == MapConstants.GroundSurfaceZ && this.NewLocation.Z > MapConstants.GroundSurfaceZ) || this.OldStackPosition > 9)
                     {
                         if (this.OldStackPosition <= MapConstants.MaximumNumberOfThingsToDescribePerTile)
                         {
-                            targetBuffer.Post(
-                                new GameNotification()
-                                {
-                                    RemoveAtLocation = new RemoveAtLocation()
-                                    {
-                                        Location = new Common.Contracts.Grpc.Location()
-                                        {
-                                            X = (ulong)this.OldLocation.X,
-                                            Y = (ulong)this.OldLocation.Y,
-                                            Z = (uint)this.OldLocation.Z,
-                                        },
-                                        Index = this.OldStackPosition,
-                                    },
-                                });
+                            packets.Add(new RemoveAtLocationPacket(this.OldLocation, this.OldStackPosition));
                         }
 
-                        targetBuffer.Post(
-                            new GameNotification()
-                            {
-                                AddCreature = new AddCreature()
-                                {
-                                    AtLocation = new Common.Contracts.Grpc.Location()
-                                    {
-                                        X = (ulong)creature.Location.X,
-                                        Y = (ulong)creature.Location.Y,
-                                        Z = (uint)creature.Location.Z,
-                                    },
-                                    Name = creature.Name,
-                                    Speed = creature.Speed,
-                                    HitpointsStat = new Common.Contracts.Grpc.Stat()
-                                    {
-                                        Name = CreatureStat.HitPoints.ToString(),
-                                        Current = creature.Stats[CreatureStat.HitPoints].Current,
-                                        Maximum = creature.Stats[CreatureStat.HitPoints].Maximum,
-                                        Percent = creature.Stats[CreatureStat.HitPoints].Percent,
-                                    },
-                                    Light = new CreatureLight()
-                                    {
-                                        CreatureId = creature.Id,
-                                        Level = creature.EmittedLightLevel,
-                                        Color = creature.EmittedLightColor,
-                                    },
-                                    CreatureId = creature.Id,
-                                    Direction = (uint)creature.Direction,
-                                    Outfit = new Common.Contracts.Grpc.Outfit()
-                                    {
-                                        Id = creature.Outfit.Id,
-                                        LookAlikeId = creature.Outfit.ItemIdLookAlike,
-                                        Head = creature.Outfit.Head,
-                                        Body = creature.Outfit.Body,
-                                        Legs = creature.Outfit.Legs,
-                                        Feet = creature.Outfit.Feet,
-                                    },
-                                },
-                            });
+                        packets.Add(new AddCreaturePacket(player, this.Creature));
                     }
                     else
                     {
-                        targetBuffer.Post(
-                            new GameNotification()
-                            {
-                                CreatureMoved = new CreatureMoved()
-                                {
-                                    FromLocation = new Common.Contracts.Grpc.Location()
-                                    {
-                                        X = (ulong)this.OldLocation.X,
-                                        Y = (ulong)this.OldLocation.Y,
-                                        Z = (uint)this.OldLocation.Z,
-                                    },
-                                    FromIndex = this.OldStackPosition,
-                                    ToLocation = new Common.Contracts.Grpc.Location()
-                                    {
-                                        X = (ulong)this.NewLocation.X,
-                                        Y = (ulong)this.NewLocation.Y,
-                                        Z = (uint)this.NewLocation.Z,
-                                    },
-                                },
-                            });
+                        packets.Add(new CreatureMovedPacket(this.OldLocation, this.OldStackPosition, this.NewLocation));
                     }
                 }
             }
-            else if (player.CanSee(this.OldLocation) && !player.CanSee(creature))
+            else if (player.CanSee(this.OldLocation) && !player.CanSee(this.Creature))
             {
                 if (this.OldStackPosition <= MapConstants.MaximumNumberOfThingsToDescribePerTile)
                 {
-                    targetBuffer.Post(
-                        new GameNotification()
-                        {
-                            RemoveAtLocation = new RemoveAtLocation()
-                            {
-                                Location = new Common.Contracts.Grpc.Location()
-                                {
-                                    X = (ulong)this.OldLocation.X,
-                                    Y = (ulong)this.OldLocation.Y,
-                                    Z = (uint)this.OldLocation.Z,
-                                },
-                                Index = this.OldStackPosition,
-                            },
-                        });
+                    packets.Add(new RemoveAtLocationPacket(this.OldLocation, this.OldStackPosition));
                 }
             }
-            else if (player.CanSee(this.NewLocation) && player.CanSee(creature))
+            else if (player.CanSee(this.NewLocation) && player.CanSee(this.Creature))
             {
                 if (this.NewStackPosition <= MapConstants.MaximumNumberOfThingsToDescribePerTile)
                 {
-                    targetBuffer.Post(
-                        new GameNotification()
-                        {
-                            AddCreature = new AddCreature()
-                            {
-                                AtLocation = new Common.Contracts.Grpc.Location()
-                                {
-                                    X = (ulong)creature.Location.X,
-                                    Y = (ulong)creature.Location.Y,
-                                    Z = (uint)creature.Location.Z,
-                                },
-                                Name = creature.Name,
-                                Speed = creature.Speed,
-                                HitpointsStat = new Common.Contracts.Grpc.Stat()
-                                {
-                                     Name = CreatureStat.HitPoints.ToString(),
-                                     Current = creature.Stats[CreatureStat.HitPoints].Current,
-                                     Maximum = creature.Stats[CreatureStat.HitPoints].Maximum,
-                                     Percent = creature.Stats[CreatureStat.HitPoints].Percent,
-                                },
-                                Light = new CreatureLight()
-                                {
-                                  CreatureId = creature.Id,
-                                  Level = creature.EmittedLightLevel,
-                                  Color = creature.EmittedLightColor,
-                                },
-                                CreatureId = creature.Id,
-                                Direction = (uint)creature.Direction,
-                                Outfit = new Common.Contracts.Grpc.Outfit()
-                                {
-                                    Id = creature.Outfit.Id,
-                                    LookAlikeId = creature.Outfit.ItemIdLookAlike,
-                                    Head = creature.Outfit.Head,
-                                    Body = creature.Outfit.Body,
-                                    Legs = creature.Outfit.Legs,
-                                    Feet = creature.Outfit.Feet,
-                                },
-                            },
-                        });
+                    packets.Add(new AddCreaturePacket(player, this.Creature));
                 }
             }
 
             if (this.WasTeleport)
             {
-                return targetBuffer.Post(
-                        new GameNotification()
-                        {
-                            MagicEffect = new MagicEffect()
-                            {
-                                Effect = (uint)AnimatedEffect.BubbleBlue,
-                                Location = new Common.Contracts.Grpc.Location()
-                                {
-                                    X = (ulong)this.NewLocation.X,
-                                    Y = (ulong)this.NewLocation.Y,
-                                    Z = (uint)this.NewLocation.Z,
-                                },
-                            },
-                        });
+                packets.Add(new MagicEffectPacket(this.NewLocation, AnimatedEffect.BubbleBlue));
             }
 
-            return true;
+            return packets;
         }
 
-        private (IDictionary<string, object> descriptionMetadata, ReadOnlySequence<byte> descriptionData) NorthSliceDescription(INotificationContext notificationContext, IPlayer player, int floorChangeOffset = 0)
+        private IEnumerable<ITile> NorthSliceDescription(IPlayer player, int floorChangeOffset = 0)
         {
             // A = old location, B = new location.
             //
@@ -680,17 +367,17 @@ namespace Fibula.Server.Notifications
                 Z = this.NewLocation.Z,
             };
 
-            return notificationContext.MapDescriptor.DescribeWindow(
+            return this.Map.DescribeWindow(
                     player,
                     (ushort)windowStartLocation.X,
                     (ushort)windowStartLocation.Y,
-                    (sbyte)(this.NewLocation.IsUnderground ? Math.Max(0, this.NewLocation.Z - 2) : 7),
-                    (sbyte)(this.NewLocation.IsUnderground ? Math.Min(15, this.NewLocation.Z + 2) : 0),
+                    (sbyte)(this.NewLocation.IsUnderground ? Math.Max(MapConstants.MinimumLevelZ, this.NewLocation.Z - 2) : 7),
+                    (sbyte)(this.NewLocation.IsUnderground ? Math.Min(MapConstants.MaximumLevelZ, this.NewLocation.Z + 2) : 0),
                     MapConstants.DefaultWindowSizeX,
                     1);
         }
 
-        private (IDictionary<string, object> descriptionMetadata, ReadOnlySequence<byte> descriptionData) SouthSliceDescription(INotificationContext notificationContext, IPlayer player, int floorChangeOffset = 0)
+        private IEnumerable<ITile> SouthSliceDescription(IPlayer player, int floorChangeOffset = 0)
         {
             // A = old location, B = new location
             //
@@ -724,17 +411,17 @@ namespace Fibula.Server.Notifications
                 Z = this.NewLocation.Z,
             };
 
-            return notificationContext.MapDescriptor.DescribeWindow(
+            return this.Map.DescribeWindow(
                     player,
                     (ushort)windowStartLocation.X,
                     (ushort)windowStartLocation.Y,
-                    (sbyte)(this.NewLocation.IsUnderground ? Math.Max(0, this.NewLocation.Z - 2) : 7),
-                    (sbyte)(this.NewLocation.IsUnderground ? Math.Min(15, this.NewLocation.Z + 2) : 0),
+                    (sbyte)(this.NewLocation.IsUnderground ? Math.Max(MapConstants.MinimumLevelZ, this.NewLocation.Z - 2) : 7),
+                    (sbyte)(this.NewLocation.IsUnderground ? Math.Min(MapConstants.MaximumLevelZ, this.NewLocation.Z + 2) : 0),
                     MapConstants.DefaultWindowSizeX,
                     1);
         }
 
-        private (IDictionary<string, object> descriptionMetadata, ReadOnlySequence<byte> descriptionData) EastSliceDescription(INotificationContext notificationContext, IPlayer player, int floorChangeOffsetX = 0, int floorChangeOffsetY = 0)
+        private IEnumerable<ITile> EastSliceDescription(IPlayer player, int floorChangeOffsetX = 0, int floorChangeOffsetY = 0)
         {
             // A = old location, B = new location
             //
@@ -767,17 +454,17 @@ namespace Fibula.Server.Notifications
                 Z = this.NewLocation.Z,
             };
 
-            return notificationContext.MapDescriptor.DescribeWindow(
+            return this.Map.DescribeWindow(
                     player,
                     (ushort)windowStartLocation.X,
                     (ushort)windowStartLocation.Y,
-                    (sbyte)(this.NewLocation.IsUnderground ? Math.Max(0, this.NewLocation.Z - 2) : 7),
-                    (sbyte)(this.NewLocation.IsUnderground ? Math.Min(15, this.NewLocation.Z + 2) : 0),
+                    (sbyte)(this.NewLocation.IsUnderground ? Math.Max(MapConstants.MinimumLevelZ, this.NewLocation.Z - 2) : 7),
+                    (sbyte)(this.NewLocation.IsUnderground ? Math.Min(MapConstants.MaximumLevelZ, this.NewLocation.Z + 2) : 0),
                     1,
                     MapConstants.DefaultWindowSizeY);
         }
 
-        private (IDictionary<string, object> descriptionMetadata, ReadOnlySequence<byte> descriptionData) WestSliceDescription(INotificationContext notificationContext, IPlayer player, int floorChangeOffsetX = 0, int floorChangeOffsetY = 0)
+        private IEnumerable<ITile> WestSliceDescription(IPlayer player, int floorChangeOffsetX = 0, int floorChangeOffsetY = 0)
         {
             // A = old location, B = new location
             //
@@ -810,12 +497,12 @@ namespace Fibula.Server.Notifications
                 Z = this.NewLocation.Z,
             };
 
-            return notificationContext.MapDescriptor.DescribeWindow(
+            return this.Map.DescribeWindow(
                     player,
                     (ushort)windowStartLocation.X,
                     (ushort)windowStartLocation.Y,
-                    (sbyte)(this.NewLocation.IsUnderground ? Math.Max(0, this.NewLocation.Z - 2) : 7),
-                    (sbyte)(this.NewLocation.IsUnderground ? Math.Min(15, this.NewLocation.Z + 2) : 0),
+                    (sbyte)(this.NewLocation.IsUnderground ? Math.Max(MapConstants.MinimumLevelZ, this.NewLocation.Z - 2) : 7),
+                    (sbyte)(this.NewLocation.IsUnderground ? Math.Min(MapConstants.MaximumLevelZ, this.NewLocation.Z + 2) : 0),
                     1,
                     MapConstants.DefaultWindowSizeY);
         }

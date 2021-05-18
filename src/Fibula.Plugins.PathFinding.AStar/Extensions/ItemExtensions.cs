@@ -12,7 +12,7 @@
 namespace Fibula.Plugins.PathFinding.AStar.Extensions
 {
     using Fibula.Definitions.Flags;
-    using Fibula.ServerV2.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Abstractions;
 
     /// <summary>
     /// Class that contains extension methods for an <see cref="IItem"/>, regarding pathfinding.

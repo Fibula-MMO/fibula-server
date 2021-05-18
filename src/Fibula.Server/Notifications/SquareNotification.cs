@@ -11,11 +11,12 @@
 
 namespace Fibula.Server.Notifications
 {
-    using System;
     using System.Collections.Generic;
-    using System.Threading.Tasks.Dataflow;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Outgoing;
     using Fibula.Definitions.Enumerations;
     using Fibula.Server.Contracts.Abstractions;
+    using Fibula.Utilities.Common.Extensions;
 
     /// <summary>
     /// Class that represents a notification for a world light change.
@@ -25,11 +26,11 @@ namespace Fibula.Server.Notifications
         /// <summary>
         /// Initializes a new instance of the <see cref="SquareNotification"/> class.
         /// </summary>
-        /// <param name="findTargetPlayers">A function to determine the target players of this notification.</param>
+        /// <param name="player">The target player of this notification.</param>
         /// <param name="creatureId">The id of the creature over which to display the square.</param>
         /// <param name="color">The color of the square.</param>
-        public SquareNotification(Func<IEnumerable<IPlayer>> findTargetPlayers, uint creatureId, SquareColor color)
-            : base(findTargetPlayers)
+        public SquareNotification(IPlayer player, uint creatureId, SquareColor color)
+            : base(player.YieldSingleItem())
         {
             this.CreatureId = creatureId;
             this.Color = color;
@@ -46,27 +47,13 @@ namespace Fibula.Server.Notifications
         public SquareColor Color { get; }
 
         /// <summary>
-        /// Finalizes the notification in preparation to it being sent.
+        /// Prepares the packets that will be sent out because of this notification, for the given player.
         /// </summary>
-        /// <param name="context">The context of this notification.</param>
         /// <param name="player">The player which this notification is being prepared for.</param>
-        /// <returns>True if the notification was posted successfuly, and false otherwise.</returns>
-        public override bool Post(INotificationContext context, IPlayer player)
+        /// <returns>A collection of packets to be sent out to the player.</returns>
+        public override IEnumerable<IOutboundPacket> PrepareFor(IPlayer player)
         {
-            if (!(context.Buffer is ITargetBlock<GameNotification> targetBuffer))
-            {
-                return false;
-            }
-
-            return targetBuffer.Post(
-                    new GameNotification()
-                    {
-                        Square = new Square()
-                        {
-                            CreatureId = this.CreatureId,
-                            Color = (uint)this.Color,
-                        },
-                    });
+            return new SquarePacket(this.CreatureId, this.Color).YieldSingleItem();
         }
     }
 }

@@ -11,10 +11,11 @@
 
 namespace Fibula.Server.Notifications
 {
-    using System;
     using System.Collections.Generic;
-    using System.Threading.Tasks.Dataflow;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Outgoing;
     using Fibula.Server.Contracts.Abstractions;
+    using Fibula.Utilities.Common.Extensions;
     using Fibula.Utilities.Validation;
 
     /// <summary>
@@ -25,46 +26,21 @@ namespace Fibula.Server.Notifications
         /// <summary>
         /// Initializes a new instance of the <see cref="PlayerCancelAttackNotification"/> class.
         /// </summary>
-        /// <param name="findTargetPlayersFunc">A function to determine the target players of this notification.</param>
-        /// <param name="player">The player for which the stats have updated.</param>
-        public PlayerCancelAttackNotification(Func<IEnumerable<IPlayer>> findTargetPlayersFunc, IPlayer player)
-            : base(findTargetPlayersFunc)
+        /// <param name="player">The player for which the notification is for.</param>
+        public PlayerCancelAttackNotification(IPlayer player)
+            : base(player.YieldSingleItem())
         {
             player.ThrowIfNull(nameof(player));
-
-            this.Player = player;
         }
 
         /// <summary>
-        /// Gets the player for which this announcement is for.
+        /// Prepares the packets that will be sent out because of this notification, for the given player.
         /// </summary>
-        public IPlayer Player { get; }
-
-        /// <summary>
-        /// Finalizes the notification in preparation to it being sent.
-        /// </summary>
-        /// <param name="context">The context of this notification.</param>
         /// <param name="player">The player which this notification is being prepared for.</param>
-        /// <returns>True if the notification was posted successfuly, and false otherwise.</returns>
-        public override bool Post(INotificationContext context, IPlayer player)
+        /// <returns>A collection of packets to be sent out to the player.</returns>
+        public override IEnumerable<IOutboundPacket> PrepareFor(IPlayer player)
         {
-            if (!(context.Buffer is ITargetBlock<GameNotification> targetBuffer))
-            {
-                return false;
-            }
-
-            var packet = new Contentless()
-            {
-                Action = Contentless.Types.Action.Cancelattack,
-            };
-
-            return targetBuffer.Post(new GameNotification()
-            {
-                PlayerCancelAttack = new Contentless()
-                {
-                  Action = Contentless.Types.Action.Cancelattack,
-                },
-            });
+            return new PlayerCancelAttackPacket().YieldSingleItem();
         }
     }
 }

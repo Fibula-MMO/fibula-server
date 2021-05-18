@@ -11,11 +11,12 @@
 
 namespace Fibula.Server.Notifications
 {
-    using System;
     using System.Collections.Generic;
-    using System.Threading.Tasks.Dataflow;
+    using Fibula.Communications.Packets.Contracts.Abstractions;
+    using Fibula.Communications.Packets.Outgoing;
     using Fibula.Definitions.Constants;
     using Fibula.Server.Contracts.Abstractions;
+    using Fibula.Utilities.Common.Extensions;
 
     /// <summary>
     /// Class that represents a notification for a world light change.
@@ -25,11 +26,11 @@ namespace Fibula.Server.Notifications
         /// <summary>
         /// Initializes a new instance of the <see cref="WorldLightChangedNotification"/> class.
         /// </summary>
-        /// <param name="findTargetPlayers">A function to determine the target players of this notification.</param>
+        /// <param name="targetPlayers">The target players of this notification.</param>
         /// <param name="lightLevel">The new world light level.</param>
         /// <param name="lightColor">The new world light color.</param>
-        public WorldLightChangedNotification(Func<IEnumerable<IPlayer>> findTargetPlayers, byte lightLevel, byte lightColor = LightConstants.WhiteColor)
-            : base(findTargetPlayers)
+        public WorldLightChangedNotification(IEnumerable<IPlayer> targetPlayers, byte lightLevel, byte lightColor = LightConstants.WhiteColor)
+            : base(targetPlayers)
         {
             this.LightLevel = lightLevel;
             this.LightColor = lightColor;
@@ -46,27 +47,13 @@ namespace Fibula.Server.Notifications
         public byte LightColor { get; }
 
         /// <summary>
-        /// Finalizes the notification in preparation to it being sent.
+        /// Prepares the packets that will be sent out because of this notification, for the given player.
         /// </summary>
-        /// <param name="context">The context of this notification.</param>
         /// <param name="player">The player which this notification is being prepared for.</param>
-        /// <returns>True if the notification was posted successfuly, and false otherwise.</returns>
-        public override bool Post(INotificationContext context, IPlayer player)
+        /// <returns>A collection of packets to be sent out to the player.</returns>
+        public override IEnumerable<IOutboundPacket> PrepareFor(IPlayer player)
         {
-            if (!(context.Buffer is ITargetBlock<GameNotification> targetBuffer))
-            {
-                return false;
-            }
-
-            return targetBuffer.Post(
-                    new GameNotification()
-                    {
-                        WorldLight = new WorldLight()
-                        {
-                            Level = this.LightLevel,
-                            Color = this.LightColor,
-                        },
-                    });
+            return new WorldLightPacket(this.LightLevel, this.LightColor).YieldSingleItem();
         }
     }
 }

@@ -9,7 +9,7 @@
 // </copyright>
 // -----------------------------------------------------------------
 
-namespace Fibula.TcpServer.Contracts.Delegates
+namespace Fibula.Server.Contracts.Delegates
 {
     using Fibula.Server.Contracts.Abstractions;
 

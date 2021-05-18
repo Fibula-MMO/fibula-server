@@ -17,8 +17,8 @@ namespace Fibula.Protocol.V772.Extensions
     using Fibula.Definitions.Data.Structures;
     using Fibula.Definitions.Enumerations;
     using Fibula.Security.Extensions;
-    using Fibula.ServerV2.Contracts.Abstractions;
-    using Fibula.ServerV2.Contracts.Extensions;
+    using Fibula.Server.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Extensions;
     using Fibula.Utilities.Validation;
 
     /// <summary>

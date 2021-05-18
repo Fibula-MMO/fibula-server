@@ -13,7 +13,7 @@ namespace Fibula.Server.Contracts.Abstractions
 {
     using System.Collections.Generic;
     using Fibula.Server.Contracts.Constants;
-    using Fibula.TcpServer.Contracts.Delegates;
+    using Fibula.Server.Contracts.Delegates;
 
     /// <summary>
     /// Interface for a container manager.

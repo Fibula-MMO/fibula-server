@@ -19,11 +19,6 @@ namespace Fibula.Server.Contracts.Abstractions
     public interface IConditionContext : IEventContext
     {
         /// <summary>
-        /// Gets a reference to the map descriptor in use.
-        /// </summary>
-        IMapDescriptor MapDescriptor { get; }
-
-        /// <summary>
         /// Gets the reference to the map.
         /// </summary>
         IMap Map { get; }

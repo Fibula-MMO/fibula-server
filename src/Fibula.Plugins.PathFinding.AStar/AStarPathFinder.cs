@@ -16,7 +16,7 @@ namespace Fibula.Plugins.PathFinding.AStar
     using System.Linq;
     using Fibula.Definitions.Data.Structures;
     using Fibula.Definitions.Enumerations;
-    using Fibula.ServerV2.Contracts.Abstractions;
+    using Fibula.Server.Contracts.Abstractions;
     using Fibula.Utilities.Pathfinding;
     using Fibula.Utilities.Pathfinding.Abstractions;
     using Fibula.Utilities.Validation;
