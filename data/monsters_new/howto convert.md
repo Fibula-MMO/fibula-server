@@ -1,6 +1,6 @@
 # How to convert from .mon files:
 
-> Using `warlock.mon` as an example.
+Using `warlock.mon` as an example...
 
 |Field|Convert as|Example|
 |--|--|--|
@@ -51,7 +51,7 @@ The `Outfit` field we'll convert into one of the following schemas:
 |Format|Convert as|
 |--|--|
 |(130, 0-52-128-95) | `{ "type": "outfit", "id": 130, "head": 0, "body": 52, "legs": 128, "feet": 95 }` |
-|(36, 0-0-0-0)| `{ "type": "race", "id": 130 }` |
+|(36, 0-0-0-0)| `{ "type": "race", "id": 36 }` |
 |(0, 0)| `{ "type": "invisible" }` |
 |(0, 4240)| `{ "type": "item", "id": 4240 }` |
 
@@ -66,6 +66,15 @@ The `Outfit` field we'll convert into one of the following schemas:
 |Armor|combat.baseArmor|
 
 For example:
+
+```
+...
+Attack        = 40
+Defend        = 50
+Armor         = 32
+...
+```
+become properties under the `combat` property, like:
 ```
 "combat": {
 	...
